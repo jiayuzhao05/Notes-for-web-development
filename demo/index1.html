@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <button id="btn" class="btn">button</button>
+    <div id="mydiv"></div>
+    <script defer src="app.js"></script>
+</head>∫
+<body>
+    <div id="mydiv" style="display:flex;flex-wrap;gap:8px;"></div>
+    <script>
+        "use strict"
+        document.addEventListener('DomContentLoaded',()=>{
+        const imgArr = [
+            "xm/1.webp","xm/2.webp","xm/3.webp","xm/4.webp",
+            "xm/5.webp","xm/6.webp","xm/7.webp","xm/8.webp",]
+        const mydiv = document.getElementById("mydiv")
+        console.log('mydiv=',mydiv)
+
+        imgArr.forEach(src =>{
+            const img = new Image() //document.createElement('img')
+            img.src = src
+            img.alt = src
+            img.width = 120 // 给个尺寸，避免看起来像是没渲染
+            mydiv.appendChild(img)
+        })
+        
+        /** while(i < imgArr.length){
+        var img = document.createElement("img")
+        img.src = imgArr[i]
+        mydiv.appendChild(img)
+        i++
+        }
+        }) */
+        function overrideFunc(){
+            var arglen = arguments.length;
+            if(arglen==0) console.log("no parameter method")
+            else if(arglen==1) console.log("parameter imported:"+arguments[0])
+            else if(arglen==2) {console.log("2 parameters imported")}
+                if(!isNaN(arguments[0]&& !isNaN(arguments[1]))){
+                    console.log("sum is:"+(arguments[0]+arguments[1]))
+                }else console.log("not number:"+arguments[0]+arguments[1])
+                }else console.log("unknown, handled")
+        }
+        overrideFunc()
+        overrideFunc("sde")
+        overrideFunc(3,4)
+        overrideFunc(3,"a",33)
+
+        var arr = [1,,3,null,5,undefined,7];
+        for(var i=0,len=arr.length;i<len;i++){
+        console.log(arr[i]);  // 可以把所有元素都打印出来；
+} 
+    console.log("----------------");
+    for(var i in arr){
+    console.log(arr[i]);  //会过滤掉empty元素
+};
+
+    function show(){
+        var date = document.getElementById('mydate')
+        var mydatetime = document.getElemetById('mydatetime')
+        var mylocaldate =document.getElementById('mylocaldate')
+        var mytime = documemt.getElementById('mytime')
+
+        console.log(mydate.value)
+        console.log(mydatetime.value)
+        console.log(mylocaldate.value)
+        console.log(mytime.value)
+    }
+    </script>
+</body>
+</html>
+
