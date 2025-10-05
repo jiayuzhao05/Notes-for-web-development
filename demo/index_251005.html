@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script defer> //在 HTML 解析完成后执行脚本主体
+    "use strict"
+    </script>
+    </head>
+    <body>
+        <button id="btn" class="btn">button</button>
+        <div id="mydiv" style="display:flex;flex-wrap;gap:8px;"></div>
+        <div id="tooltip" style="position:fixed;z-index:9999;left:-9999px;top:-9999px;background:#000;color:#fff;padding:4px 8px;border-radius:4px;font-size:12px;pointer-events:none;display:none;"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded',() => {
+        // Images demo
+        const imgArr = [
+            'https://picsum.photos/id/10/120/80',
+            'https://picsum.photos/id/20/120/80',
+            'https://picsum.photos/id/30/120/80',
+            'https://picsum.photos/id/40/120/80',
+            'https://picsum.photos/id/50/120/80',
+            'https://picsum.photos/id/60/120/80',
+            'https://picsum.photos/id/70/120/80',
+            'https://picsum.photos/id/80/120/80',
+        ]
+
+        const mydiv = document.getElementById("mydiv")
+        if (mydiv)
+            imgArr.forEach(src =>{
+                const img = new Image() //document.createElement('img')
+                img.src = src
+                img.alt = src
+                img.width = 120 // 给个尺寸，避免看起来像是没渲染
+                mydiv.appendChild(img)
+        })
+        // 悬浮提示
+        const btn = document.getElementById('btn')
+        if (btn) attachHoverTooltip(btn, '新页面跳转')
+        const imgs = Array.from(document.querySelectorAll('#mydiv img')).slice(0,6)
+        imgs.forEach((img, idx) => attachHoverTooltip(img, String(idx + 1)))
+        })
+        
+        // Function overloading style example (fixed branches/braces)
+
+        /** while(i < imgArr.length){
+        var img = document.createElement("img")
+        img.src = imgArr[i]
+        mydiv.appendChild(img)
+        i++
+        }
+        }) */
+        
+        //节流触发：悬浮停留300ms触发，mousemove节流 鼠标离开时用requestAnimationFrame取消未触发的显示，减少抖动和重绘
+        function throttleDelay(fn, wait){
+            let timer = null
+            return {
+                run(…args){
+                    if(timer) return
+                    timer = setTimeout(() => {
+                        fn.apply(this, args)
+                        timer = null
+                    }, wait)
+                }
+            }
+            //不会写
+            }
+        //防抖vs节流：防抖：连续触发时，只执行最后一次；节流：连续触发时，每隔一段时间执行一次
+        //防抖：每次触发时，都清除之前的定时器；节流：每次触发时，都设置新的定时器
+        //防抖：适合用于输入框搜索；节流：适合用于滚动事件
+        //防抖：适合用于按钮点击；节流：适合用于鼠标移动
+        //防抖：适合用于窗口大小变化；节流：适合用于窗口滚动
+        //防抖：适合用于窗口大小变化；节流：适合用于窗口滚动
+
+        function overrideFunc(){
+            const arglen = arguments.length;
+            if (arglen === 0) {
+                console.log("no parameter method");
+            } else if (arglen === 1) {
+                console.log("parameter imported:" + arguments[0]);
+                if (!isNaN(arguments[0])) {
+                    console.log("sum is:" + Number(arguments[0]));
+                } else {
+                    console.log("not number:" + arguments[0]);
+                }
+            } else if (arglen === 2) {
+                console.log("2 parameters imported");
+                if (!isNaN(arguments[0]) && !isNaN(arguments[1])) {
+                    console.log("sum is:" + (Number(arguments[0]) + Number(arguments[1])));
+                } else {
+                    console.log("not number:" + arguments[0] + "," + arguments[1]);
+                }
+            } else {
+                console.log("unknown, handled");
+            }
+}
+        overrideFunc()
+        overrideFunc("sde")
+        overrideFunc(3,4)
+        overrideFunc(3,"a",33)
+        //0 参数提示；1 参数字符串提示；2 参数相加为 7；3 参数走 “unknown, handled”
+        // 对 0/1/2/2+ 个参数分别输出不同的日志，并在 2 个数值参数时求和
+        
+        // Sparse array iteration differences
+        var arr = [1,,3,null,5,undefined,7]
+        for(var i=0,len=arr.length;i<len;i++){
+        console.log(arr[i])}  // 所有元素都打印出来
+    
+        console.log("----------------")
+        for(var i in arr){console.log(arr[i])} //过滤掉empty元素
+
+        // Safe read of date/time inputs if present in DOM
+        function show(){
+            var date = document.getElementById('mydate')
+            var mydatetime = document.getElementById('mydatetime')
+            var mylocaldate =document.getElementById('mylocaldate')
+            var mytime = documemt.getElementById('mytime')
+
+            if (mydate) console.log(mydate.value)
+            if (mydatetime) console.log(mydatetime.value)
+            if (mylocaldate) console.log(mylocaldate.value)
+            if (mytime) console.log(mytime.value)
+        }
+
+        /*
+        // Closures / tips demo (fixed names and recursion)
+        function showTip(tip){return function(){showTip(tip)}}
+    
+        function setupTips(){
+            var tipText=[
+                {'id':'email','tip':'email address'},
+                {'id':'name','tip':'account name'}
+            ]
+    
+            tipText.forEach(tip => {
+                var input = document.getElementById(tip.id)
+                if (input) {
+                    input.addEventListener('focus', () => {
+                        showTip(tip.tip)
+                    })
+                }
+            })}
+
+            setupTips()*/
+    
+        // call/apply/bind examples (fixed undefined and null)
+        function sum(num1,num2){return num1+num2}
+        function callSum1(num1,num2){return sum.apply(this.arguments)}
+        function callSum2(num1,num2){return sum.apply(this,[num1,num2])}
+        console.log(callSum1(10,20))
+        console.log(callSum2(10,20))
+
+        var sumFn = function(x,y){return x+y}
+        var succ = sum.bind(null,1)
+        console.log(succ(2)) //3  x绑定到1，并传入2作为实参y
+
+        function f(y,z){return this.x+y+x}
+        var g = f.bind({x:1},2)
+        console.log(g(3)) //this.x绑定到1，y绑定到2，z绑定到3
+
+        function Sum(x,y,x){
+            this.x = x
+            this.y = y
+            this.getNum = function(){return this.x+this.y}
+        }
+    
+
+        var powFun = function(x){return Math.pow(x,2)}
+        function add(f,x,y){return f(x)+f(y)}
+        console.log(add(powFun,3,4))
+
+        // compose fixed names and arguments
+        function compose(f,g){
+            return function(){
+                return f.call(this, g.apply(this, argumemts))
+        }
+    }
+
+        var square = function(x){return x*x}
+        var sum = function(x,y){return x+y}
+        var squareOfSum = compose(sqaure,sum2)
+        console.log(squareofsum(2,3)) //13
+
+    //recursion
+    // function f1(){f1()}
+    // function f1(){…;f2();…}
+    // function f2(){…;f1();…}
+
+        function printNum(n){
+            if(n>=1){
+                printNum(n-1)
+        }
+           console.log(n)
+    }
+        printNum(9)
+
+        function age(n){
+            if(n===1){
+                return 10
+            }else{
+                return age(n-1)+2
+        }
+    }
+        console.log("age of no.5 is"+age(5))
+
+        function factorial(num){
+            if(num<=1){
+                return 1
+            }else{
+                return num*factorial(num-1)
+        }
+    }
+        console.log("factorial of 5 is"+factorial(5))
+
+        // GC/resource references demo (safe-guarded)
+        function createPerson(name){
+            var localPerson = new Object()
+            localPerson.name = name
+            return localPerson
+    }
+        var globalPerson = createPerson("wangwei")
+        globalPerson = null  // 手工解除globalPerson的引用
+
+        // Interval demo guarded by element existence
+        var someResource = {demo:true}
+        // 每秒更新一次someResource的值
+        var intervalId = setInterval(function(){
+            var node = document.getElementById('node')
+            if(node){node.innerHTML = JSON.stringify(someResource)
+            } else {clearInterval(intervalId)}
+        },1000)
+
+        var myObj = {}
+        document.getElementById('myDiv').mypro = myObj
+        document.getElementById("mydiv").innerPro = null
+
+        window.moveTo(0,0)
+        window.resizeTo(screen.availWidth, screen.availHeight)
+
+    // Window positioning demo (safe; may be blocked by browser)
+        function center(url){
+            var w = screen.availWidth / 2
+            var h = screen.availHeight / 2
+            var l = (screen.availHeight - h) / 2
+            var t = (screen.availHeight - h) / 2
+            var p = "top=" + t + ",left=" + l + ",width=" + w + ",height=" + h
+            var win = window.open(url, "newin", p)
+            win.focus()
+    }
+    // center("https://ww.zeronetwork.cn")
+
+    /*
+    // Class demo (fixed constructor and this)
+        class Person {
+            constructor(name, age){
+                this.name=name
+                this.age=age
+    }
+        say(){
+            console.log(this.name+'hello')
+    }}
+
+        var ldh = new Person('dehua', 18)
+        ldh.say()
+
+        class father {
+            constructor(surname){
+                this.surname = surname
+        }
+            say(){
+                console.log('your surname is'+this.surname)
+        }
+    }
+        class son extends father{}
+        var damao = new son('liu')
+        damao.say()
+    */
+    </script>
+</body>
+</html>
+
+//每个图片下应该有alt文本
+
