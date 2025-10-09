@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //var 函数作用域,也可以用变量生效全局作用域，全局作用域时成为windows属性
+      /**var a = 1
+        function helloWorldFunc(){
+        }
+        console.log (window.a)
+
+        let b = 2 //块级作用域 不会造成全局污染 即不会造成全局污染
+        console.log(b) //2
+        console.log(window.b) //undefined
+
+        for (let i=0; i<3; i++) {
+        setTimeout(()=>console.log(i))
+    }**/ //0 1 2 (使用 let 每次循环都会创建新的 i)
+
+      //2.提升和初始化不同
+      //编译初期会提升（提升机制：变量声明被提升到作用域顶部）
+      /**console.log(a) //undefined
+        var a  //声明被提升，但初始化为undefined
+        
+        console.log(b) //ReferenceError: Cannot access 'b' before initialization
+        let b = 100 //只会提升不会初始化 //var帮你选择 let不帮你选择直接报错 
+        //暂时性死区TDZ:把b锁在死区里 任何访问行为报错referenceerror:cannot access 和之前a报错信息类型不同
+        
+        //3.赋值(只读)**/
+      const c = 1000; //constant variable 常量(一旦赋值，不能重新赋值，但是可以修改属性)
+      c = 1001; // TypeError: Assignment to constant variable
+      let b = 100;
+      b = 101;
+
+      const obj = { n: 1 };
+      obj.n = 2; //修改属性 没有修改对象本身不会报错
+      //如何让 obj.n = 2 不能赋值? 如果是use strict会报错
+
+      //会静默失败么 不生效上述修改操作 也不报错？
+      obj = {}; // TypeError: Assignment to constant variable
+
+      const API_URL = "https://api.example.com/data"; //常量
+      let userData = null; //优先使用顺序：const > let > var ???
+    </script>
+  </body>
+</html>
+
+<!--整理报错信息-->
+<!--Reference error
+console.log(a) //ReferenceError: a is not defined
+console.log(b); let b = 100 //TDZ:ReferenceError: Cannot access 'b' before initialization
+
+TypeError
+const c = 1000; c = 1001 //TypeError: Assignment to constant variable
+const obj = { n: 1 };obj = {}; //TypeError: Assignment to constant variable
+'use strict' const obj = { n: 1 };obj.n = 2; //TypeError: Cannot assign to read only property 'n' of object
+
+SyntaxError
+-->
+<!--prettier 使用-->
+<!--全局安装,可以命令行格式化
+自动格式化可以再vscode中配置defaultformatter-->
