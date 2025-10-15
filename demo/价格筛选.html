@@ -150,18 +150,19 @@
 
     // 1. 渲染函数  封装
     function render(arr) {
-      let str = ''
-      arr.forEach(item => {
-        // 解构
+      let str = '' // 空字符串 初始化 拼接 HTML
+      arr.forEach(item => { // 遍历传入的商品数组
+        // 解构赋值，从每个商品对象中提取属性
         const { name, picture, price } = item
-        str += `
+        str += ` // 使用模板字符串拼接HTML
          <div class="item">
           <img src=${picture} alt="">
           <p class="name">${name}</p>
           <p class="price">${price}</p>
         </div> 
-        `
+        ` 
       })
+      //将拼接好的HTML插入到页面中？？？？
       document.querySelector('.list').innerHTML = str
     }
     render(goodsList)  // 页面一打开就渲染
@@ -170,21 +171,28 @@
     document.querySelector('.filter').addEventListener('click', e => {
       // e.target.dataset.index   e.target.tagName
       const { tagName, dataset } = e.target
+      // const tagName = e.target.tagName
+      // const dataset = e.target.dataset
       // 判断 
-      if (tagName === 'A') {
+      if (tagName === 'A') { //判断点击 a 标签？？a 标签是什么
         // console.log(11) 
         // arr 返回的新数组
-        let arr = goodsList
-        if (dataset.index === '1') {
+        let arr = goodsList //默认状态，显示所有商品
+        if (dataset.index === '1') { //➡️用法？？？？
           arr = goodsList.filter(item => item.price > 0 && item.price <= 100)
         } else if (dataset.index === '2') {
           arr = goodsList.filter(item => item.price >= 100 && item.price <= 300)
         } else if (dataset.index === '3') {
           arr = goodsList.filter(item => item.price >= 300)
-        }
-        render(arr)
+        } // 为什么用户点击-100 元，dataset.index 是1???
+        // 如果没有 dataset.index（点击"全部区间"），arr 保持为 goodsList
+        render(arr) //重新渲染页面
       }
     })
+    //点击事件绑定在父容器 .filter 上,通过 e.target 判断点到的是否是某个 a
+    //解构 e.target 得到 tagName 和 dataset，其中 dataset.index 来自点击的 a 的 data-index 属性，用来表示选择的价格区间
+    // let arr = goodsList 先默认用全部数据；根据 dataset.index 分三段用 .filter 生成新数组
+    // 若 price 可能是字符串，先转数值再比较，如 Number(item.price) >= 300
   </script>
 </body>
 
