@@ -1,167 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <opml version="2.0">
   <head>
-    <title>JavaScript &amp; Web Development</title>
-    <dateCreated>2025-10-15T06:07:59.965998</dateCreated>
+    <title>JS 思维导图（按图严格还原）</title>
+    <dateCreated>2025-10-15T19:46:47.321475</dateCreated>
   </head>
   <body>
-    <outline text="JavaScript &amp; Web Development">
-      <outline text="1️⃣ 基础语法 Syntax &amp; Basics">
-        <outline text="🔹 数据类型 (Data Types)">
-          <outline text="原始类型 (Primitive)：number, string, boolean, null, undefined, symbol, bigint"/>
-          <outline text="引用类型 (Reference)：object, array, function, date, regexp"/>
-          <outline text="typeof / instanceof 检测类型"/>
-          <outline text="特殊值：NaN、Infinity、null == undefined (true)"/>
+    <outline text="JS">
+      <outline text="Syntax 语法">
+        <outline text="Data Types 数据类型">
+          <outline text="Reference 引用类型">
+            <outline text="object"/>
+            <outline text="array"/>
+            <outline text="function"/>
+            <outline text="date"/>
+            <outline text="regexp"/>
+          </outline>
+          <outline text="Special 特殊值与类型">
+            <outline text="number"/>
+            <outline text="string"/>
+            <outline text="boolean"/>
+            <outline text="undefined"/>
+            <outline text="symbol"/>
+            <outline text="bigint"/>
+          </outline>
         </outline>
-        <outline text="🔹 类型转换 (Type Conversion)">
-          <outline text="隐式转换：+&quot;2&quot;→2；&quot;5&quot; * 2→10"/>
-          <outline text="显式转换：Number(&quot;5&quot;)，String(10)，Boolean(0)"/>
-          <outline text="特例：true + true = 2；1 + undefined = NaN"/>
+        <outline text="Type Conversion 类型转换">
+          <outline text="Explicit 显式转换">
+            <outline text="Number()"/>
+            <outline text="String()"/>
+            <outline text="Boolean()"/>
+          </outline>
+          <outline text="Implicit 隐式转换">
+            <outline text="+'2' → 2"/>
+            <outline text="'5' * 2 → 10"/>
+            <outline text="== 与 === 差异"/>
+          </outline>
         </outline>
-        <outline text="🔹 变量与作用域 (Variables &amp; Scope)">
-          <outline text="var：函数作用域、有变量提升"/>
-          <outline text="let：块作用域、无提升"/>
-          <outline text="const：只读引用、指针不可变但对象内容可改"/>
-          <outline text="作用域链 Scope Chain：嵌套函数从内向外查找变量"/>
+        <outline text="Variables &amp; Scope 变量与作用域">
+          <outline text="var">
+            <outline text="函数作用域"/>
+            <outline text="变量提升"/>
+          </outline>
+          <outline text="let">
+            <outline text="块级作用域"/>
+            <outline text="无提升"/>
+          </outline>
+          <outline text="const">
+            <outline text="只读引用（指针不可变）"/>
+          </outline>
+          <outline text="Scope Chain 作用域链">
+            <outline text="从内到外查找变量"/>
+          </outline>
         </outline>
-        <outline text="🔹 函数与 this">
-          <outline text="普通函数：this → 调用者"/>
-          <outline text="箭头函数：无自己的 this，继承外层作用域"/>
-          <outline text="call / apply / bind 修改 this"/>
-          <outline text="回调函数 Callback：作为参数传入其他函数执行"/>
-        </outline>
-        <outline text="🔹 对象与原型 (Objects &amp; Prototypes)">
-          <outline text="Object 构造函数与字面量 {}"/>
-          <outline text="prototype 原型链继承"/>
-          <outline text="Object.create() 自定义继承"/>
-          <outline text="instanceof 判断对象关系"/>
+        <outline text="Functions &amp; this 函数与 this">
+          <outline text="普通函数">
+            <outline text="this 指向调用者"/>
+          </outline>
+          <outline text="箭头函数">
+            <outline text="不绑定 this，继承外层"/>
+          </outline>
+          <outline text="call / apply / bind">
+            <outline text="显式修改 this"/>
+          </outline>
+          <outline text="回调函数 Callback">
+            <outline text="作为参数传入执行"/>
+          </outline>
         </outline>
       </outline>
-      <outline text="2️⃣ DOM 操作 Document Object Model">
-        <outline text="🔹 获取元素">
+      <outline text="DOM 操作">
+        <outline text="获取元素">
           <outline text="querySelector / querySelectorAll"/>
           <outline text="getElementById / getElementsByClassName"/>
-          <outline text="节点选择：parentNode / children / nextElementSibling"/>
+          <outline text="父子兄弟：parentNode / children / nextElementSibling"/>
         </outline>
-        <outline text="🔹 修改内容与结构">
-          <outline text="innerHTML：可插入 HTML（不安全）"/>
-          <outline text="textContent / innerText：插入纯文本（安全）"/>
+        <outline text="修改内容与结构">
+          <outline text="innerHTML（不安全）"/>
+          <outline text="textContent / innerText（安全）"/>
           <outline text="insertAdjacentText / appendChild / removeChild"/>
-          <outline text="动态创建元素：document.createElement()"/>
+          <outline text="document.createElement() 动态创建"/>
         </outline>
-        <outline text="🔹 样式与属性">
+        <outline text="样式与属性">
           <outline text="element.style.color = 'red'"/>
           <outline text="element.classList.add('active')"/>
           <outline text="setAttribute / getAttribute"/>
         </outline>
-        <outline text="🔹 事件监听与处理">
+        <outline text="事件监听">
           <outline text="addEventListener(type, handler)"/>
           <outline text="event.target / event.currentTarget"/>
           <outline text="stopPropagation / preventDefault"/>
           <outline text="if (el.disabled) return;  防重复触发"/>
         </outline>
-        <outline text="🔹 DOM 性能优化">
+        <outline text="DOM 性能优化">
           <outline text="避免频繁操作 DOM"/>
-          <outline text="使用 fragment 或 innerHTML 一次性更新"/>
-          <outline text="尽量缓存查询结果（如 querySelectorAll）"/>
+          <outline text="使用 fragment 或一次性 innerHTML 更新"/>
+          <outline text="缓存查询结果（querySelectorAll）"/>
         </outline>
       </outline>
-      <outline text="3️⃣ 高级概念 Advanced Topics">
-        <outline text="🔹 异步机制 (Asynchronous)">
-          <outline text="setTimeout / setInterval"/>
-          <outline text="Promise 链式调用"/>
-          <outline text="async / await 简化异步写法"/>
-          <outline text="回调地狱 → Promise → async 优化过程"/>
+      <outline text="Objects &amp; prototype 对象与原型">
+        <outline text="Object 构造/字面量">
         </outline>
-        <outline text="🔹 闭包 (Closure)">
-          <outline text="函数内部引用外部变量形成闭包"/>
-          <outline text="应用：数据私有化、计数器、工厂函数"/>
-          <outline text="注意内存泄漏"/>
+        <outline text="prototype 原型链继承">
         </outline>
-        <outline text="🔹 递归函数 (Recursion)">
-          <outline text="函数自我调用实现循环逻辑"/>
-          <outline text="缺点：效率低、易栈溢出"/>
-          <outline text="优化：尾递归 / 迭代替代"/>
+        <outline text="Object.create() 自定义继承">
         </outline>
-        <outline text="🔹 稀疏数组 vs 稠密数组">
-          <outline text="稠密数组：连续存储、性能好"/>
-          <outline text="稀疏数组：键不连续、查找像对象属性"/>
-          <outline text="稀疏数组遍历慢、内存利用率低"/>
-        </outline>
-        <outline text="🔹 原型链与继承">
-          <outline text="每个对象都有 prototype"/>
-          <outline text="通过 Object.create() 实现继承"/>
-          <outline text="class 语法糖封装继承逻辑"/>
-          <outline text="instanceof 与 constructor 关系"/>
-        </outline>
-      </outline>
-      <outline text="4️⃣ 安全与性能 Security &amp; Performance">
-        <outline text="🔹 XSS 攻击与防护">
-          <outline text="原理：恶意脚本插入网页执行"/>
-          <outline text="禁用 document.write"/>
-          <outline text="使用 textContent / innerText 代替"/>
-          <outline text="对输入内容进行转义 / 校验"/>
-        </outline>
-        <outline text="🔹 性能优化">
-          <outline text="减少 DOM 操作与重绘"/>
-          <outline text="使用节流 (throttle) 与防抖 (debounce)"/>
-          <outline text="按需加载 (lazy loading)"/>
-          <outline text="使用 requestAnimationFrame 替代 setInterval"/>
-        </outline>
-        <outline text="🔹 代码可维护性">
-          <outline text="使用模块化 (ES Modules / import export)"/>
-          <outline text="统一命名规范"/>
-          <outline text="避免全局变量污染"/>
-        </outline>
-      </outline>
-      <outline text="5️⃣ 工具与框架 Tools &amp; Workflow">
-        <outline text="🔹 GitHub 与 Slack 集成">
-          <outline text="/github signin → 登录绑定"/>
-          <outline text="/github subscribe owner/repo → 订阅更新"/>
-          <outline text="/github open → 创建 issue"/>
-          <outline text="/github settings → 管理通知"/>
-        </outline>
-        <outline text="🔹 实验项目 (Lab 1)">
-          <outline text="Fork → Create → Commit → Push → Submit to Canvas"/>
-          <outline text="文件命名：yourname.html"/>
-          <outline text="部署链接格式：https://username.github.io/lab-1-1/yourname.html"/>
-          <outline text="Slack 发部署链接到 #web-development"/>
-        </outline>
-        <outline text="🔹 HTML 表格与动态生成">
-          <outline text="使用循环生成 &amp;lt;tr&amp;gt; &amp;lt;td&amp;gt;"/>
-          <outline text="document.createElement()"/>
-          <outline text="insertAdjacentText / appendChild()"/>
-          <outline text="自动生成乘法表（1~8）"/>
-        </outline>
-        <outline text="🔹 Canvas 与可视化">
-          <outline text="getContext('2d')"/>
-          <outline text="绘制图形 / 动画 / 数据流"/>
-          <outline text="用于可视化事件或函数执行"/>
-          <outline text="可视调试工具（例如递归或回调流）"/>
-        </outline>
-        <outline text="🔹 Stream API 模拟">
-          <outline text="map → 转换"/>
-          <outline text="filter → 过滤"/>
-          <outline text="reduce → 聚合"/>
-          <outline text="as_list() → 转换回数组"/>
-          <outline text="Fluent Interface → 支持链式调用"/>
-        </outline>
-      </outline>
-      <outline text="6️⃣ 总结与实践 Practice Summary">
-        <outline text="💡 理论与应用结合">
-          <outline text="JS 语法 → DOM 操作 → 项目实战"/>
-          <outline text="函数式思维 vs 面向对象设计"/>
-          <outline text="模块化与团队协作"/>
-        </outline>
-        <outline text="🧩 编程习惯">
-          <outline text="命名清晰"/>
-          <outline text="模块化结构"/>
-          <outline text="注重代码安全与性能"/>
-        </outline>
-        <outline text="🧱 工具链整合">
-          <outline text="Git + GitHub 提交版本"/>
-          <outline text="Slack 实时协作"/>
-          <outline text="Typora 记录学习文档"/>
+        <outline text="instanceof 判断关系">
         </outline>
       </outline>
     </outline>
