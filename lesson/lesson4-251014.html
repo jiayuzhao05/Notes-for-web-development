@@ -17,7 +17,9 @@
       };
 
       Object.freeze(objectDemo);
-      // 顶层被冻结，但 a 仍可改
+      // 顶层被冻结，但 a 仍可改。
+
+      // 和是否为严格模式无关。 在非严格模式下，如果你尝试修改一个已冻结属性的值，操作会静默失败不会报错。在严格模式下，如果你尝试修改一个已冻结属性的值，JavaScript 会抛出 TypeError 错误。
       objectDemo.a.prop1 = "Hi"; // 生效（非严格冻结内层）
 
       // 深冻结：递归冻结所有层级
@@ -131,6 +133,7 @@ const q = 'pro'
 const matched = list.filter(item => item.name.toLowerCase().includes(q.toLowerCase()))
 
 // 返回新对象（对象需要括号）
+// 这是一种变体：等价于：u => { return { id: u.id, name: u.name } }
 const lightUsers = users.map(u => ({ id: u.id, name: u.name })) 为什么{}外面还有括号?
 
 */
