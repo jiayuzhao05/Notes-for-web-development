@@ -14,14 +14,18 @@
     }
     .small-list {
       display: flex;
+      flex-direction: column;
       list-style: none;
       gap: 10px;
+      position: relative;
     }
 
     .small-list li {
       border: 2px solid transparent;
       cursor: pointer;
       transition: border-color 0.3s;
+      position: relative;
+      overflow: hidden;
     }
 
     .small-list li.active {
@@ -32,6 +36,18 @@
       width: 80px;
       height: 80px;
       object-fit: cover;
+    }
+
+    .small-mask {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(0, 0, 0, 0.5);
+      cursor: move;
+      pointer-events: none;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+      display: none;
     }
 
     .medium-box {
@@ -89,15 +105,19 @@
       <ul class="small-list">
         <li>
           <img src="https://picsum.photos/200/300" alt="" />
+          <div class="small-mask"></div>
         </li>
         <li>
           <img src="https://picsum.photos/200/300" alt="" />
+          <div class="small-mask"></div>
         </li>
         <li>
           <img src="https://picsum.photos/200/300" alt="" />
+          <div class="small-mask"></div>
         </li>
         <li>
           <img src="https://picsum.photos/200/300" alt="" />
+          <div class="small-mask"></div>
         </li>
       </ul>
       <!-- 中等图片显示区域 -->
@@ -118,114 +138,151 @@
 
     <script>
       // 获取元素
-      const smallList = document.querySelector(".small-list");
-      const mediumImg = document.querySelector(".medium-img");
-      const mediumBox = document.querySelector(".medium-box");
-      const largeBox = document.querySelector(".large-box");
+      const smallList = document.querySelector(".small-list")
+      const mediumImg = document.querySelector(".medium-img")
+      const mediumBox = document.querySelector(".medium-box")
+      const largeBox = document.querySelector(".large-box")
+      const mask = document.querySelector(".mask")
+
       // 1.鼠标经过小盒子，左侧中等盒子显示对应中等图片
       smallList.addEventListener("mouseover", (e) => {
-        // 鼠标经过小盒子，左侧中等盒子显示对应中等图片
         if (e.target.tagName === "IMG") {
-          const img = e.target;
-          const li = img.parentNode; // 获取小图片父元素li盒子
-          //鼠标经过li,添加类,其他li移除类(先移除,后添加)
+          const img = e.target
+          const li = img.parentNode
+          
+          // 移除所有active类
           document.querySelectorAll(".small-list li").forEach((item) => {
-            item.classList.remove("active");
-          });
-          li.classList.add("active");
-          const imgSrc = img.src; //鼠标经过小图片,拿到小图片src
-          largeBox.style.backgroundImage = `url(${img.src})`; //大盒子背景图片换成小图片src
-          //更新激活状态
-          document.querySelector(".small-list li")?.forEach((item) => {
-            item.classList.remove("active");
-          });
-          li.classList.add("active");
-          mediumImg.src = imgSrc; //更新中等盒子图片
-          showLargeBox();
+            item.classList.remove("active")
+          })
+          li.classList.add("active")
+          
+          const imgSrc = img.src
+          mediumImg.src = imgSrc
+          largeBox.style.backgroundImage = `url(${imgSrc})`
         }
-      });
+      })
 
-      let hideTimer = null;
+      let hideTimer = null
 
       function showLargeBox() {
-        clearTimeout(hideTimer);
-        largeBox.style.display = "block";
+        clearTimeout(hideTimer)
+        largeBox.style.display = "block"
+        mask.style.display = "block"
       }
-      //// 隐藏大盒子（带延时）
+
       function hideLargeBox() {
         hideTimer = setTimeout(() => {
-          largeBox.style.display = "none";
-        }, 200);
+          largeBox.style.display = "none"
+          mask.style.display = "none"
+        }, 200)
       }
 
-      // 2.鼠标经过中等盒子，显示大盒子
-      mediumBox.addEventListener("mouseover", showLargeBox);
-      mediumBox.addEventListener("mouseout", hideLargeBox);
+      // 2.鼠标经过中等盒子，显示大盒子和遮罩
+      mediumBox.addEventListener("mouseover", showLargeBox)
+      mediumBox.addEventListener("mouseout", hideLargeBox)
 
       // 鼠标移动事件
-      largeBox.addEventListener("mousemove", showLargeBox);
-      largeBox.addEventListener("mouseleave", hideLargeBox);
+      largeBox.addEventListener("mousemove", showLargeBox)
+      largeBox.addEventListener("mouseleave", hideLargeBox)
 
-      //3.黑色遮罩盒子跟着鼠标移动
+      // 3.黑色遮罩盒子跟着鼠标移动
       mediumBox.addEventListener("mousemove", (e) => {
-        const mouseX = e.pageX; //获取坐标
-        const mouseY = e.pageY;
+        const mouseX = e.pageX
+        const mouseY = e.pageY
 
-        const boxRect = mediumBox.getBoundingClientRect(); //获取中等盒子位置???
-        const boxX = boxRect.left + window.scrollX;
-        const boxY = boxRect.top + window.scrollY;
+        const boxRect = mediumBox.getBoundingClientRect()
+        const boxX = boxRect.left + window.scrollX
+        const boxY = boxRect.top + window.scrollY
 
-        let x = mouseX - boxX; //计算鼠标在中等盒子内坐标
-        let y = mouseY - boxY;
+        let x = mouseX - boxX
+        let y = mouseY - boxY
 
-        //限定遮罩盒子只能在middle内部移动,遮罩层尺寸200*200,减去遮罩层一半尺寸
-        const maskHalfWidth = 100;
-        const maskHalfHeight = 100;
+        // 限定遮罩盒子只能在middle内部移动
+        const maskHalfWidth = 100
+        const maskHalfHeight = 100
 
-        // 水平方向限制 0 <= x <= 400
-        if (x < 0) {
-          x = 0;
-        } else if (x > 400) {
-          x = 400;
+        // 水平方向限制
+        if (x < maskHalfWidth) {
+          x = maskHalfWidth
+        } else if (x > 400 - maskHalfWidth) {
+          x = 400 - maskHalfWidth
         }
 
-        // 垂直方向限制 0 <= y <= 400
-        if (y < 0) {
-          y = 0;
-        } else if (y > 400) {
-          y = 400;
+        // 垂直方向限制
+        if (y < maskHalfHeight) {
+          y = maskHalfHeight
+        } else if (y > 400 - maskHalfHeight) {
+          y = 400 - maskHalfHeight
         }
 
-        //计算遮罩盒子移动坐标
-        //水平方向移动距离
-        let maskX = 0;
-        if (x <= maskHalfWidth) {
-          maskX = 0;
-        } else if (x > maskHalfWidth && x <= 400 - maskHalfWidth) {
-          maskX = x - maskHalfWidth;
-        } else if (x >= 400 - maskHalfWidth) {
-          maskX = 400 - 200;
+        // 计算遮罩盒子移动坐标
+        const maskX = x - maskHalfWidth
+        const maskY = y - maskHalfHeight
+
+        // 更新遮罩盒子位置
+        mask.style.left = maskX + "px"
+        mask.style.top = maskY + "px"
+
+        // 同步更新大图片背景位置 (放大2倍)
+        const bgX = maskX * -2
+        const bgY = maskY * -2
+        largeBox.style.backgroundPosition = `${bgX}px ${bgY}px`
+      })
+
+      // 4.小图片放大镜效果
+      smallList.addEventListener("mousemove", (e) => {
+        if (e.target.tagName === "IMG") {
+          const img = e.target
+          const li = img.parentNode
+          const smallMask = li.querySelector(".small-mask")
+          
+          // 显示小图片遮罩
+          smallMask.style.display = "block"
+          
+          const mouseX = e.pageX
+          const mouseY = e.pageY
+          
+          const liRect = li.getBoundingClientRect()
+          const liX = liRect.left + window.scrollX
+          const liY = liRect.top + window.scrollY
+          
+          let x = mouseX - liX
+          let y = mouseY - liY
+          
+          // 限定遮罩盒子只能在li内部移动
+          const smallMaskHalfWidth = 20
+          const smallMaskHalfHeight = 20
+          
+          // 水平方向限制
+          if (x < smallMaskHalfWidth) {
+            x = smallMaskHalfWidth
+          } else if (x > 80 - smallMaskHalfWidth) {
+            x = 80 - smallMaskHalfWidth
+          }
+          
+          // 垂直方向限制
+          if (y < smallMaskHalfHeight) {
+            y = smallMaskHalfHeight
+          } else if (y > 80 - smallMaskHalfHeight) {
+            y = 80 - smallMaskHalfHeight
+          }
+          
+          // 计算遮罩盒子移动坐标
+          const maskX = x - smallMaskHalfWidth
+          const maskY = y - smallMaskHalfHeight
+          
+          // 更新遮罩盒子位置
+          smallMask.style.left = maskX + "px"
+          smallMask.style.top = maskY + "px"
         }
-
-        //垂直方向移动距离
-        let maskY = 0;
-        if (y <= maskHalfHeight) {
-          maskY = 0;
-        } else if (y > maskHalfHeight && y <= 400 - maskHalfHeight) {
-          maskY = y - maskHalfHeight;
-        } else if (y >= 400 - maskHalfHeight) {
-          maskY = 400 - 200;
-        }
-
-        //更新遮罩盒子位置
-        mask.style.left = maskX + "px";
-        mask.style.top = maskY + "px";
-
-        //同步更新大图片背景位置 计算大图片应该显示的位置(放大2倍)
-        const bgX = maskX * -2;
-        const bgY = maskY * -2;
-        largeBox.style.backgroundPosition = `${bgX}px ${bgY}px`;
-      }); //效果渲染不对???
+      })
+      
+      // 小图片鼠标离开时隐藏遮罩
+      smallList.addEventListener("mouseleave", (e) => {
+        document.querySelectorAll(".small-mask").forEach(mask => {
+          mask.style.display = "none"
+        })
+      })
     </script>
   </body>
 </html>
