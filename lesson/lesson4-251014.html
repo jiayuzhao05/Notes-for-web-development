@@ -19,26 +19,26 @@
       Object.freeze(objectDemo);
       // 顶层被冻结，但 a 仍可改。
 
-      // 和是否为严格模式无关。 在非严格模式下，如果你尝试修改一个已冻结属性的值，操作会静默失败不会报错。在严格模式下，如果你尝试修改一个已冻结属性的值，JavaScript 会抛出 TypeError 错误。
+      // 和是否为严格模式无关。 在非严格模式下，如果你尝试修改一个已冻结属性的值，操作会静默失败不会报错。在严格模式下，如果你尝试修改一个已冻结属性的值，JS 会抛出 TypeError 错误。
       objectDemo.a.prop1 = "Hi"; // 生效（非严格冻结内层）
 
       // 深冻结：递归冻结所有层级
       function deepFreeze(obj) {
-        Object.freeze(obj);
-        Object.getOwnPropertyNames(obj).forEach((key) => {
-          const value = obj[key];
+        Object.freeze(obj) //冻结对象顶层属性，阻止对象直接属性被修改
+        Object.getOwnPropertyNames(obj).forEach((key) => { //获取对象所有属性名（不包含继承属性）。foreach 代表遍历每个属性？？？
+          const value = obj[key] //获取当前属性
           if (
-            value &&
-            (typeof value === "object" || typeof value === "function") &&
-            !Object.isFrozen(value)
+            value && //检查 value 不是 null/undefined
+            (typeof value === "object" || typeof value === "function") && 
+            !Object.isFrozen(value) //value 没被冻结
           ) {
-            deepFreeze(value);
+            deepFreeze(value) //recursion
           }
         });
-        return obj;
+        return obj
       }
 
-      deepFreeze(objectDemo);
+      deepFreeze(objectDemo)
       // 内外都不能改
       // objectDemo.a.prop1 = 'Hi' // 严格模式下 TypeError
 
@@ -54,9 +54,12 @@
       //2.filter demo
       // const newArray = array.filter(callback(element, index, array))
       // 不修改原数组,返回新数组,回调函数返回true的元素保留
-      // 注意字符串和数字之间的转换问题
-      const NewArray = array.filter(callback(element, index, array))
-      arr = goodsList.filter(item => Number(item.price) >= 300)
+      // 注意字符串和数字之间转换问题
+      const NewArray = array.filter(callback(element, index, array)) //callback过滤
+      //element:处理的数组；array：原数组
+      arr = goodsList.filter(item => Number(item.price) >= 300) 
+      //item.price有时可能是字符串
+      // method2: arr = goodsList.filter(function(item) {return Number(item.price) >= 300})
 
 /*
       const fruits = ['apple', 'banana', 'cherry', 'date']
