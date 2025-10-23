@@ -55,8 +55,12 @@
       // const newArray = array.filter(callback(element, index, array))
       // 不修改原数组,返回新数组,回调函数返回true的元素保留
       // 注意字符串和数字之间转换问题
-      const NewArray = array.filter(callback(element, index, array)) //callback过滤
-      //element:处理的数组；array：原数组
+      const NewArray = array.filter(callback(element, index, array)) //callback过滤(回调函数) hof高阶函数
+      // Array.prototype.filter()内含 callback（）；filter 创建新数组，不改变原数组；callback 是判断，类似 ifelse；如果没有返回空数组： []
+      //哪些方法改变原数组？不改变原数组？
+      // filter 遍历 array，把参数给 callback
+      //element:处理的数组中元素；array：原数组
+      // 回调函数是会返回 boolean
       arr = goodsList.filter(item => Number(item.price) >= 300) 
       //item.price有时可能是字符串
       // method2: arr = goodsList.filter(function(item) {return Number(item.price) >= 300})

@@ -2,18 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=100%, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
     <script>
-        u => ({id: u.id, name: u.name})
+        /*u => ({id: u.id, name: u.name})
         // u => {return {id: u.id, name: u.name}}
 
         const a = () => {}
         u => {set} //无参数
 
-        (param1, param2) => { return statement}//有参数
+        (param1, param2) => { return statement}//有参数*/
+
+        const number = [5,8,12,44,130,6]
+        const callbackFn = (element,index,number) => {
+            return element > 10
+        }
+        const newArray = number.filter(callbackFn)
+        
+        console.log(newArray)
+
+
+
+        //developer tools
     </script>
     
 </body>
