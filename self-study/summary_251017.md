@@ -2,25 +2,62 @@
 document.querySelector('.list').innerHTML = str
 ```
 
-
+问题：
 
 innerHTML的用法？
 
+```js
+<div id="box"><p>old</p></div>
+<script>
+  const box = document.getElementById('box');
+
+  // 读取
+  console.log(box.innerHTML);   // "<p>old</p>"元素内部的 HTML 字符串（包含子元素）
+
+  // 写入用传入字符串直接替换元素内部所有内容，并把它解析为DOM
+  box.innerHTML = '<strong>new</strong>'; // DOM 里变为 <strong>new</strong>
+</script>
+```
+
+存在安全问题，会把字符串当作 HTML 解析。如果字符串包含用户输入且未经净化，容易造成 XSS（跨站脚本攻击）。
+
+| **属性**    | **作用**                               | **性能** | **样式影响** | **安全性** |
+| ----------- | -------------------------------------- | -------- | ------------ | ---------- |
+| innerHTML   | 读/写 HTML（会解析为 DOM）             | 较慢     | 无           | **易 XSS** |
+| textContent | 读/写纯文本（不解析 HTML）             | 快       | 无           | 安全       |
+| innerText   | 读/写“渲染后的可见文本”（受 CSS 影响） | 慢       | 有           | 安全       |
+
 nodelist 类数组对象和数组的区别？？？节点集合，会动态变化，如果文档节点树变化
 
-箭头函数用法???仅仅是写法不同? vs 普通函数
+nodelist 是 DOM 查询返回的类数组对象，不是数组，不能用数组方法（.map()、.filter()、.reduce()），遍历方式包括for...of、forEach()；更新方式有静有动；不继承 array 原型？？？
 
+```js
+const list1 = document.querySelectorAll('p') // 静态 NodeList：固定快照，后续新增或删除节点不会反映
+const list2 = document.getElementsByTagName('p') // 实时（动态）NodeList：自动反映文档结构变化
+const list3 = document.getElementsByClassName('p')
 ```
+
+```js
+//类数组可以变成真数组
+const nodes = document.querySelectorAll('p')
+// 方法1：
+const arr1 = Array.from(nodes)
+// 方法2：
+const arr2 = [...nodes]
+// 方法3（旧方法）：
+const arr3 = Array.prototype.slice.call(nodes)
+```
+
+箭头函数用法?? vs 普通函数
+
+```js
 const a = () => {
-    
 }
 ```
 
 
 
-
-
-
+学习内容：
 
 ![image-20251017174542422](/Users/jiayuzhao/Library/Application Support/typora-user-images/image-20251017174542422.png)
 
@@ -227,12 +264,12 @@ PATH
 
 SAMESITE
 
-允许服务器指定是否/何时通过跨站点请求发送（其中[站点](https://developer.mozilla.org/zh-CN/docs/Glossary/Site)由注册的域和*方案*定义：http 或 https）。这提供了一些针对跨站点请求伪造攻击（[CSRF](https://developer.mozilla.org/zh-CN/docs/Glossary/CSRF)）的保护。它采用三个可能的值：`Strict`、`Lax` 和 `None`。
+允许服务器指定是否/何时通过跨站点请求发送（[站点](https://developer.mozilla.org/zh-CN/docs/Glossary/Site)由注册的域和*方案*定义：http 或 https）。提供了一些针对跨站点请求伪造攻击（[CSRF](https://developer.mozilla.org/zh-CN/docs/Glossary/CSRF)）保护。它采用三个可能值：`Strict`、`Lax` 和 `None`。
 
-| Strict | cookie 仅发送到它来源的站点                                  |
+| Strict | cookie 仅发送到它来源站点                                    |
 | ------ | ------------------------------------------------------------ |
 | Lax    | 与 Strict 相似，只是在用户*导航*到 cookie 的源站点时发送 cookie。例如，通过跟踪来自外部站点的链接 |
-| None   | 指定浏览器会在同站请求和跨站请求下继续发送 cookie，但*仅在安全的上下文中*（即，如果 `SameSite=None`，且还必须设置 `Secure` 属性）。如果没有设置 `SameSite` 属性，则将 cookie 视为 `Lax` |
+| None   | 指定浏览器会在同站请求和跨站请求下继续发送 cookie，但*仅在安全的上下文中*（如果 `SameSite=None`，且必须设置 `Secure` 属性）。如果没有设置 `SameSite` 属性，则将 cookie 视为 `Lax` |
 
 ```
 Set-Cookie: mykey=myvalue; SameSite=Strict
@@ -243,9 +280,9 @@ Set-Cookie: mykey=myvalue; SameSite=Strict
 js通过document.cookie访问cookie
 
 ```js
-document.cookie = "yummy_cookie=choco";
-document.cookie = "tasty_cookie=strawberry";
-console.log(document.cookie);
+document.cookie = "yummy_cookie=choco"
+document.cookie = "tasty_cookie=strawberry"
+console.log(document.cookie)
 // logs "yummy_cookie=choco; tasty_cookie=strawberry"
 ```
 
@@ -257,12 +294,12 @@ DOM事件
 
 | 事件类型              | 描述                                                         | 文档                                                         |
 | :-------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| 动画                  | 与 [Web Animation API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 相关的事件。用于响应动画状态的改变（动画的开始或结束）。 | 在 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document#动画事件)、[`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window#动画事件)、[`HTMLElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement#动画事件) 上触发的事件 |
+| 动画                  | 与 [Web Animation API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 相关的事件。用于响应动画状态的改变（动画的开始或结束） | 在 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document#动画事件)、[`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window#动画事件)、[`HTMLElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement#动画事件) 上触发的事件 |
 | 异步数据获取          | 数据获取                                                     | 在 [`AbortSignal`](https://developer.mozilla.org/zh-CN/docs/Web/API/AbortSignal#事件)、[`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest#事件)、[`FileReader`](https://developer.mozilla.org/zh-CN/docs/Web/API/FileReader#事件) 上触发的事件 |
 | 剪切板                | 与 [Clipboard API](https://developer.mozilla.org/zh-CN/docs/Web/API/Clipboard_API) 相关的事件。用于在内容被剪切、复制或粘贴时发出通知。 | 在 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document#剪切板事件)、[`Element`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element#剪切板事件)、[`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window#剪切板事件) 上触发的事件。 |
 | 合成（Composition）   | 与文本输入相关的事件；“间接”输入文本（而不是直接使用常规的键盘输入）。例如，使用语音转文字的引擎，或使用特殊的组合键以将键入的内容表示成另一种语言中的字符。 | 在 [`Element`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element#合成事件) 上触发的事件。 |
 | CSS 过渡              | 与 [CSS 过渡](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_transitions)相关的事件。当 CSS 过渡开始、停止或取消等事件发生时发出通知。 | 在 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document#过渡事件)、[`HTMLElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement#过渡事件)、[`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window#过渡事件) 上触发的事件。 |
-| 数据库                | 与数据库操作相关的事件：打开、关闭、事务、错误，等等。       | 在 [`IDBDatabase`](https://developer.mozilla.org/zh-CN/docs/Web/API/IDBDatabase#事件)、[`IDBOpenDBRequest`](https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest#事件)、[`IDBRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/IDBRequest#事件)、[`IDBTransaction`](https://developer.mozilla.org/zh-CN/docs/Web/API/IDBTransaction#事件) 上触发的事件。 |
+| 数据库                | 与数据库操作相关的事件：打开、关闭、事务、错误               | 在 [`IDBDatabase`](https://developer.mozilla.org/zh-CN/docs/Web/API/IDBDatabase#事件)、[`IDBOpenDBRequest`](https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest#事件)、[`IDBRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/IDBRequest#事件)、[`IDBTransaction`](https://developer.mozilla.org/zh-CN/docs/Web/API/IDBTransaction#事件) 上触发的事件。 |
 | DOM 突变              | 与文档对象模型（DOM）层次结构和节点的修改相关                | **警告：** [突变事件](https://developer.mozilla.org/en-US/docs/Web/API/MutationEvent)已被弃用。请使用 [MutationObserver](https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver) 代替。 |
 | 拖放、滚轮            | 与使用 [HTML 拖放 API](https://developer.mozilla.org/zh-CN/docs/Web/API/HTML_Drag_and_Drop_API) 和[滚轮事件](https://developer.mozilla.org/zh-CN/docs/Web/API/WheelEvent)相关的事件。拖动和滚轮事件派生自鼠标事件。虽然它们在使用鼠标滚轮和拖放时触发，但它们也可以和其他合适的硬件一起使用。 | 拖放事件在 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document#拖放事件) 上触发。滚轮事件在 [`Element`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/wheel_event) 上触发。 |
 | 焦点                  | 与元素获得和失去焦点相关                                     | 在 [`Element`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element#聚焦事件)、[`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window#聚焦事件) 上触发的事件。 |
@@ -272,7 +309,7 @@ DOM事件
 | 手势                  | 使用 [Touch 事件](https://developer.mozilla.org/zh-CN/docs/Web/API/Touch_events)来实现手势 | 在 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document#触摸事件)、[`Element`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element#触摸事件) 上触发的事件。此外还有一些非标准的手势事件：WebKit 非标准的、在 [`Element`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element#触摸事件) 上的事件： [`gesturestart` 事件](https://developer.mozilla.org/en-US/docs/Web/API/Element/gesturestart_event)、[`gesturechange` 事件](https://developer.mozilla.org/en-US/docs/Web/API/Element/gesturechange_event)、[`gestureend` 事件](https://developer.mozilla.org/en-US/docs/Web/API/Element/gestureend_event)。 |
 | History               | 与 [History API](https://developer.mozilla.org/zh-CN/docs/Web/API/History_API) 相关的事件。 | 在 [`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window#历史记录事件) 上触发的事件。 |
 | HTML 元素内容显示管理 | 与显示或文本元素状态的改变相关的事件。                       | 在 [`HTMLDetailsElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLDetailsElement#事件)、[`HTMLDialogElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLDialogElement#事件)、[`HTMLSlotElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLSlotElement#事件) 上触发的事件。 |
-| 输入                  | 与 HTML input 元素（如：[``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/input)、[``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/select) 或 [``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/textarea)）相关的事件。 | 在 [`HTMLElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement#输入事件)、[`HTMLInputElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLInputElement#事件) 上触发的事件。 |
+| 输入                  | 与 HTML input 元素（如：[``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/input)、[``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/select) 或 [``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/textarea)）相关的事件。 | 在 [`HTMLElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement#输入事件)、[`HTMLInputElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLInputElement#事件) 上触发的事件。 |                                                              |
 | 键盘                  | 与使用[键盘](https://developer.mozilla.org/zh-CN/docs/Web/API/KeyboardEvent)相关的事件。用于在按键向上、向下或仅仅只是按下时发出通知。 | 在 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document#键盘事件)、[`Element`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element#键盘事件) 上触发的事件。 |
 | 加载/卸载文档         | 在加载或卸载文档时触发的事件。                               | 在 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document#加载和卸载事件) 和 [`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window#加载和卸载事件) 上触发的事件。 |
 | 清单                  | 与安装[渐进式 web 应用清单](https://developer.mozilla.org/zh-CN/docs/Web/Progressive_web_apps/Manifest)相关 | 在 [`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window#清单事件) 上触发的事件 |
@@ -312,7 +349,7 @@ DOM事件
 
 数据类型判断
 
-```html
+```js
 // typeof
 typeof {} //"object"
 typeof Symbol()  //"symbol"
@@ -1082,7 +1119,7 @@ console.dir(data, {
 // Node 里 console.dir(obj, options) 更适合调试复杂/深层对象
 ```
 
-yield vs return
+**yield vs return**
 
 yield更像断点，遇到yield，暂停执行，下次从该位置继续向后执行具备位置记忆；一个func里可以执行多次yield；不能跨函数，需要和*配合
 
