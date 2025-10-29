@@ -1,6 +1,108 @@
-
-
-//JIT:Just In Time Compilation 即时编译
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //JIT:Just In Time Compilation 即时编译
 //性能提升可能需要考虑的比较少 因为JS本身内部有提前模拟高性能运算
 
 //JS中,func是一等公民,可以作为参数传递,与之相反的是OOP语言C++
+//symbol:唯一性,不可变性,不可枚举性 类似string的数据类型,解决命名冲突,symbol有很多内置方法
+//对象属性不能用for in遍历,可以用for of遍历,reflect.ownKeys()获取所有属性
+//symbol声明的属性是没办法通过Object.key() 拿到，所以可以实现私有属性?????
+let s = symbol('s') //数据类型声明,s为参数,调用该对象tostring()转换为字符串,生成symbol值,对symbol实例描述
+let s1 = symbol.for('s') 
+console.log(s === s1) //false symbol参数只对当前symbol值描述
+//symbol值不能和其他类型值运算,报错;显式-->string,boolean,不能转换为number
+//Object.getOwnPropertySymbol 方法可以获取指定对象的所有Symbol属性名
+
+let data = {
+    up:Symbol('up'),
+    down:Symbol('down')
+}
+//method1
+game[data.up] = function(){
+    console.log('up')
+}
+//method2
+let play = {
+    name="run",
+    [Symbol('say')]:function(){
+        console.log('say')
+    }
+}
+console.log(play)
+
+
+//iterator
+for (let i in data){} //i是key name
+for (let i of data){} //i是value 
+const arr = [1,2,3]
+console.log(arr) //arr有symbol.iterator属性?????
+
+//itertor工作原理
+let xiyou = ['唐僧','孙悟空','猪八戒','沙僧']
+let iterator = xiyou[Symbol.iterator]()
+console.log(iterator.next()) //{ value: '唐僧', done: false }
+console.log(iterator.next()) //{ value: '孙悟空', done: false }
+console.log(iterator.next()) //{ value: '猪八戒', done: false }
+console.log(iterator.next()) //{ value: '沙僧', done: false }
+console.log(iterator.next()) //{ value: undefined, done: true }
+//iterator.next()返回一个对象,value是当前值,done是是否结束
+
+// 自定义iterator
+const dataObj = {
+    name: 'zzl',
+    lis: ['wxl', '11', 'hll'],
+    // 为 dataObj 添加iterator
+    [Symbol.iterator]() {
+        // 保存外层 this（dataObj 对象）的引用
+        let _this = this
+        let index = 0
+        
+        // 返回迭代器对象
+        return {
+            next:function() {
+                // 在普通的 next 函数内部，this 不指向 dataObj
+                if(index < _this.lis.length) {
+                    const result = {
+                        value: _this.lis[index], // 使用 _this 访问外层对象的属性
+                        done: false
+                    }
+                    index++
+                    return result
+                } else {
+                    return {done: true}
+                }
+            }
+        }
+    }
+}
+
+var arr = ['blue','green','yellow','balck','orange']
+let it = iterator(arr)
+console.log(it.next())
+
+function iterator(arr){
+      let nextIndex = 0
+      return {
+        next: function() {
+          return nextIndex < arr.length ? { //条件 ? 值1 : 值2
+            value: arr[nextIndex ++] ,done: false //数据未完成
+          } : {
+            value : undefined,done : true //已完成
+          }
+        }
+      }
+    }
+
+    // 伪数组转换为真正数组方法???
+    //Array.prototype.slice.call(arguments)和Array.from(arguments)
+
+    </script>
+</body>
+</html>

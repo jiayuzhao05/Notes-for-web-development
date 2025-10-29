@@ -35,6 +35,20 @@
       //2.foreach
       // foreach 相当于遍历，inplace 操作是么 因为他不返回新数组，但是说回调内 async/await 不会逐个等待，异步要注意?
       //forEach 不关心这个 Promise，它会立即继续执行下一个元素的迭代，而不会等待当前元素的 Promise 解决。 你需要使用 for of 表达 串行， Promise.all 表达 并行
+        var numbers = [1,2,3,4,5]
+        numbers.forEach(function(item,index,array){
+        array[index] = item * 2
+        console.log(item,index,array)
+        })
+
+
+
+
+
+
+
+
+
 
       //3.箭头函数 es6新出定义方式 简洁 this特殊处理
       const a = () => {
