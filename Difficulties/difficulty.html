@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    //then() 是 Promise 对象的 then 方法，用于处理异步操作的结果,第一个处理响应，第二个处理数据。第一个 then 返回新的 promise，第二个处理解析后的 json data 。那是不是 then 可以无线套娃下去，then 相当于接下来做什么？
+    function drawPosters(url) { 
+        fetch(url).then((r) => r.json()).then((data) => { 
+          console.log(data)
+          const listOfMovies = data.results.filter(movie => (movie.vote_average >= 6.0))
+      
+          // Generate the HTML for the wall of posters
+          let htmlForMoviePosters = `<div class="row">`
+          for (movie of listOfMovies) { 
+            if (likes[movie.id] == null) { 
+              likes[movie.id] = 0
+            }
+            htmlForMoviePosters += drawPoster(movie) 
+          }
+          </script>
+
+        //理论上可以无限制的套娃下去。 这里面涉及到 回调地狱的陷阱
+        //无限制的.then
+        //fetch接口处理后端API
+
+
+
+        // 如果是事件参数,clickhandler = （e）=>{} 给形参就行?下面clickhandler实行时候也不用导入实参?但如果是自定义函数,就需要给实参? 下面的自定义函数里 const clickHandler = (name)=>{ 的name换成e会影响结果,因为jack是在name里?
+        function App(){
+            const clickHandler=(e)=>{console.log('button clicked',e)
+        return <button onClick={clickHandler}>click me</button>
+        //传递自定义函数,clickHandler传递实参????
+        function app(){
+        const clickHandler =(name)=>{console.log('button clicked'name)
+        return <button onclick={()=>clickHandler('jack')}>clickme</button>
+
+</body>
+</html>
