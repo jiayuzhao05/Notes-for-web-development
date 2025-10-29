@@ -7,13 +7,13 @@
   </head>
   <body>
     <script>
-      //var 函数作用域,也可以用变量生效全局作用域，全局作用域时成为windows属性
+      //var 函数作用域,也可以用变量生效全局作用域，全局作用域时成为windows属性,可以重复声明同一个变量
       /**var a = 1
         function helloWorldFunc(){
         }
         console.log (window.a)
 
-        let b = 2 //块级作用域 不会造成全局污染 即不会造成全局污染
+        let b = 2 //块级作用域 不会造成全局污染(比如在while,for loop中),不能重复声明同一个变量
         console.log(b) //2
         console.log(window.b) //undefined
 
@@ -31,7 +31,8 @@
         //暂时性死区TDZ:把b锁在死区里 任何访问行为报错referenceerror:cannot access 和之前a报错信息类型不同
         
         //3.赋值(只读)**/
-      const c = 1000; //constant variable 常量(一旦赋值，不能重新赋值，但是可以修改属性)
+        //const也是块级作用域,一定要赋初始值,否则报错
+      const c = 1000; //constant variable 常量(一旦赋值，不能重新赋值，准确来说内存地址不能变,但是可以修改属性),声明时必须赋值
       c = 1001; // TypeError: Assignment to constant variable
       let b = 100;
       b = 101;
