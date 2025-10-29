@@ -67,10 +67,11 @@
       FuncOuter({name:'fenney'},1) //1 第一个参数是对象自变量(key:value)
 
       //箭头函数 vs 普通函数: 箭头不是普通函数的语法糖
-      // this/arguments 不绑定,继承外层this 需要显式传参?
-      // 没有原型,没有 constructor,没有 prototype ?
+      // this/arguments不绑定,继承外层this 需要显式传参?
+      // 没有原型,没有 constructor,没有prototype属性?
       // 不能用做构造函数 不能new ?
       //不绑定自己的 this，arguments，super，new.target的函数表达式
+      //箭头函数参数可以用...获取剩余参数
 
       //this是静态,this指向函数声明时所在作用域下this值
       function getName(){
@@ -80,7 +81,15 @@
       getName() //undefined
 
       //call方法调用,同样类似apply/bind
-      getName.call(data) //data.name,this指向data
+      getName.call(data) //data.name,this指向data (不受call,apply指向)
+
+      //箭头函数适合和this无关的回调(定时器,数组方法回调)
+      //不适合和this有关的回调(DOM元素事件回调,对象方法)
+      btn.addEventListener('click',function() {
+        //this指向btn
+        //如果用箭头函数,事件源编程外部作用域this值,即此函数作用域
+        //箭头函数不会创建自己的this,也没有自己的作用域,只会从自己作用域链上一层继承this
+      }
       
     </script>
   </body>
