@@ -1,31 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <script>
-        
+      //回调函数 编程概念,将函数作为参数给另一个函数,作为参数的函数是回调函数,被入参的是高阶函数
+      /**const Bfunc = (Afunc) => { //领域内运行顺序由Bfunc决定
+        Afunc();
+        console.log("helloworld");
+      };
 
-        //回调函数
+      //1s后打印setTimeout()
+      setTimeout(() => {
+        console.log("settimeout") //第一个参数是异步回调(高阶组件,异步编程)
+      }, 1000) 
+      //回调地狱 es6前没有promise 
+      //注意区别无限循环
+      const oneFunc = (twoFunc) => {
+        //执行twoFunc
+      }
 
-        //回调地狱
-        //注意区别无限循环
+      const twoFunc = (threeFunc) => {
+        //执行threeFunc
+      }
 
-        //foreach
-        // foreach 相当于遍历，inplace 操作是么 因为他不返回新数组，但是说回调内 async/await 不会逐个等待，异步要注意?
-        //forEach 不关心这个 Promise，它会立即继续执行下一个元素的迭代，而不会等待当前元素的 Promise 解决。 你需要使用 for of 表达 串行， Promise.all 表达 并行
+      //.then()链式调用,.catch()捕获错误
 
-        //箭头函数
+      //async/await 本质是promise语法糖 内部本质还是promise
 
-        //箭头函数 vs 普通函数: 箭头不是普通函数的语法糖
-        // this/arguments 不绑定,继承外层this 需要显式传参?
-        // 没有原型,没有 constructor,没有 prototype ?
-        // 不能用做构造函数 不能new ?
-        //不绑定自己的 this，arguments，super，new.target的函数表达式
 
+      //foreach
+      // foreach 相当于遍历，inplace 操作是么 因为他不返回新数组，但是说回调内 async/await 不会逐个等待，异步要注意?
+      //forEach 不关心这个 Promise，它会立即继续执行下一个元素的迭代，而不会等待当前元素的 Promise 解决。 你需要使用 for of 表达 串行， Promise.all 表达 并行
+
+      //箭头函数 es6新出定义方式 简洁 this特殊处理
+      const a = () => {
+        console.log(a)
+      }
+
+      const b = ele => {console.log(b)}
+
+      const sumFunc = function (a,b) {
+        const res = a+b
+        return res
+      } 
+
+      const result = sumFunc(1,2) //3
+      **/
+
+      /*const sumFunc1 = (a, b) => a + b; //隐式返回 不需要return
+      console.log(sumFunc1(1, 2));
+
+      const sumFunc2 = (now, birth) => ({ name: "fenney", age: now - birth }); //a,b形参
+      console.log(sumFunc2(2025, 2000));*/
+
+      //1.arguments不同:箭头没arguments
+      function FuncOuter() {
+        //const arrow = () => arguments[0];
+        // return arrow('x');
+        console.log (arguments)
+      };
+
+      FuncOuter({name:'fenney'},1) //1
+
+      //箭头函数 vs 普通函数: 箭头不是普通函数的语法糖
+      // this/arguments 不绑定,继承外层this 需要显式传参?
+      // 没有原型,没有 constructor,没有 prototype ?
+      // 不能用做构造函数 不能new ?
+      //不绑定自己的 this，arguments，super，new.target的函数表达式
     </script>
-</body>
+  </body>
 </html>
