@@ -38,10 +38,20 @@
         var numbers = [1,2,3,4,5]
         numbers.forEach(function(item,index,array){
         array[index] = item * 2
-        console.log(item,index,array)
+        console.log(item,index,array) //或array[index]
         })
 
-
+//如果要停止foreach(),需要放入try()并抛出异常
+function foreach(a,f,t){
+    try{
+        a.forEach(f, t);
+    }
+    catch(e){
+        if(e === foreach.break) return;
+        else throw e;
+    }
+}
+foreach.break = new Error("StopIteration")
 
 
 
