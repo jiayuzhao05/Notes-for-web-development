@@ -18,16 +18,16 @@
         // 对于数组使用复数命名 numbers
         const numbers = [5,8,12,44,130,6]
         // 形参命名使用简化： index ele arr
-        const callbackFn = (index,ele,number) => {
-            console.log(ele,index,number)
-            return ele > 10 //如果是找索引为偶数的,条件换成index % 2 === 0
+        const callbackFn = (index,ele,number) => { //都是形参
+            console.log(index,ele,number)
+            return ele > 10 //如果是找索引为偶数,条件换成index % 2 === 0
         }
         const newArr = number.filter(callbackFn) //形参 只和位置有关
         // const newArr = number.filter((qwe,ele,qwekk) => qwe > 10)
         console.log(newArr)
 
         //课后作业:在数组里索引为偶数的函数 利用 filter
-/*const evenIndexArr2 = number.filter((element, index) => { //element可以忽略
+/*const evenIndexArr2 = number.filter((ele, index) => { //element可以忽略,写成_
     return index % 2 === 0
 })
 console.log(evenIndexArr2)
