@@ -7,7 +7,7 @@
   </head>
   <body>
     <script>
-      //回调函数 编程概念,将函数作为参数给另一个函数,作为参数的函数是回调函数,被入参的是高阶函数
+      //1.回调函数 编程概念,将函数作为参数给另一个函数,作为参数的函数是回调函数,被入参的是高阶函数
       /**const Bfunc = (Afunc) => { //领域内运行顺序由Bfunc决定
         Afunc();
         console.log("helloworld");
@@ -32,11 +32,11 @@
       //async/await 本质是promise语法糖 内部本质还是promise
 
 
-      //foreach
+      //2.foreach
       // foreach 相当于遍历，inplace 操作是么 因为他不返回新数组，但是说回调内 async/await 不会逐个等待，异步要注意?
       //forEach 不关心这个 Promise，它会立即继续执行下一个元素的迭代，而不会等待当前元素的 Promise 解决。 你需要使用 for of 表达 串行， Promise.all 表达 并行
 
-      //箭头函数 es6新出定义方式 简洁 this特殊处理
+      //3.箭头函数 es6新出定义方式 简洁 this特殊处理
       const a = () => {
         console.log(a)
       }
@@ -71,6 +71,17 @@
       // 没有原型,没有 constructor,没有 prototype ?
       // 不能用做构造函数 不能new ?
       //不绑定自己的 this，arguments，super，new.target的函数表达式
+
+      //this是静态,this指向函数声明时所在作用域下this值
+      function getName(){
+        console.log(this.name)
+      }
+
+      getName() //undefined
+
+      //call方法调用,同样类似apply/bind
+      getName.call(data) //data.name,this指向data
+      
     </script>
   </body>
 </html>

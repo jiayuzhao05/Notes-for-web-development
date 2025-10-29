@@ -31,7 +31,7 @@
         //暂时性死区TDZ:把b锁在死区里 任何访问行为报错referenceerror:cannot access 和之前a报错信息类型不同
         
         //3.赋值(只读)**/
-        //const也是块级作用域,一定要赋初始值,否则报错
+      //const也是块级作用域,一定要赋初始值,否则报错
       const c = 1000; //constant variable 常量(一旦赋值，不能重新赋值，准确来说内存地址不能变,但是可以修改属性),声明时必须赋值
       c = 1001; // TypeError: Assignment to constant variable
       let b = 100;
@@ -45,7 +45,7 @@
       obj = {}; // TypeError: Assignment to constant variable
 
       const API_URL = "https://api.example.com/data"; //常量
-      let userData = null; //优先使用顺序：const > let > var ???
+      let userData = null;
     </script>
   </body>
 </html>
