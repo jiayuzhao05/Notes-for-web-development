@@ -943,4 +943,6 @@ console.log(preciseCalculation(0.1, 0.2)); // 0.02
 ```
 
 
+用hooks一部分是因为生命周期用不了异步模式,以及生命周期是按照时间顺序分布，this 在类组件里要绑定，以及不是按照功能jieou。但我感觉 hooks 也就是变成了箭头，也还是要绑定 this 吧?hooks 用不到 this?
 
+为了简洁 以及函数式写法

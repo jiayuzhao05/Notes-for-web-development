@@ -28,7 +28,6 @@
         //fetch接口处理后端API
 
 
-
         // 如果是事件参数,clickhandler = （e）=>{} 给形参就行?下面clickhandler实行时候也不用导入实参?但如果是自定义函数,就需要给实参? 下面的自定义函数里 const clickHandler = (name)=>{ 的name换成e会影响结果,因为jack是在name里?
         function App(){
             const clickHandler=(e)=>{console.log('button clicked',e)
@@ -37,6 +36,7 @@
         function app(){
         const clickHandler =(name)=>{console.log('button clicked'name)
         return <button onclick={()=>clickHandler('jack')}>clickme</button>
+
 
 </body>
 </html>
