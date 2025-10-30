@@ -1,108 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <script>
-        //JIT:Just In Time Compilation 即时编译
-//性能提升可能需要考虑的比较少 因为JS本身内部有提前模拟高性能运算
+                                    //JIT:Just In Time Compilation 即时编译
+                            //性能提升可能需要考虑的比较少 因为JS本身内部有提前模拟高性能运算
 
-//JS中,func是一等公民,可以作为参数传递,与之相反的是OOP语言C++
-//symbol:唯一性,不可变性,不可枚举性 类似string的数据类型,解决命名冲突,symbol有很多内置方法
-//对象属性不能用for in遍历,可以用for of遍历,reflect.ownKeys()获取所有属性
-//symbol声明的属性是没办法通过Object.key() 拿到，所以可以实现私有属性?????
-let s = symbol('s') //数据类型声明,s为参数,调用该对象tostring()转换为字符串,生成symbol值,对symbol实例描述
-let s1 = symbol.for('s') 
-console.log(s === s1) //false symbol参数只对当前symbol值描述
-//symbol值不能和其他类型值运算,报错;显式-->string,boolean,不能转换为number
-//Object.getOwnPropertySymbol 方法可以获取指定对象的所有Symbol属性名
+                            //JS中,func是一等公民,可以作为参数传递,与之相反的是OOP语言C++
+                            //symbol:唯一性,不可变性,不可枚举性 类似string的数据类型,解决命名冲突,symbol有很多内置方法
+                            //对象属性不能用for in遍历,可以用for of遍历,reflect.ownKeys()获取所有属性
+                            //symbol声明的属性是没办法通过Object.key() 拿到，所以可以实现私有属性?????
+                            let s = symbol('s') //数据类型声明,s为参数,调用该对象tostring()转换为字符串,生成symbol值,对symbol实例描述
+                            let s1 = symbol.for('s')
+                            console.log(s === s1) //false symbol参数只对当前symbol值描述
+                            //symbol值不能和其他类型值运算,报错;显式-->string,boolean,不能转换为number
+                            //Object.getOwnPropertySymbol 方法可以获取指定对象的所有Symbol属性名
 
-let data = {
-    up:Symbol('up'),
-    down:Symbol('down')
-}
-//method1
-game[data.up] = function(){
-    console.log('up')
-}
-//method2
-let play = {
-    name="run",
-    [Symbol('say')]:function(){
-        console.log('say')
-    }
-}
-console.log(play)
+                            let data = {
+                                up:Symbol('up'),
+                                down:Symbol('down')
+                            }
+                            //method1
+                            game[data.up] = function(){
+                                console.log('up')
+                            }
+                            //method2
+                            let play = {
+                                name="run",
+                                [Symbol('say')]:function(){
+                                    console.log('say')
+                                }
+                            }
+                            console.log(play)
 
 
-//iterator
-for (let i in data){} //i是key name
-for (let i of data){} //i是value 
-const arr = [1,2,3]
-console.log(arr) //arr有symbol.iterator属性?????
+                            //iterator
+                            for (let i in data){} //i是key name
+                            for (let i of data){} //i是value
+                            const arr = [1,2,3]
+                            console.log(arr) //arr有symbol.iterator属性?????
 
-//itertor工作原理
-let xiyou = ['唐僧','孙悟空','猪八戒','沙僧']
-let iterator = xiyou[Symbol.iterator]()
-console.log(iterator.next()) //{ value: '唐僧', done: false }
-console.log(iterator.next()) //{ value: '孙悟空', done: false }
-console.log(iterator.next()) //{ value: '猪八戒', done: false }
-console.log(iterator.next()) //{ value: '沙僧', done: false }
-console.log(iterator.next()) //{ value: undefined, done: true }
-//iterator.next()返回一个对象,value是当前值,done是是否结束
+                            //itertor工作原理
+                            let xiyou = ['唐僧','孙悟空','猪八戒','沙僧']
+                            let iterator = xiyou[Symbol.iterator]()
+                            console.log(iterator.next()) //{ value: '唐僧', done: false }
+                            console.log(iterator.next()) //{ value: '孙悟空', done: false }
+                            console.log(iterator.next()) //{ value: '猪八戒', done: false }
+                            console.log(iterator.next()) //{ value: '沙僧', done: false }
+                            console.log(iterator.next()) //{ value: undefined, done: true }
+                            //iterator.next()返回一个对象,value是当前值,done是是否结束
 
-// 自定义iterator
-const dataObj = {
-    name: 'zzl',
-    lis: ['wxl', '11', 'hll'],
-    // 为 dataObj 添加iterator
-    [Symbol.iterator]() {
-        // 保存外层 this（dataObj 对象）的引用
-        let _this = this
-        let index = 0
-        
-        // 返回迭代器对象
-        return {
-            next:function() {
-                // 在普通的 next 函数内部，this 不指向 dataObj
-                if(index < _this.lis.length) {
-                    const result = {
-                        value: _this.lis[index], // 使用 _this 访问外层对象的属性
-                        done: false
+                            // 自定义iterator
+                            const dataObj = {
+                                name: 'zzl',
+                                lis: ['wxl', '11', 'hll'],
+                                // 为 dataObj 添加iterator
+                                [Symbol.iterator]() {
+                                    // 保存外层 this（dataObj 对象）的引用
+                                    let _this = this
+                                    let index = 0
+
+                                    // 返回迭代器对象
+                                    return {
+                                        next:function() {
+                                            // 在普通的 next 函数内部，this 不指向 dataObj
+                                            if(index < _this.lis.length) {
+                                                const result = {
+                                                    value: _this.lis[index], // 使用 _this 访问外层对象的属性
+                                                    done: false
+                                                }
+                                                index++
+                                                return result
+                                            } else {
+                                                return {done: true}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            var arr = ['blue','green','yellow','balck','orange']
+                            let it = iterator(arr)
+                            console.log(it.next())
+
+                            function iterator(arr){
+                                  let nextIndex = 0
+                                  return {
+                                    next: function() {
+                                      return nextIndex < arr.length ? { //条件 ? 值1 : 值2
+                                        value: arr[nextIndex ++] ,done: false //数据未完成
+                                      } : {
+                                        value : undefined,done : true //已完成
+                                      }
+                                    }
+                                  }
+                                }
+
+                                // 伪数组转换为真正数组方法???
+                                //Array.prototype.slice.call(arguments)和Array.from(arguments)
+                                               // 压缩稀疏数组
+                                               var sparse = [1,,,4];
+                                         var dense = sparse.filter(function(){
+                                         	return true; //过滤稀疏元素
+                                         });
+                                         console.log(dense)
+
+                                   // 压缩并删除 undefined 和 null 元素
+                                   var sparse = [1,null,3,undefined,,6];
+                                   var dense = sparse.filter(function(v){
+                                   	return v !== undefined && v != null;
+                                   });
+                                   console.log(dense)
+
+                                   //reduce(callback,initialValue),reduceRight() 累加器 归并函数 化简函数
+                                   //reduce()方法从数组的第一项开始，逐个遍历到最后；reduceRight 则从数组的最后一项开始，向前遍历到第一项
+                                   var max = values.reduce(function(prev,cur){
+                                      return prev > cur ? prev : cur; //返回最大值
+                                   },
+                                  console.log(max); // 4
+
+                                  //在空数组上，不带初始值参数的 reduce()将导致类型异常；如果数组只有一个元素并且没有指定初始值，或者一个空数组并且指定了一个初始值，该方法只是简单的返回那个值而不会调用回调函数????
+                                  var a = [];
+                                  // var b1 = a.reduce(function(x,y){return x + y}); // no initial value 会报错
+                                  // var b2 = a.reduce(function(x,y){return x + x}); 也会报错
+                                  var b3 = a.reduce(function(x,y){return x + y},3); //只返回初始值,initialValue为3
+                                  console.log(b3); // 3
+
+                                  //generator
+                              function * fun(arg){
+                                console.log(arg); //输出aaa
+                                let one = yield 111;
+                                console.log(one); //输出bbb
+                                let two = yield 222;
+                                console.log(two); //输出ccc
+                                let three = yield 333;
+                                console.log(three); //输出ddd
+                              }
+
+                              let a=fun('aaa');
+                              console.log(a.next());//第一次调用next
+                              //next方法可以传入实参
+                             //第二次调用next的实参将作为第一个yield的整体返回结果
+                             console.log(a.next('bbb')) // 输出{value: 222, done: false}
+                             console.log(a.next('ccc')) // 输出{value: 333, done: false}
+                             console.log(a.next('ddd')) // 输出{value: undefined, done: true}
+
+                             // 实例2 模拟获取用户数据，订单数据，商品数据
+                          function one(){
+                              setTimeout(()=>{
+                                  let data='用户数据';
+                                  a.next(data);//第二次调用next的实参将作为第一个yield的整体返回结果
+                              },1000)
+                          }
+                          function two(){
+                              setTimeout(()=>{
+                                  let data='订单数据';
+                                  a.next(data);
+                              },1000)
+                          }
+                          function three(){
+                              setTimeout(()=>{
+                                  let data='商品数据';
+                                  a.next(data);
+                              },1000)
+                          }
+                          function *fun(){
+                              let users= yield one();
+                              console.log(users); //用户数据 作为第一个yield的整体返回结果
+                              let orders= yield two();
+                              console.log(orders); // 订单数据
+                              let goods= yield three();
+                              console.log(goods); // 商品数据
+                          }
+                          //调用生成器函数
+                          let a=fun();
+                          a.next();
+
+                          function fun(){
+                        return new Promise((resolve,reject)=>{
+                            //如果成功就调用resolve
+                            let data='数据库中的数据';
+                            resolve(data);
+                            //promise状态变为成功
+
+                            //如果失败就调用reject
+                            let err='数据库读取失败';
+                            reject(err);//promise状态变为失败
+                        })
                     }
-                    index++
-                    return result
-                } else {
-                    return {done: true}
-                }
-            }
-        }
-    }
-}
 
-var arr = ['blue','green','yellow','balck','orange']
-let it = iterator(arr)
-console.log(it.next())
+                    var promise = fun()
+                    promise.then(
+                        //调用then
+                        function(success){
+                            // promise状态变为成功后then会调用第一个回调函数
+                            console.log(success);
+                        },function(err){
+                            // promise状态变为失败后then会调用第二个回调函数
+                            console.log(err);
+                        }
+                    )
 
-function iterator(arr){
-      let nextIndex = 0
-      return {
-        next: function() {
-          return nextIndex < arr.length ? { //条件 ? 值1 : 值2
-            value: arr[nextIndex ++] ,done: false //数据未完成
-          } : {
-            value : undefined,done : true //已完成
-          }
-        }
-      }
-    }
 
-    // 伪数组转换为真正数组方法???
-    //Array.prototype.slice.call(arguments)和Array.from(arguments)
+                    //promise封装读取文件
+                    cosnt fs = require('fs')
 
+                    fs.readFile('./aini.txt',(err,data) => {
+                        // 如果失败，则抛出异常
+                        if(err) throw err;
+                        // 如果没哟出错，则输出内容
+                        console.log(data.toString())
+                    })
+
+                    // 使用Promise封装
+                    cosnt p = new Promise(function(resolve,reject){
+                        fs.readFile('./aini.txt',(err,data) => {
+                            // 如果失败，则抛出异常
+                            if(err) reject(err)
+                            // 如果没出错，则输出内容
+                            resolve(data)
+                    	})
+                    })
+
+                    p.then(function(value){
+                        console.log(value.toString())
+
+                    },function(resson){
+                        console.log('读取失败！！！')
+
+                    })
+
+                    //promise封装Ajax请求
+                    const p = new Promise(function(resolve,reject){
+
+                  cosnt xhr = new XMLHttpRequest()
+
+                  xhr.open('GET','https://api.apiopen.top/getJoke')
+
+                  xhr.send()
+
+                  xhr.onreadystatechange = function(){
+                      if (xhr.randyState == 4){
+                          // 判断状态码
+                          if (xhr.status >= 200 && xhr.status <300){
+                              // 表示成功
+                              resolve(xhr.response)
+                          }else{
+                              reject(xhr.status)
+                          }
+                      }
+                  }
+              })
+
+              p.then(function(value){
+                  console.log(value.toString())
+
+              },function(resson){
+                  console.log(reason)
+              })
+
+              //promise.property.then()
+              const p = new Promise((resolve,reject){
+           setTimeout(() => {
+            resolve('用户数据')
+        	},1000)
+        })
+              // then结果是promise对象,结果由回调函数结果决定
+              //如果回调返回非promise数据,成功,返回值为对象成功值;如果不写return,默认返回undefined,成功的promise
+              const p1 = p.then(value => {
+               console.log(value)
+               return '11232'  // 成功的Promise
+            }.err => {
+               console.warn(reason)
+            })
+
+            //如果返回promise对象,这个promise对象结果决定then()返回结果
+            const p1 = p.then(value => {
+         console.log(value)
+         return new Promise(funtion(resolve,reject){
+              resolve('ok')  // 成功，则then方法返回结果是成功
+              reject('失败了')  // 失败，则then方法返回的结果是失败的
+          )
+      }.err => {
+         console.warn(reason)
+      })
+
+      //set
+      const s = new Set()
+      let arr = [...s] // array.from(s) 转换成arr 
+      set.add(5)
+      set.add(“5”) //set判断机制是===, 5 '5' 是两个元素
+
+      let a = new Set([1,2,3,4,5])
+      let b = new Set([4,5,6,7,8])
+      let intersect = new Set([...a].filter(x => b.has(x)))
+      let subtract = new Set([..a].filter(x => !b.has(a)))
+
+
+      //map
+      const m = new Map()
+      m.set({x:1},22)
+      m.get({x:1})
+      m.has({x:1})
+      m.delete({x:1})
+      
+      //is map or not
+      map instanceof Map //true/false 通过圆形链查找
+      Object.prototype.toString.call(map) === '[object Map]'
     </script>
-</body>
+  </body>
 </html>
