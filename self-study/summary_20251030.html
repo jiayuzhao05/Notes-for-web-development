@@ -470,9 +470,94 @@
         $(this).css('color')
         $(this).css('color', 'red')
         $(this).css({ "color":"white","font-size":"20px"})
+        
+        //JQuery操作类
+        $('div').addClass('current')
+        $('div').removeClass('current')
+        $('div').toggleClass('current')
+
+        //JQuery操作元素
+        $('div').text()
+        $('div').html()
+        $('div').val()
+        $('div').attr()
+        $('div').prop()
+
+        //jQuery主要封装动画效果
+        $('div').show([speed,[easing],[fn]])//speed：三种预定速度之一的字符串(“slow”,“normal”, or “fast”)或表示动画时长的毫秒数值(如：1000)
+        $('div').hide([speed,[easing],[fn]])//easing：(Optional) 用来指定切换效果，默认是“swing”，可用参数“linear”
+        $('div').toggle([speed,[easing],[fn]]) //显示隐藏
+        $('div').fadeIn([speed,[easing],[fn]]) //淡入
+        $('div').fadeOut([speed,[easing],[fn]]) //淡出
+        $('div').fadeToggle([speed,[easing],[fn]]) //滑动
+        $('div').fadeTo([[speed],opacity,[easing],[fn]]) //淡入淡出
+        $('div').slideDown([speed,[easing],[fn]]) //下拉
+        $('div').slideUp([speed,[easing],[fn]]) //上拉
+        $('div').animate(params,[speed],[easing],[fn]) //自定义动画
+        hover([over],[out]) //鼠标经过和离开
+
+        //动画队列
+        stop() //停止当前动画
+        //prop(''属性'') 获取属性
+        //prop(''属性'', ''属性值'') 设置属性
+        //attr(''属性'') 类似getAttribute()
+        //attr(''属性'', ''属性值'') 类似setAttribute()
+        // 可以读取 HTML5 自定义属性 data-index ，得到的是数字型
+        //html() 获取或设置 innerHTML
+        //text() 获取或 setTextContent() 设置
+        //val() 获取或设置 value
+        //append() 向元素内部追加内容
+        //prepend() 向元素内部追加内容
+        //append() 向元素内部追加内容
+
+        $("div").each(function (index, domEle) {xxx})
+        $.each(object,function (index, element) {xxx})
+
+        element.append('str') //向元素内部追加内容
+        element.prepend('str') //向元素内部追加内容
+        element.after('str') //向元素外部追加内容
+        element.before('str') //向元素外部追加内容
+        element.remove() //删除元素
+        element.empty() //删除元素内部所有内容
+        element.clone() //复制元素
+        element.detach() //删除元素
+        element.hide() //隐藏元素
+        
+        //事件处理
+        element.事件(function(){})
+        $(“div”).click(function(){ 事件处理程序 })
+
+        element.on(events,[selector],fn) // on()在匹配元素上绑定一个或多个事件的事件处理函数
+
+        $('div').on({
+        mouseover: function(){},
+        mouseout: function(){},
+        click: function(){}
+        })
+
+        $('div').on(“mouseover mouseout”, function() {
+        $(this).toggleClass(“current”);
+        })
+
+        $('ul').on('click', 'li', function() {
+        alert('hello world!');
+        })
+
+        $("ul").off("click", "li") // 解绑事件委托
+        //有些事件希望自动触发, 比如轮播图自动播放功能跟点击右侧按钮一致。可以利用定时器自动触发右侧按钮点击事件，不必鼠标点击触发
+        element.trigger("type") //element.click() //element.triggerHandler(type) 不会触发元素默认行为和前二者不同 
+
+        $("p").on("click", function () {
+        alert("hi~");
+        });
+
+        $("p").trigger("click") // 自动触发点击事件,不需要鼠标点击
+
+        $.extend([deep], target, object1, [objectN])//把某个对象拷贝（合并）给另外一个对象使用
+        //浅拷贝:被拷贝的对象复杂数据类型地址拷贝给目标对象,修改目标对象影响被拷贝对象
+        //深拷贝:前面加true,完全clone(拷贝对象,不是地址),修改目标对象不影响被拷贝对象
 
         
-
     </script>
   </body>
 </html>
