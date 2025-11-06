@@ -29,7 +29,7 @@ function lexicalFunc2() {
 lexicalFunc2(); //传入变量需要定义,不能重复定义
 
 //2.词法作用域(闭包)
-function outerFunc() {
+function outerFunc() { //持久引用闭包
   let b = 11;
   function innerFunc() { //内外函数,内部函数内层引用外部函数的作用域的变量,这种机制/现象是闭包closure;let b = 11在innerfunc调用结束才销毁;js有内存回收机制
     console.log(b);
@@ -39,6 +39,25 @@ function outerFunc() {
 
 const result = outerFunc();
 result()
-//持久引用闭包
+//持久引用闭包:内部函数被返回并保存，外部作用域的变量会一直保留在内存中
 
 //短暂引用闭包
+function processData(data) {
+    let processedCount = 0  // 外部变量
+    
+    function process() {
+      processedCount++
+      console.log(`handle with ${processedCount} data`);
+      return processedCount
+    }
+    
+    // 函数在内部被调用，但没有被返回
+    process()  
+    process()  
+    
+    // 函数调用完，如果没有其他引用，闭包可能被回收
+    // processedCount 在函数执行完后可能被垃圾回收
+  }
+  
+  processData([1, 2, 3])
+  // 调用结束后，processData 作用域结束，闭包可能被回收
