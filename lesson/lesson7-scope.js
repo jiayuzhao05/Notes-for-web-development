@@ -1,0 +1,44 @@
+//let a = "global"; //global scope
+
+//const { firstname, lastname } = person;
+
+/*if (true) {
+  let b = 10; //块级
+  var a = 101;
+  console.log(b);
+} */
+
+// function sumFunc() {
+//   let a = 10;//函数作用域更严格,所有定义方式都封死在里面,不外泄
+//   var b = 11;
+// }
+// console.log(b)
+
+//1.通过传参
+
+function lexicalFunc1(a) {
+  //定义函数
+  console.log(a);
+}
+
+function lexicalFunc2() {
+  let a = 10;
+  lexicalFunc1(a); //调用func1
+}
+
+lexicalFunc2(); //传入变量需要定义,不能重复定义
+
+//2.词法作用域(闭包)
+function outerFunc() {
+  let b = 11;
+  function innerFunc() { //内外函数,内部函数内层引用外部函数的作用域的变量,这种机制/现象是闭包closure;let b = 11在innerfunc调用结束才销毁;js有内存回收机制
+    console.log(b);
+  }
+  return innerFunc;
+}
+
+const result = outerFunc();
+result()
+//持久引用闭包
+
+//短暂引用闭包
