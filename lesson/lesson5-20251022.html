@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <script>
-        /*u => ({id: u.id, name: u.name})
+      /*u => ({id: u.id, name: u.name})
         // u => {return {id: u.id, name: u.name}}
 
         const a = () => {}
@@ -15,25 +15,26 @@
 
         (param1, param2) => {return statement}//有参数*/
 
-        // 对于数组使用复数命名 numbers
-        const numbers = [5,8,12,44,130,6]
-        // 形参命名使用简化： index ele arr
-        const callbackFn = (index,ele,number) => { //都是形参
-            console.log(index,ele,number)
-            return ele > 10 //如果是找索引为偶数,条件换成index % 2 === 0
-        }
-        const newArr = number.filter(callbackFn) //形参 只和位置有关
-        // const newArr = number.filter((qwe,ele,qwekk) => qwe > 10)
-        console.log(newArr)
+      // 对于数组使用复数命名 numbers
+      const numbers = [5, 8, 12, 44, 130, 6];
+      // 形参命名使用简化： index ele arr
+      const callbackFn = (index, ele, number) => {
+        //都是形参
+        console.log(index, ele, number);
+        return ele > 10; //如果是找索引为偶数,条件换成index % 2 === 0
+      };
+      const newArr = number.filter(callbackFn); //形参 只和位置有关
+      // const newArr = number.filter((qwe,ele,qwekk) => qwe > 10)
+      console.log(newArr);
 
-        //课后作业:在数组里索引为偶数的函数 利用 filter
-/*const evenIndexArr2 = number.filter((ele, index) => { //element可以忽略,写成_
+      //课后作业:在数组里索引为偶数的函数 利用 filter
+      /*const evenIndexArr2 = number.filter((ele, index) => { //element可以忽略,写成_
     return index % 2 === 0
 })
 console.log(evenIndexArr2)
 */
 
-/*//总结
+      /*//总结
 const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 // method1: idx
@@ -50,81 +51,82 @@ const evenIndexElements3 = numbers.filter((_, index) => (index & 1) === 0)
 console.log(evenIndexElements3) 
 */
 
-//课后作业：哪些方法改变原数组 哪些不改变
-const arr = [1, 2, 3, 4, 5]
-//1.不改变原数组 
-//map()
-const mapped = arr.map(x => x * 2)
-console.log(arr) // [1, 2, 3, 4, 5]
+      //课后作业：哪些方法改变原数组 哪些不改变
+      const arr = [1, 2, 3, 4, 5];
+      //1.不改变原数组
+      //map()
+      const mapped = arr.map((x) => x * 2);
+      console.log(arr); // [1, 2, 3, 4, 5]
 
-//slice()
-const sliced = arr.slice(1, 3)
-console.log(arr) // [1, 2, 3, 4, 5]
+      //slice()
+      const sliced = arr.slice(1, 3);
+      console.log(arr); // [1, 2, 3, 4, 5]
 
-//concat()
-const concated = arr.concat([6, 7])
-console.log(arr) // [1, 2, 3, 4, 5]
+      //concat()
+      const concated = arr.concat([6, 7]);
+      console.log(arr); // [1, 2, 3, 4, 5]
 
-//reduce(callbackFn, initialValue) 考点
-const sum = arr.reduce((acc, curr) => acc + curr, 0)
-console.log(arr)    // [1, 2, 3, 4, 5]
+      //reduce(callbackFn, initialValue) 考点
+      const sum = arr.reduce((acc, curr) => acc + curr, 0);
+      console.log(arr); // [1, 2, 3, 4, 5]
 
-// some() - 存在性检查
-const allPositive = arr.every(x => x > 0)
-console.log(arr)    // [1, 2, 3, 4, 5]
+      // some() - 存在性检查
+      const allPositive = arr.every((x) => x > 0);
+      console.log(arr); // [1, 2, 3, 4, 5]
 
-// find()
-const found = arr.find(x => x > 3)
-console.log(arr)    // [1, 2, 3, 4, 5]
+      // find()
+      const found = arr.find((x) => x > 3);
+      console.log(arr); // [1, 2, 3, 4, 5]
 
-// flat()
-const nested = [[1, 2], [3, 4]]
-const flattened = nested.flat()
-console.log(nested) // [[1, 2], [3, 4]]
+      // flat()
+      const nested = [
+        [1, 2],
+        [3, 4],
+      ];
+      const flattened = nested.flat();
+      console.log(nested); // [[1, 2], [3, 4]]
 
-//2.改变原数组 
-//push() 添加元素到数组末尾
-arr.push(6)
-console.log(arr) // [1, 2, 3, 4, 5, 6]
+      //2.改变原数组
+      //push() 添加元素到数组末尾
+      arr.push(6);
+      console.log(arr); // [1, 2, 3, 4, 5, 6]
 
-//pop() 删除数组末尾的元素
-arr.pop()
-console.log(arr) // [1, 2, 3, 4, 5]
+      //pop() 删除数组末尾的元素
+      arr.pop();
+      console.log(arr); // [1, 2, 3, 4, 5]
 
-//shift() 删除数组开头元素
-arr.shift()
-console.log(arr) // [2, 3, 4, 5]
+      //shift() 删除数组开头元素
+      arr.shift();
+      console.log(arr); // [2, 3, 4, 5]
 
-// unshift() - 添加元素到开头
-arr.unshift(0)
-console.log(arr)    // [0, 1, 2, 3, 4, 5]
+      // unshift() - 添加元素到开头
+      arr.unshift(0);
+      console.log(arr); // [0, 1, 2, 3, 4, 5]
 
-// splice(start, deleteCount, item1) - 删除/插入元素 经常用
-arr.splice(1, 2, 'a', 'b')
-console.log(arr)    // [1, 'a', 'b', 4, 5] 
+      // splice(start, deleteCount, item1) - 删除/插入元素 经常用
+      arr.splice(1, 2, "a", "b");
+      console.log(arr); // [1, 'a', 'b', 4, 5]
 
-// sort() - 排序
-arr.sort((a, b) => b - a)
-console.log(arr)    // [5, 4, 'b', 'a', 1]
+      // sort() - 排序
+      arr.sort((a, b) => b - a);
+      console.log(arr); // [5, 4, 'b', 'a', 1]
 
-// reverse() - 反转
-arr.reverse()
-console.log(arr)    // [1, 'a', 'b', 4, 5]
+      // reverse() - 反转
+      arr.reverse();
+      console.log(arr); // [1, 'a', 'b', 4, 5]
 
-// fill() - 填充
-arr.fill(0)
-console.log(arr)    // [0, 0, 0, 0, 0]
+      // fill() - 填充
+      arr.fill(0);
+      console.log(arr); // [0, 0, 0, 0, 0]
 
-
-        //developer tools
-        // element 渲染效果 网站基本是开源项目
-        // console 执行 js 代码
-        // 源代码：打包工具之后产物（设置断点等）
-        // network：fetch/XHR 主要是结合
-        //性能：本地指标Largest Contentful Paint (LCP)；Cumulative Layout Shift (CLS)；Interaction to Next Paint (INP)
-        //application：本地存储空间（key:value）
-        //lighthouse:指标总体报告评分（CLS，SI，FCP，LCP，TBT）
+      //developer tools
+      // element 渲染效果 网站基本是开源项目
+      // console 执行 js 代码
+      // 源代码：打包工具之后产物（设置断点等）
+      // network：fetch/XHR 主要是结合
+      //性能：本地指标Largest Contentful Paint (LCP)；Cumulative Layout Shift (CLS)；Interaction to Next Paint (INP)
+      //application：本地存储空间（key:value）
+      //lighthouse:指标总体报告评分（CLS，SI，FCP，LCP，TBT）
     </script>
-    
-</body>
+  </body>
 </html>
