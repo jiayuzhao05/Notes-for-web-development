@@ -946,3 +946,45 @@ console.log(preciseCalculation(0.1, 0.2)); // 0.02
 用hooks一部分是因为生命周期用不了异步模式,以及生命周期是按照时间顺序分布，this 在类组件里要绑定，以及不是按照功能jieou。但我感觉 hooks 也就是变成了箭头，也还是要绑定 this 吧?hooks 用不到 this?
 
 为了简洁 以及函数式写法
+
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy
+
+同源策略?????浏览器的安全策略
+
+
+
+**let和const重新赋值的时候是不是相当于引用的变量占用的内存地址变了因为值变了?**
+
+取决于数据结构  也就是 原始值  比如 number，string 等。 还是 引用类型值 比如 对象
+
+
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce 
+
+globalThis 在浏览器环境中为 window
+
+在node环境中为global
+
+
+
+**Anchor**
+
+![03bd8d95f37996b501cc502badb9bb11](/Users/jiayuzhao/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/wxid_o7rklxqiags412_cd26/temp/RWTemp/2025-11/452e0ec3d6b8c802dee8c8ce67aa817b/03bd8d95f37996b501cc502badb9bb11.png)
+
+html中<a href="#" class="animal cat">在js中a.href = '#'; 点击不会自动跳转
+
+a.href = '#' 在 JavaScript 中的作用 和 在 HTML 中写 <a href="#"> 的效果是 相似的
+
+
+
+**解释器是SpiderMonkey/V8,是不是只有浏览器环境的区别?**
+
+V8不仅在浏览器中 还在node中进行JS的引擎
+
+
+
+**对引用类型来说，除非自行定义toString()方法，否则会调用Object.prototype.toString()方法，显示的结果是"[object Object]"。如果对象重写了 toString()方法，字符串化时就会调用该方法并使用其返回值??**
+
+toString()是可以被我们改写的.内置行为是浏览器默认的。 但是我们可以去改这种设置
