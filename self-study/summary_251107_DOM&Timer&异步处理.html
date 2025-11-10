@@ -149,6 +149,121 @@
             items[index].className = 'active'
         },1500)
 
+        //ES6
+        //varaible and const
+        {
+            let count = 0
+            count++
+
+            const BASE_URL = 'https://api.example.com'
+        }
+
+        //模版字符串
+        const str1 = 'abc'
+        const str2 = 'efg${str1}'
+        console.log(str2)
+
+        //解构赋值
+        const arr = [1,2,3]
+        const v1 = arr[0]
+        const v2 = arr[1]
+        const [a,b,c] = [1,2,3]
+        //console.log(a,b,c)
+
+        const {username, age:UserAge, ...otherInfo} = {
+            username: 'John',
+            age: 20,
+            city: 'New York',
+            category: 'user',
+        }
+        console.log(username,UserAge,otherInfo)
+
+        //扩展运算符
+        const arr1 = [1,2,3]
+        const arr2 = [4,5,6]
+        const arr3 = [...arr1, ...arr2,10,20]
+        console.log(arr3)
+
+        const obj1 = {a:1}
+        const obj2 = {b:2}
+        const obj3 = {
+            ...obj1,
+            ...obj2,
+            c:3
+        }
+        console.log(obj3)
+
+        //数组方法
+        Array.from(arr1) //将类数组对象转换为数组
+        Array.of(1,2,3)
+        arr1.fill(0,1,3)
+        arr1.copyWithin(1,2,3)
+        arr1.flat()
+        arr1.flatMap(x=>[x*2])
+        arr1.keys()
+        arr1.values()
+        arr1.entries()
+
+
+        //Array.from() 数组方法
+        function fn() {
+            Array.from(arguments).forEach(item=>{
+                console.log(item)
+            })
+        }
+        fn(1,2,3)
+
+        //对象方法 Object.assign()
+        const objA = {
+            name: 'John',
+            age: 20,
+            city: 'New York',
+            category: 'user',
+        }
+        const objB = {
+            name: 'Jane',
+            age: 21,
+            city: 'Los Angeles',
+            category: 'user',
+        }
+        const objC = Object.assign(objA, objB)
+        console.log(objC)
+
+        //Class
+        class A {
+            constructor(name, age) {
+                this.name = name
+                this.age = age
+            }
+            
+            introduce() {
+                console.log(`Hello, my name is ${this.name} and I am ${this.age} years old`)
+            }
+        }
+        
+        class B extends A {
+            constructor(name, age, gender) {
+                super(name,age,gender)
+                this.gender = gender
+            }
+            
+            sayHello() {
+                console.log(`Hello, my name is ${this.name} and I am ${this.age} years old`)
+            }
+        }
+
+        const b1 = new B('xiaozhao', 20, 'male')
+        b1.sayHello()
+        b1.introduce()
+
+        //array function
+        const getSum = (a,b) => a+b
+
+        // const getSum1  = function(a,b) {
+        //     return a+b
+        // }
+
+
     </script>
 </body>
 </html>
