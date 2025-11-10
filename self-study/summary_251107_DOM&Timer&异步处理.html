@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM&Timer&异步处理</title>
+</head>
+<style>
+    body{
+        width: 100px;
+        height: 100px;
+        background-color: #f00;
+        border: 1px solid #000;
+        margin: 10px;
+        padding: 10px;
+        text-align: center;
+        line-height: 100px;
+        font-size: 20px;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    bold-text {
+        font-weight: bold;
+        color: #00f;
+    }
+
+    #carousel li {
+        width: 100px;
+        height: 100px;
+        background-color: #00f;
+        border: 1px solid #000;
+        margin: 10px;
+        padding: 10px;
+        text-align: center;
+        line-height: 100px;
+        font-size: 20px;
+    }
+</style>
+<body>
+    <div id="block">HTML</div> 
+    <ul id="carousel">
+    <p class="active">content</p>
+    <p class="item">content</p>
+    <p>content</p>
+    <p>content</p>
+</ul>
+<button id="prevBtn"> last </button>
+<button id="nextBtn"> next </button>
+    <script>
+        /*document.getEelmentById('block')
+        console.log(block)
+        block.textContent = 'JS'
+
+        //var p =document.querySelectorAll('#container p')
+        var p = document.getElementByTagName('p')
+        console.log(p)
+
+        var textArr = [
+            'content1',
+            'content2',
+            'content3',
+            'content4',
+        ]
+        for (var i=0;i<p.length;i++){
+            p[i].textContent = textArr[i]
+        }
+
+        document.querySelector('')
+
+        var secondItem = document.querySelector('.item')
+        secondItem.textContent = 'second content'
+        secondItem.previousElementSibling.textContent = 'first content'
+        secondItem.nextElementSibling.textContent = 'third content'
+
+        var container = secondItem.parentNode
+        console.log(container)
+        // container.textContent = 'container content'
+        var items = container.children
+        console.log(items)
+        */
+
+        //样式处理
+        var block = document.getElementById('#block')
+        // block.style.width = '200px'
+        // block.style.height = '200px'
+        // block.style.backgroundColor = '#00f'
+        // block.style.border = '1px solid #000'
+        // block.style.margin = '10px'
+        // block.style.padding = '10px'
+        // block.style.textAlign = 'center'
+        // block.style.lineHeight = '200px'
+        // block.style.fontSize = '20px'
+        // block.style.backgroundColor = 'tomato'
+        block.className = 'changeStyle'
+
+        //文本处理
+        block.innerHTML = 'JS<span class="highlight">DOM</span>'
+
+        //事件操作
+        // block.onClick = function(){
+        //     alert('block clicked')
+        // }
+        block.addEventListener('click', function(){
+            alert('block clicked')
+        })
+
+        //轮播图
+        var carousel = document.querySelector('#carousel')
+        var items = carousel.children
+        var prevBtn = document.querySelector('#prevBtn')
+        var nextBtn = document.querySelector('#nextBtn')
+
+        var index = 0
+        nextBtn.addEventListener('click', function(){
+            items[index].className = ''
+            if(index === items.length - 1){
+                index = -1 //为了下面items[index]从0开始
+            }
+            index++
+            items[index].className = 'active'
+        })
+       
+        prevBtn.addEventListener('click', function(){
+            items[index].className = ''
+            if(index === 0){
+                index = items.length
+            }
+            index--
+            items[index].className = 'active'
+        })
+
+        //定时器
+        var timer = setInterval(function (){
+            alert('Output once every 3 seconds')
+        }, 3000)
+
+        setTimeout(function (){
+            clearInterval(timer)
+            alert('surprise!')
+        }, 6000)  
+
+        var autoplay = setInterval(function (){
+            items[index].className = ''
+            if(index === items.length - 1){
+                index = -1
+            }
+            index++
+            items[index].className = 'active'
+        },1500)
+
+    </script>
+</body>
+</html>
