@@ -263,6 +263,61 @@
         //     return a+b
         // }
 
+        //promise
+        const p1 = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve('success')
+            }, 1000)
+        })
+        console.log(p1)
+
+        p1.then(data=>{
+            console.log(data)
+            return new Promise((resolve, reject) => {
+                //reject('error')
+                resolve('success2')
+            })
+        }, err=>{
+            console.log(err)
+      
+        }).then(data=>{ //catch 是 then(undefined, onRejected) 语法糖,二者都返回一个新的 Promise，并参与“值/错误”的传递与转换
+            console.log(data)
+        }).catch(err=>{
+            console.log(err)
+        })
+        console.log(p1)
+
+        p1.then().then().then().catch(err=>{
+            console.log(err)
+        })
+        
+
+        //then vs catch
+
+        //2.aync 基于promise简化功能 但不能替代promise
+        //1.创建一个asynTaskfunc
+        function asyncTask(){
+            return new Promise((resolve, reject) => {
+                const isSuccess = true
+                if(isSuccess){
+                    resolve('success')
+                }else{
+                    reject('error')
+                }
+            })
+        }
+
+        //2,为使用await函数添加async
+        async function main(){
+            console.log('task1')
+            const data = await asyncTask()
+            console.log('task2')
+        }
+        main()
+
+        //上列写法几乎不存在嵌套，如果报错可以添加try catch异常捕获
+
+
 
     </script>
 </body>
