@@ -263,7 +263,7 @@
         //     return a+b
         // }
 
-        //promise
+        //一、promise异步任务
         const p1 = new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve('success')
@@ -290,9 +290,6 @@
         p1.then().then().then().catch(err=>{
             console.log(err)
         })
-        
-
-        //then vs catch
 
         //2.aync 基于promise简化功能 但不能替代promise
         //1.创建一个asynTaskfunc
@@ -316,6 +313,16 @@
         main()
 
         //上列写法几乎不存在嵌套，如果报错可以添加try catch异常捕获
+
+        //then vs catch
+        // p.catch(onErr) = p.then(undefined, onErr)
+        // then/catch 返回一个新的promise对象，并参与“值/错误”的传递与转换，返回普通值->新promise变fulfilled，值为返回值
+        // throw返回rejected promise→ 新 Promise 变为rejected
+
+
+
+        //二。代理和模块
+
 
 
 
