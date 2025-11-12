@@ -9,6 +9,16 @@ function closureFunc() {
 }
 
 const result = closureFunc()
-result()
+// result() //对象无法执行{XXXXX}()
 
-console.log(count)
+console.log(result.get) //[Function get] 函数，但没被执行
+console.log(result.get()) //0
+console.log(result.action())
+console.log(result.action())
+console.log(result.get()) //2
+
+//作业 currify
+const curryAdd = a => b => c => a + b + c;
+//转化为普通函数
+
+//下节课讲 this
