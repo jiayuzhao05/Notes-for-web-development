@@ -1,3 +1,5 @@
+// 把每一种作用域作为标题写清楚。
+
 //let a = "global"; //global scope
 
 //const { firstname, lastname } = person;
@@ -9,7 +11,7 @@
 } */
 
 // function sumFunc() {
-//   let a = 10;//函数作用域更严格,所有定义方式都封死在里面,不外泄
+//   let a = 10;//函数作用域更严格,所有定义方式都封死在里面,不外泄 
 //   var b = 11;
 // }
 // console.log(b)
@@ -41,6 +43,8 @@ const result = outerFunc();
 result()
 //持久引用闭包:内部函数被返回并保存，外部作用域的变量会一直保留在内存中
 
+
+// 这个例子太复杂
 //短暂引用闭包
 function processData(data) {
     let processedCount = 0  // 外部变量
