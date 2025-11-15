@@ -4,6 +4,7 @@ import json
 app = Flask(__name__)
 
 
+# 无校验：直接提供API接收用户传入请求，根据请求执行自己的签名，返回用户结果
 # http://127.0.0.1:5000/indx
 # 请求体 xx=123&yy=456
 # http://127.0.0.1:5000/index?xx=123&yy=456  执行index  post
@@ -23,7 +24,7 @@ def index():
     # 调用核心算法生成sign签名
     import json
 
-    return json.dumps({"status": True, "data": "success"})
+    # return jsonify({"status": True, "data": "success"})
     return json.dumps({"status": False, "data": "fail"})
 
 
