@@ -7,6 +7,12 @@
   </head>
   <body>
     <script>
+      // 逻辑赋值
+      let n = 0;
+      n ||= 10; // 若 n 为假值则赋 10  -> 10
+      n &&= 5; // 若 n 为真值则赋 5   -> 5
+      n ??= 20; // 若 n 为 null/undefined 则赋 20 -> 5
+
       const port = env.PORT ?? 3000; //env.PORT 为 null/undefined 时用 3000
       //可选链
       const city = user?.address?.city;
@@ -96,38 +102,118 @@
       }
 
       function must200(res) {
-        if (res.status !== 200) throw new
-      HTTPError(res.status, "Bad Status");
+        if (res.status !== 200) throw new HTTPError(res.status, "Bad Status");
       }
 
-      const arr = [1,2,3,4];
+      const arr = [1, 2, 3, 4];
       arr.reduce((acc, curr) => acc + curr, 0); //10
-      arr.sort((a,b)=>b-a); //[4,3,2,1] 就地降序
+      arr.sort((a, b) => b - a); //[4,3,2,1] 就地降序
 
       const idx = 1;
       const arr2 = arr.toSpliced(idx, 1, 99); //[1,99,3,4]
       //arr.slice(0,idx).concat(99, arr.slice(idx+1))
-      
+
       //原型链
       function A() {}
-      A.prototype.hello = function(){return "hi"};
+      A.prototype.hello = function () {
+        return "hi";
+      };
 
       const a = new A();
       console.log(a.__proto__ === A.prototype); //true
       console.log(Object.getPrototypeOf(a) === A.prototype); //true
 
-      //curry
-      const curry = fn => (x=>x(x))(x=>(f,...args)=>
-  args.length >= fn.length ? fn(...args) : (...rest) => x(x)(f, ...args, ...rest)
-)(fn);
-const add3 = (a,b,c)=>a+b+c;
-const curried = curry(add3);
-curried(1)(2)(3); // 6
+      //curry function
+      const curry = (fn) =>
+        ((x) => x(x))(
+          (x) =>
+            (f, ...args) =>
+              args.length >= fn.length
+                ? fn(...args)
+                : (...rest) => x(x)(f, ...args, ...rest)
+        )(fn);
+      const add3 = (a, b, c) => a + b + c;
+      const curried = curry(add3);
+      curried(1)(2)(3); // 6
 
-    //weakmap
-    const wm = new WeakMap();
-    const key = {};
-    wm.set(key,123)
+      // 偏函数
+
+      // 组合（从右到左）
+      const compose =
+        (...fns) =>
+        (x) =>
+          fns.reduceRight((v, f) => f(v), x);
+      const inc = (x) => x + 1,
+        double = (x) => x * 2;
+      compose(inc, double)(3); // 7
+
+      // 记忆化
+      const memo = (fn) => {
+        const cache = new Map();
+        return (...args) => {
+          const key = JSON.stringify(args);
+          if (cache.has(key)) return cache.get(key);
+          const val = fn(...args);
+          cache.set(key, val);
+          return val;
+        };
+      };
+
+      // 正则
+      /^\d{4}-\d{2}-\d{2}$/.test("2025-01-01"); // true
+
+      // JSON
+      const s = JSON.stringify({ a: 1 }, null, 2); // 美化缩进
+      const o = JSON.parse('{"a":1}', (k, v) => v); // reviver
+
+      // date
+      const dt = new Date();
+      dt.toISOString();
+
+      // international format
+      new Intl.NumberFormat("zh-CN", {
+        style: "currency",
+        currency: "CNY",
+      }).format(1234.5);
+      new Intl.DateTimeFormat("zh-CN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date());
+
+      //DOM
+
+      //weakmap
+      const wm = new WeakMap();
+      const key = {};
+      wm.set(key, 123);
+
+      // 防抖：停止触发后等待 N ms 才执行（如输入框）
+      const debounce = (fn, wait = 300) => {
+        let t;
+        return (...args) => {
+          clearTimeout(t);
+          t = setTimeout(() => fn(...args), wait);
+        };
+      };
+
+      // 节流：间隔 N ms 执行一次（如滚动）
+      const throttle = (fn, wait = 300) => {
+        let last = 0,
+          timer;
+        return (...args) => {
+          const now = Date.now();
+          if (now - last >= wait) {
+            last = now;
+            fn(...args);
+          } else if (!timer) {
+            timer = setTimeout(() => {
+              last = Date.now();
+              timer = null;
+              fn(...args);
+            }, wait - (now - last));
+          }
+        };
+      };
     </script>
   </body>
 </html>
