@@ -15,6 +15,22 @@
       const sub = function (a, b) {
         return a - b;
       };
+
+      //arrow function
+      const mul = (a, b) => a * b;
+      const square = (x) => x * x;
+      const toObj = (key, value) => ({ [key]: value });
+      //IIFE
+      (function () {
+        const secret = 42;
+      })();
+      //OOP
+      function Person(name) {
+        this.name = name;
+      }
+      Person.prototype.sayHello = function () {
+        console.log(`Hello, my name is ${this.name}`);
+      };
     </script>
   </body>
 </html>
