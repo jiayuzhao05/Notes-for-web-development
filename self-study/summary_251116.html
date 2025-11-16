@@ -7,6 +7,13 @@
   </head>
   <body>
     <script>
+      const port = env.PORT ?? 3000; //env.PORT 为 null/undefined 时用 3000
+      //可选链
+      const city = user?.address?.city;
+      //
+      const [a, b = 2] = [1];
+      const { title, id: postId } = { title: "Hello", id: 123 };
+
       //function declaration
       function add(a, b) {
         return a + b;
@@ -31,6 +38,96 @@
       Person.prototype.sayHello = function () {
         console.log(`Hello, my name is ${this.name}`);
       };
+
+      //generator function
+      function* idGen() {
+        let id = 0;
+        while (true) {
+          yield id++;
+        }
+      }
+      const gen = idGen();
+      console.log(gen.next().value);
+      console.log(gen.next().value);
+
+      //async function (return a promise)
+      async function getData() {
+        return 123;
+      }
+
+      // 回调风格
+      fs.readFile("a.txt", (err, buf) => {
+        if (err) return console.error(err);
+        console.log(buf.toString());
+      });
+
+      // Promise
+      const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+      sleep(500).then(() => console.log("ok"));
+
+      // async/await（同步风格的异步）
+      async function main() {
+        try {
+          await sleep(300);
+          const data = await fetch(
+            "https://jsonplaceholder.typicode.com/todos/1"
+          ).then((r) => r.json());
+          console.log(data.title);
+        } catch (e) {
+          console.error("ERR:", e);
+        }
+      }
+      main();
+
+      //错误处理
+      try {
+        JSON.parse("bad json");
+      } catch (e) {
+        console.error("parse error:", e.message);
+      } finally {
+        //清理工作
+      }
+
+      class HTTPError extends Error {
+        constructor(status, message) {
+          super(message);
+          this.status = status;
+        }
+      }
+
+      function must200(res) {
+        if (res.status !== 200) throw new
+      HTTPError(res.status, "Bad Status");
+      }
+
+      const arr = [1,2,3,4];
+      arr.reduce((acc, curr) => acc + curr, 0); //10
+      arr.sort((a,b)=>b-a); //[4,3,2,1] 就地降序
+
+      const idx = 1;
+      const arr2 = arr.toSpliced(idx, 1, 99); //[1,99,3,4]
+      //arr.slice(0,idx).concat(99, arr.slice(idx+1))
+      
+      //原型链
+      function A() {}
+      A.prototype.hello = function(){return "hi"};
+
+      const a = new A();
+      console.log(a.__proto__ === A.prototype); //true
+      console.log(Object.getPrototypeOf(a) === A.prototype); //true
+
+      //curry
+      const curry = fn => (x=>x(x))(x=>(f,...args)=>
+  args.length >= fn.length ? fn(...args) : (...rest) => x(x)(f, ...args, ...rest)
+)(fn);
+const add3 = (a,b,c)=>a+b+c;
+const curried = curry(add3);
+curried(1)(2)(3); // 6
+
+    //weakmap
+    const wm = new WeakMap();
+    const key = {};
+    wm.set(key,123)
     </script>
   </body>
 </html>
