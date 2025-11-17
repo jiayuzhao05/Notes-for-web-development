@@ -16,7 +16,7 @@
       const port = env.PORT ?? 3000; //env.PORT 为 null/undefined 时用 3000
       //可选链
       const city = user?.address?.city;
-      //
+      // 解构
       const [a, b = 2] = [1];
       const { title, id: postId } = { title: "Hello", id: 123 };
 
@@ -43,6 +43,15 @@
       }
       Person.prototype.sayHello = function () {
         console.log(`Hello, my name is ${this.name}`);
+      };
+      //对象方法简写
+      const utils = { //用 const 声明一个常量变量 util,utils绑定obj，里面有一些常用函数，相当于工具箱
+        sum(a, b) { //对象方法的简写 相当于 sum:function(a,b){return a+b;}
+          return a + b;
+        },
+        async fetch() {
+          /*...*/
+        },
       };
 
       //generator function
@@ -214,6 +223,9 @@
           }
         };
       };
+      //泛型
+
+      //class
     </script>
   </body>
 </html>
