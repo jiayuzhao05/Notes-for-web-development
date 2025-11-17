@@ -45,11 +45,11 @@
         console.log(`Hello, my name is ${this.name}`);
       };
       //对象方法简写
-      const utils = { //用 const 声明一个常量变量 util,utils绑定obj，里面有一些常用函数，相当于工具箱
-        sum(a, b) { //对象方法的简写 相当于 sum:function(a,b){return a+b;}
+      const utils = { //用 const 声明一个常量变量 util,utils绑定obj，里面有常用函数，相当于工具箱
+        sum(a, b) { //对象方法的简写 相当于 sum:function(a,b){return a+b;}.sum 是 utils 对象上的一个方法
           return a + b;
         },
-        async fetch() {
+        async fetch() { //相当于 fetch:async function(){/*...*/}.fetch 是 utils 对象上的一个方法
           /*...*/
         },
       };
