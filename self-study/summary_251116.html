@@ -60,15 +60,23 @@
 
 
       //泛型 generics
-      function dump(arg:string): string {
+      // 复用函数时，动态传递不同类型参数
+      function dump<T>(arg:T): T {
         return arg;
       }
-      let hd = dump('houdunren.com');
-      
-      function dumpBoolean(arg:boolean): boolean {
-        return arg;
-      }
-      let xj = dumpBoolean(true);
+      let hd = dump<string>('houdunren.com');
+
+      let xj = dump<boolean>(true);
+
+    //   function dump(arg:string): string {
+    //     return arg;
+    //   }
+    //   let hd = dump('houdunren.com');
+
+    //   function dumpBoolean(arg:boolean): boolean {
+    //     return arg;
+    //   }
+    //   let xj = dumpBoolean(true);
 
       // class
 
