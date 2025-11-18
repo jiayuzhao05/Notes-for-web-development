@@ -59,12 +59,21 @@
       // obj 指向的 地址（引用）不能变, 但可以改地址的内容
 
 
-      //泛型
+      //泛型 generics
+      function dump(arg:string): string {
+        return arg;
+      }
+      let hd = dump('houdunren.com');
+      
+      function dumpBoolean(arg:boolean): boolean {
+        return arg;
+      }
+      let xj = dumpBoolean(true);
 
       // class
 
       // 迭代器 vs 生成器
-      
+
       //generator function
       function* idGen() {
         let id = 0;
