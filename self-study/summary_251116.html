@@ -53,7 +53,10 @@
           /*...*/
         },
       };
-
+      //在 JavaScript 中，const 声明的变量叫 常量（constant），但它本质上仍然是变量，因为它是存储数据的一个命名空间。
+      // const 不能被重新赋值，但变量本身仍然存在
+      // const 限制的是“变量绑定”，不是“值的内容”.如果 const 存的是原始值（number、string、boolean），不能改;但如果 const 存的是对象或数组，可以修改内容
+      // obj 指向的 地址（引用）不能变, 但可以改地址的内容
       //generator function
       function* idGen() {
         let id = 0;
