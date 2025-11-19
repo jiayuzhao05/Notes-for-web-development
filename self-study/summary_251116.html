@@ -12,6 +12,18 @@
             n ||= 10; // 若 n 为假值则赋 10  -> 10
             n &&= 5; // 若 n 为真值则赋 5   -> 5
             n ??= 20; // 若 n 为 null/undefined 则赋 20 -> 5
+            // array
+            const arr = [1,2,3,4];
+            arr.reduce((acc, curr) => acc + curr, 0); //10
+            // (a, b) => a - b 是“比较函数”,较小的数排在前面 升序排序
+            arr.sort((a, b) => b - a); //[4,3,2,1] 就地降序 副作用：改变原数组
+            //toSpliced(start, deleteCount, item1, item2, ...) 返回新数组，不改变原数组
+            arr.toSpliced(1, 1, 99); //[1,99,3,4]
+            //兼容写法 arr.slice(0,1).concat(99, arr.slice(2))
+            
+            // 深拷贝（注意函数/循环引用？？？）
+            const deep = structuredClone?.({a:{b:1}});
+            JSON.parse(JSON.stringify({a:{b:1}}));
 
             const port = env.PORT ?? 3000; //env.PORT 为 null/undefined 时用 3000
             //可选链
@@ -74,22 +86,22 @@
         d.speak();
         console.log(d.hp);
 
-            // 迭代器 vs 生成器
-            const it = {
-              cur: 0,
-              next(){ 
-                return this.cur < 3 
-                  ? { value: this.cur++, done: false } 
-                  : { done: true }; 
-              },
-              [Symbol.iterator](){ 
-                return this; 
-               }
+        // 迭代器 vs 生成器
+        const it = {  // it 可迭代对象
+            cur: 0, // 普通属性
+            next(){ // 方法：迭代器协议：{value: any, done: boolean}
+            return this.cur < 3 
+                ? { value: this.cur++, done: false } 
+                : { done: true }; //cur>=3 迭代结束
+            },
+            [Symbol.iterator](){  // 符号属性 “内置符号”键用来告诉 JS 当别人对我用 for...of 要用哪个迭代器？
+            return this; // 返回迭代器对象本身 对象自己就是迭代器 it
+            }
             };
 
-for (const v of it) { 
-  console.log(v); 
-}
+        for (const v of it) {  // for...of调用it[Symbol.iterator]() 得到迭代器 it
+            console.log(v);  // 循环调用 next（）直到返回对象 done:true
+        }
 
 
             //generator function
@@ -182,11 +194,11 @@ for (const v of it) {
             } finally {
               //清理工作收尾
             }
-            //自定义错误
+            //自定义错误 基于内置 error 扩展的 class
             class HTTPError extends Error {
               constructor(status, message) {
-                super(message);
-                this.status = status;
+                super(message); // 调用父类构造函数
+                this.status = status; // 添加自定义属性status，保存 HTTP 状态码
               }
             }
 
