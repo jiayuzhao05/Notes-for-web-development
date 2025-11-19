@@ -6,334 +6,386 @@
     <title>Document</title>
   </head>
   <body>
+    <button id="btn">click</button>
     <script>
-            // 逻辑赋值
-            let n = 0;
-            n ||= 10; // 若 n 为假值则赋 10  -> 10
-            n &&= 5; // 若 n 为真值则赋 5   -> 5
-            n ??= 20; // 若 n 为 null/undefined 则赋 20 -> 5
-            // array
-            const arr = [1,2,3,4];
-            arr.reduce((acc, curr) => acc + curr, 0); //10
-            // (a, b) => a - b 是“比较函数”,较小的数排在前面 升序排序
-            arr.sort((a, b) => b - a); //[4,3,2,1] 就地降序 副作用：改变原数组
-            //toSpliced(start, deleteCount, item1, item2, ...) 返回新数组，不改变原数组
-            arr.toSpliced(1, 1, 99); //[1,99,3,4]
-            //兼容写法 arr.slice(0,1).concat(99, arr.slice(2))
-            
-            // 深拷贝（注意函数/循环引用？？？）
-            const deep = structuredClone?.({a:{b:1}});
-            JSON.parse(JSON.stringify({a:{b:1}}));
+          // 逻辑赋值
+          let n = 0;
+          n ||= 10; // 若 n 为假值则赋 10  -> 10
+          n &&= 5; // 若 n 为真值则赋 5   -> 5
+          n ??= 20; // 若 n 为 null/undefined 则赋 20 -> 5
+          // array
+          const arr = [1,2,3,4];
+          arr.reduce((acc, curr) => acc + curr, 0); //10
+          // (a, b) => a - b 是“比较函数”,较小的数排在前面 升序排序
+          arr.sort((a, b) => b - a); //[4,3,2,1] 就地降序 副作用：改变原数组
+          //toSpliced(start, deleteCount, item1, item2, ...) 返回新数组，不改变原数组
+          arr.toSpliced(1, 1, 99); //[1,99,3,4]
+          //兼容写法 arr.slice(0,1).concat(99, arr.slice(2))
 
-            const port = env.PORT ?? 3000; //env.PORT 为 null/undefined 时用 3000
-            //可选链
-            const city = user?.address?.city;
-            // 解构
-            const [a, b = 2] = [1];
-            const { title, id: postId } = { title: "Hello", id: 123 };
 
-            //function declaration
-            function add(a, b) {
+          // 深拷贝 vs 浅拷贝
+          // 深拷贝（复制对象的整个结构，包括嵌套的对象和数组）（注意函数/循环引用？？？）
+          const deep = structuredClone?.({a:{b:1}}); //structuredClone 是浏览器内置函数，支持深拷贝,把对象完整复制一份，新对象和原对象不共享嵌套引用，支持很多复杂类型（map，set，date，arrayBuffer，结构化引用，循环引用）
+          JSON.parse(JSON.stringify({a:{b:1}})); //JSON.parse把字符串解析成全新对象，深拷贝
+          JSON.stringify({fn:()=>{}}); // "{}" 函数会丢失
+          //深拷贝可能循环引用 JSON爆炸
+
+          // 浅拷贝（复制对象的引用，不包括嵌套的对象和数组）
+
+          const port = env.PORT ?? 3000; //env.PORT 为 null/undefined 时用 3000
+          //可选链
+          const city = user?.address?.city;
+          // 解构
+          const [a, b = 2] = [1];
+          const { title, id: postId } = { title: "Hello", id: 123 };
+
+          //function declaration
+          function add(a, b) {
+            return a + b;
+          }
+
+          const sub = function (a, b) {
+            return a - b;
+          };
+
+          //arrow function
+          const mul = (a, b) => a * b;
+          const square = (x) => x * x;
+          const toObj = (key, value) => ({ [key]: value });
+          //IIFE
+          (function () {
+            const secret = 42;
+          })();
+
+          //OOP
+          function Person(name) {
+            this.name = name;
+          }
+          Person.prototype.sayHello = function () {
+            console.log(`Hello, my name is ${this.name}`);
+          };
+          //对象方法简写
+          const utils = { //用 const 声明一个常量变量 util,utils绑定obj，里面有常用函数，相当于工具箱
+            sum(a, b) { //对象方法的简写 相当于 sum:function(a,b){return a+b;}.sum 是 utils 对象上的一个方法
               return a + b;
-            }
-
-            const sub = function (a, b) {
-              return a - b;
-            };
-
-            //arrow function
-            const mul = (a, b) => a * b;
-            const square = (x) => x * x;
-            const toObj = (key, value) => ({ [key]: value });
-            //IIFE
-            (function () {
-              const secret = 42;
-            })();
-
-            //OOP
-            function Person(name) {
-              this.name = name;
-            }
-            Person.prototype.sayHello = function () {
-              console.log(`Hello, my name is ${this.name}`);
-            };
-            //对象方法简写
-            const utils = { //用 const 声明一个常量变量 util,utils绑定obj，里面有常用函数，相当于工具箱
-              sum(a, b) { //对象方法的简写 相当于 sum:function(a,b){return a+b;}.sum 是 utils 对象上的一个方法
-                return a + b;
-              },
-              async fetch() { //相当于 fetch:async function(){/*...*/}.fetch 是 utils 对象上的一个方法
-                /*...*/
-              },
-            };
-            //在 JavaScript 中，const 声明的变量叫 常量（constant），但它本质上仍然是变量，因为它是存储数据的一个命名空间。
-            // const 不能被重新赋值，但变量本身仍然存在
-            // const 限制的是“变量绑定”，不是“值的内容”.如果 const 存的是原始值（number、string、boolean），不能改;但如果 const 存的是对象或数组，可以修改内容
-            // obj 指向的 地址（引用）不能变, 但可以改地址的内容
-
-
-
-        // class & inheritance & polymorphism
-        class Dog extends Animal{
-           #hp = 100;                 // 私有字段
-           constructor(name){ super(name); }
-           speak(){ console.log(`${this.name} barks.`); } // 覆盖
-           get hp(){ return this.#hp; }
-           set hp(v){ this.#hp = Math.max(0, v); }
-        }
-
-        const d = new Dog("K");
-        d.speak();
-        console.log(d.hp);
-
-        // 迭代器 vs 生成器
-        const it = {  // it 可迭代对象
-            cur: 0, // 普通属性
-            next(){ // 方法：迭代器协议：{value: any, done: boolean}
-            return this.cur < 3 
-                ? { value: this.cur++, done: false } 
-                : { done: true }; //cur>=3 迭代结束
             },
-            [Symbol.iterator](){  // 符号属性 “内置符号”键用来告诉 JS 当别人对我用 for...of 要用哪个迭代器？
-            return this; // 返回迭代器对象本身 对象自己就是迭代器 it
+            async fetch() { //相当于 fetch:async function(){/*...*/}.fetch 是 utils 对象上的一个方法
+              /*...*/
+            },
+          };
+          //在 JavaScript 中，const 声明的变量叫 常量（constant），但它本质上仍然是变量，因为它是存储数据的一个命名空间。
+          // const 不能被重新赋值，但变量本身仍然存在
+          // const 限制的是“变量绑定”，不是“值的内容”.如果 const 存的是原始值（number、string、boolean），不能改;但如果 const 存的是对象或数组，可以修改内容
+          // obj 指向的 地址（引用）不能变, 但可以改地址的内容
+
+
+
+      // class & inheritance & polymorphism
+      class Dog extends Animal{
+         #hp = 100;                 // 私有字段
+         constructor(name){ super(name); }
+         speak(){ console.log(`${this.name} barks.`); } // 覆盖
+         get hp(){ return this.#hp; }
+         set hp(v){ this.#hp = Math.max(0, v); }
+      }
+
+      const d = new Dog("K");
+      d.speak();
+      console.log(d.hp);
+
+      // 迭代器 vs 生成器
+      const it = {  // it 可迭代对象
+          cur: 0, // 普通属性
+          next(){ // 方法：迭代器协议：{value: any, done: boolean}
+          return this.cur < 3
+              ? { value: this.cur++, done: false }
+              : { done: true }; //cur>=3 迭代结束
+          },
+          [Symbol.iterator](){  // 符号属性 “内置符号”键用来告诉 JS 当别人对我用 for...of 要用哪个迭代器？
+          return this; // 返回迭代器对象本身 对象自己就是迭代器 it
+          }
+          };
+
+      for (const v of it) {  // for...of调用it[Symbol.iterator]() 得到迭代器 it
+          console.log(v);  // 循环调用 next（）直到返回对象 done:true
+      }
+
+
+          //generator function
+          function* idGen() {
+            let id = 0;
+            while (true) {
+              yield id++;
             }
-            };
+          }
+          const gen = idGen();
+          console.log(gen.next().value);
+          console.log(gen.next().value);
 
-        for (const v of it) {  // for...of调用it[Symbol.iterator]() 得到迭代器 it
-            console.log(v);  // 循环调用 next（）直到返回对象 done:true
-        }
+          //async function (return a promise)
+          async function getData() {
+            return 123;
+          }
 
+          // 异步
+          // 回调风格（not recommended）
+          fs.readFile("a.txt", (err, buf) => {
+            if (err) return console.error(err);
+            console.log(buf.toString());
+          });
 
-            //generator function
-            function* idGen() {
-              let id = 0;
-              while (true) {
-                yield id++;
-              }
-            }
-            const gen = idGen();
-            console.log(gen.next().value);
-            console.log(gen.next().value);
+          // Promise
+          const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+          sleep(500).then(() => console.log("ok"));
 
-            //async function (return a promise)
-            async function getData() {
-              return 123;
-            }
-
-            // 异步
-            // 回调风格（not recommended）
-            fs.readFile("a.txt", (err, buf) => {
-              if (err) return console.error(err);
-              console.log(buf.toString());
-            });
-
-            // Promise
-            const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
-            sleep(500).then(() => console.log("ok"));
-
-            // async/await（同步风格的异步）
-            async function main() {
-              try {
-                await sleep(300);
-                const data = await fetch(
-                  "https://jsonplaceholder.typicode.com/todos/1"
-                ).then((r) => r.json());
-                console.log(data.title);
-              } catch (e) {
-                console.error("ERR:", e);
-              }
-            }
-            main();
-
-            // this binding & 调用
-            const obj = {
-              x: 10,
-              normal() {
-                console.log(this.x); // this=调用点左侧对象
-              },
-              arrow() => {
-                console.log(this.x); //this来自词法作用域，this指向obj
-              },
-            }
-            obj.normal(); //10
-            obj.arrow(); //undefined
-            obj.normal.call({x:20}); //20
-            obj.arrow.call({x:20}); //10
-
-            function show() {
-              console.log(this.value);
-            }
-            const ctx = {value:100};
-
-            show.call(ctx); //100 显式绑定 参数逐个给
-            show.apply(ctx); //100 显式绑定 参数数组给
-            show.bind(ctx)(); //100 绑定参数后立即执行
-            //箭头函数无法用 call/apply/bind 更改 this
-
-            //closure
-            function makeCounter() {
-              let n = 0;
-              return () => ++n;
-            }
-            const c = makeCounter();
-            c(); //1
-            c(); //2
-            c(); //3
-
-            //高阶函数
-            const once = fn => {
-              let done = false, val;
-              return (...args) => done ? val : (done = true, val = fn(...args));
-            }
-
-            //错误处理
+          // async/await（同步风格的异步）
+          async function main() {
             try {
-              JSON.parse("bad json");
+              await sleep(300);
+              const data = await fetch(
+                "https://jsonplaceholder.typicode.com/todos/1"
+              ).then((r) => r.json());
+              console.log(data.title);
             } catch (e) {
-              console.error("parse error:", e.message);
-            } finally {
-              //清理工作收尾
+              console.error("ERR:", e);
             }
-            //自定义错误 基于内置 error 扩展的 class
-            class HTTPError extends Error {
-              constructor(status, message) {
-                super(message); // 调用父类构造函数
-                this.status = status; // 添加自定义属性status，保存 HTTP 状态码
-              }
+          }
+          main();
+
+          // this binding & 调用
+          const obj = {
+            x: 10,
+            normal() {
+              console.log(this.x); // this=调用点左侧对象
+            },
+            arrow() => {
+              console.log(this.x); //this来自词法作用域，this指向obj
+            },
+          }
+          obj.normal(); //10
+          obj.arrow(); //undefined
+          obj.normal.call({x:20}); //20
+          obj.arrow.call({x:20}); //10
+
+          function show() {
+            console.log(this.value);
+          }
+          const ctx = {value:100};
+
+          show.call(ctx); //100 显式绑定 参数逐个给
+          show.apply(ctx); //100 显式绑定 参数数组给
+          show.bind(ctx)(); //100 绑定参数后立即执行
+          //箭头函数无法用 call/apply/bind 更改 this
+
+          //closure
+          function makeCounter() {
+            let n = 0;
+            return () => ++n;
+          }
+          const c = makeCounter();
+          c(); //1
+          c(); //2
+          c(); //3
+
+          //高阶函数
+          const once = fn => {
+            let done = false, val;
+            return (...args) => done ? val : (done = true, val = fn(...args));
+          }
+
+          //错误处理
+          try {
+            JSON.parse("bad json");
+          } catch (e) {
+            console.error("parse error:", e.message);
+          } finally {
+            //清理工作收尾
+          }
+          //自定义错误 基于内置 error 扩展的 class
+          class HTTPError extends Error {
+            constructor(status, message) {
+              super(message); // 调用父类构造函数
+              this.status = status; // 添加自定义属性status，保存 HTTP 状态码
             }
+          }
 
-            function must200(res) {
-              if (res.status !== 200) throw new HTTPError(res.status, "Bad Status");
-            }
+          function must200(res) {
+            if (res.status !== 200) throw new HTTPError(res.status, "Bad Status");
+          }
 
-            const arr = [1, 2, 3, 4];
-            arr.reduce((acc, curr) => acc + curr, 0); //10
-            arr.sort((a, b) => b - a); //[4,3,2,1] 就地降序
+          const arr = [1, 2, 3, 4];
+          arr.reduce((acc, curr) => acc + curr, 0); //10
+          arr.sort((a, b) => b - a); //[4,3,2,1] 就地降序
 
-            const idx = 1;
-            const arr2 = arr.toSpliced(idx, 1, 99); //[1,99,3,4]
-            //arr.slice(0,idx).concat(99, arr.slice(idx+1))
+          const idx = 1;
+          const arr2 = arr.toSpliced(idx, 1, 99); //[1,99,3,4]
+          //arr.slice(0,idx).concat(99, arr.slice(idx+1))
 
-            //原型链
-            function A() {}
-            A.prototype.hello = function () {
-              return "hi";
-            };
+          //原型和原型链
+          function A() {}
+          A.prototype.hello = function () {
+            return "hi";
+          };
 
-            const a = new A();
-            console.log(a.__proto__ === A.prototype); //true
-            console.log(Object.getPrototypeOf(a) === A.prototype); //true
+          const a = new A();
+          console.log(a.__proto__ === A.prototype); //true
+          console.log(Object.getPrototypeOf(a) === A.prototype); //true
 
-            //curry function
-            const curry = (fn) =>
-              ((x) => x(x))(
-                (x) =>
-                  (f, ...args) =>
-                    args.length >= fn.length
-                      ? fn(...args)
-                      : (...rest) => x(x)(f, ...args, ...rest)
-              )(fn);
-            const add3 = (a, b, c) => a + b + c;
-            const curried = curry(add3);
-            curried(1)(2)(3); // 6
-
-            // 偏函数
-
-            // 组合（从右到左）
-            const compose =
-              (...fns) =>
+          //curry function
+          const curry = (fn) =>
+            ((x) => x(x))(
               (x) =>
-                fns.reduceRight((v, f) => f(v), x);
-            const inc = (x) => x + 1,
-              double = (x) => x * 2;
-            compose(inc, double)(3); // 7
+                (f, ...args) =>
+                  args.length >= fn.length
+                    ? fn(...args)
+                    : (...rest) => x(x)(f, ...args, ...rest)
+            )(fn);
 
-            // 记忆化
-            const memo = (fn) => {
-              const cache = new Map();
-              return (...args) => {
-                const key = JSON.stringify(args);
-                if (cache.has(key)) return cache.get(key);
-                const val = fn(...args);
-                cache.set(key, val);
-                return val;
-              };
+          const add3 = (a, b, c) => a + b + c;
+          const curried = curry(add3);
+          curried(1)(2)(3); // 6
+
+          // 偏函数
+          const partial = (fn, ...args) => (...rest) => fn(...args, ...rest);
+          const add1 = partial((a,b)=>a+b, 1);
+          add1(2); //3
+          add1(2,3); //6
+
+          // 组合（从右到左）
+          const compose =
+            (...fns) =>
+            (x) =>
+              fns.reduceRight((v, f) => f(v), x);
+          const inc = (x) => x + 1,
+            double = (x) => x * 2;
+          compose(inc, double)(3); // 7
+
+          // 记忆化？？？？
+          const memo = (fn) => {
+            const cache = new Map();
+            return (...args) => {
+              const key = JSON.stringify(args);
+              if (cache.has(key)) return cache.get(key);
+              const val = fn(...args);
+              cache.set(key, val);
+              return val;
             };
+          };
 
-            // 正则
-            /^\d{4}-\d{2}-\d{2}$/.test("2025-01-01"); // true
+          // 正则
+          /^\d{4}-\d{2}-\d{2}$/.test("2025-01-01"); // true
 
-            // JSON
-            const s = JSON.stringify({ a: 1 }, null, 2); // 美化缩进
-            const o = JSON.parse('{"a":1}', (k, v) => v); // reviver
+          // JSON
+          const s = JSON.stringify({ a: 1 }, null, 2); // 美化缩进
+          const o = JSON.parse('{"a":1}', (k, v) => v); // reviver
 
-            // date
-            const dt = new Date();
-            dt.toISOString();
+          // date
+          const dt = new Date();
+          dt.toISOString();
 
-            // international format
-            new Intl.NumberFormat("zh-CN", {
-              style: "currency",
-              currency: "CNY",
-            }).format(1234.5);
-            new Intl.DateTimeFormat("zh-CN", {
-              dateStyle: "medium",
-              timeStyle: "short",
-            }).format(new Date());
+          // international format
+          new Intl.NumberFormat("zh-CN", {
+            style: "currency",
+            currency: "CNY",
+          }).format(1234.5);
+          new Intl.DateTimeFormat("zh-CN", {
+            dateStyle: "medium",
+            timeStyle: "short",
+          }).format(new Date());
 
-            //DOM
+          //DOM
+          const btn = document.querySelector("#btn");
+          btn.addEventListener("click", e => {
+              e.preventDefault();
+              alert("clicked");
+          });
 
-            //weakmap
-            const wm = new WeakMap();
-            const key = {};
-            wm.set(key, 123);
+          //map/set/weakmap
+          const wm = new WeakMap();//weakmap 键必须是对象，值可以是任意类型。key只能是对象，弱引用（利于垃圾回收）
+          const key = {};
+          wm.set(key, 123);
 
-            // 防抖：停止触发后等待 N ms 才执行（如输入框）
-            const debounce = (fn, wait = 300) => {
-              let t;
-              return (...args) => {
-                clearTimeout(t);
-                t = setTimeout(() => fn(...args), wait);
-              };
+          //弱引用 vs 强引用
+
+          // 防抖：停止触发后等待 N ms 才执行（如输入框）
+          const debounce = (fn, wait = 300) => {
+            let t;
+            return (...args) => {
+              clearTimeout(t);
+              t = setTimeout(() => fn(...args), wait);
             };
+          };
 
-            // 节流：间隔 N ms 执行一次（如滚动）
-            const throttle = (fn, wait = 300) => {
-              let last = 0,
-                timer;
-              return (...args) => {
-                const now = Date.now();
-                if (now - last >= wait) {
-                  last = now;
+          // 节流：间隔 N ms 执行一次（如滚动）
+          const throttle = (fn, wait = 300) => {
+            let last = 0,
+              timer;
+            return (...args) => {
+              const now = Date.now();
+              if (now - last >= wait) {
+                last = now;
+                fn(...args);
+              } else if (!timer) {
+                timer = setTimeout(() => {
+                  last = Date.now();
+                  timer = null;
                   fn(...args);
-                } else if (!timer) {
-                  timer = setTimeout(() => {
-                    last = Date.now();
-                    timer = null;
-                    fn(...args);
-                  }, wait - (now - last));
-                }
-              };
+                }, wait - (now - last));
+              }
             };
+          };
 
-            // module ESM & CommonJS
-            // ESM(浏览器，打包器，type：module的 node)
-            // math.JS
-            export const add = (a, b) => a + b;
-            export default function mul(a,b) {
-                return a * b;
-            }
-            // main.js
-            import mul, {add} from './math.js';
-            console.log(add(1,2), mul(2,3));
-            
-            //CommonJS(传统 nodejs)
-            // math.cjs
-            exports.add = (a, b) => a + b;
-            module.exports.mul = (a, b) => a * b;
-            // main.cjs
-            const {add, mul} = require('./math.cjs');
+          // module ESM & CommonJS
+          // ESM(浏览器，打包器，type：module的 node)
+          // math.JS
+          export const add = (a, b) => a + b;
+          export default function mul(a,b) {
+              return a * b;
+          }
+          // main.js
+          import mul, {add} from './math.js';
+          console.log(add(1,2), mul(2,3));
 
+          //CommonJS(传统 nodejs)
+          // math.cjs
+          exports.add = (a, b) => a + b;
+          module.exports.mul = (a, b) => a * b;
+          // main.cjs
+          const {add, mul} = require('./math.cjs');
+
+          // 获取深层属性
+          const get = (obj,path,dft) => {
+              return path.split('.').reduce((o,k)=> (o?.[k])??dft, obj)
+          }
+
+          //intersaction/union/difference/symmetric
+          const uniq = arr => [...new Set(arr)];
+          const intersaction = (a,b) => a.filter(x =>newSet(b).has(x));
+          const diff = (a,b) => a.filter(x => !newSet(b).has(x));
+
+          // 重试promise
+          const retry = (fn,times=3,delay=200) => new Promise((resolve,reject) => {
+              const attempt = async n => {
+                  try { return resolve(await fn())}
+                  catch (e) { return n ?
+              setTimeout(()=> attempt(n-1), delay) : reject(e);
+              }
+              attempt(times);
+          });
+
+          //JSON 解析
+          const safeParse = s => {
+              try { return JSON.parse(s); } catch (e) { return null;
+          }}
+
+          // 取消的Promise
+          const withAbort = (promise, signal) => new Promise((res, rej) => {
+             if(signal?.aborted) return rej(new DOMException("Aborted","AbortError"));
+             const onAbort = () => rej(new DOMException("Aborted","AbortError"));
+             signal?.addEventListener("abort", onAbort, {once:true});
+             promise.then(v=>{ signal?.removeEventListener("abort", onAbort); res(v); },
+             e=>{ signal?.removeEventListener("abort", onAbort); rej(e); });
+          });
     </script>
   </body>
 </html>
