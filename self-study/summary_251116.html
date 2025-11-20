@@ -700,14 +700,38 @@
             // 依赖注入：配合 metadata，自动注入服务。
             // 响应式 / MobX：给字段加 @observable 等特性
 
-          //TypedArray
+          //TypedArray 让js以接近底层语言方式处理二进制数据
           //typedarray是用来读写“原始二进制数据”视图，适合处理文件、网络、音视频缓冲区、WebGL 等需要高性能、定长、无符号/有符号数操作
           //core:
           //arrayBuffer:原始的二进制数据块（固定长度，无法直接读写）
           //TypedArray 视图:基于 ArrayBuffer 的一个“视窗”，规定了读写单位和类型（如 Int8, Uint16, Float32 等），访问就像普通数组 view[i]
           //DataView:更灵活的视图，可按任意类型读取，不受大小端限制
+          //Typedarray type:
+          //Int8Array:有符号8位整数 范围-128~127 每元素字节1
+          //Uint8Array:无符号8位整数 范围0~255 每元素字节1
+          //Uint8ClampedArray:无符号8位整数，超出范围自动截断 每元素字节1
+          //Int16Array:有符号16位整数 范围-32768~32767
+          //Uint16Array:无符号16位整数 范围0~65535 每元素字节2
+          //Int32Array:有符号32位整数 每元素字节4
+          //Uint32Array:无符号32位整数 范围0~4294967295 每元素字节4
+          //Float32Array:32位浮点数 范围-3.4028234663852886e+38~3.4028234663852886e+38 每元素字节4
+          //Float64Array:64位浮点数 范围-1.7976931348623157e+308~1.7976931348623157e+308 每元素字节8
+
+          // typedarray vs array vs arraybuffer
+          // array:普通数组，动态长度，元素类型可以不同
+          // arraybuffer:原始二进制数据块，固定长度，无法直接读写
+
+          // typedarray:基于 arraybuffer 的视图，规定了读写单位和类型 长度固定；元素类型固定，赋值会自动截断或解释为指定类型
+          // 存储结构紧凑，直接映射到内存，性能高
+          // 不支持 push/pop，但支持 set, subarray, map, reduce 等大部分数组方法
+          // 常与 Web APIs 交互，例如 WebGL、Canvas、WebSocket/Fetch 的二进制数据
+
+          //什么时候用？
+          // 操作音视频/图片 buffer（如 WebGL、Canvas 图像数据）;解析网络协议、读取文件 ArrayBuffer;与低级 API 交互需要二进制格式时;需要固定类型和高性能的数值运算
           
-          //Web Worker 
+          
+          //Web Worker 浏览器提供的后台线程执行js机制，用来把耗时或密集型任务从主线程分离，避免页面卡顿。运行在完全独立上下文里，没有DOM/window, 只能通过消息和主线程通信
+          
 
           
     </script>
