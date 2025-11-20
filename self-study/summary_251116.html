@@ -31,6 +31,51 @@
           //深拷贝可能循环引用 JSON爆炸
 
           // 浅拷贝（复制对象的引用，不包括嵌套的对象和数组）
+          // 浅拷贝: 只复制对象的第一层属性,嵌套的对象和数组仍然共享引用
+          // 修改嵌套对象会影响原对象,因为它们指向同一个内存地址
+
+          // 示例1: 对象浅拷贝 - 扩展运算符
+          const original = {
+            name: "Alice",
+            age: 25,
+            address: { city: "Beijing", street: "Main St" },
+            hobbies: ["reading", "coding"]
+          }
+          const shallow1 = { ...original } // 浅拷贝
+          shallow1.name = "Bob" // 修改第一层属性,不影响原对象
+          console.log(original.name) // "Alice" - 未改变
+          shallow1.address.city = "Shanghai" // 修改嵌套对象,影响原对象!
+          console.log(original.address.city) // "Shanghai" - 被改变了!
+
+          // 示例2: 对象浅拷贝 - Object.assign()
+          const shallow2 = Object.assign({}, original) // 浅拷贝
+          shallow2.hobbies.push("swimming") // 修改嵌套数组,影响原对象!
+          console.log(original.hobbies) // ["reading", "coding", "swimming"] - 被改变了!
+
+          // 示例3: 数组浅拷贝 - 扩展运算符
+          const arr1 = [1, 2, { a: 3 }, [4, 5]]
+          const arr2 = [...arr1] // 浅拷贝
+          arr2[0] = 99 // 修改第一层元素,不影响原数组
+          console.log(arr1[0]) // 1 - 未改变
+          arr2[2].a = 999 // 修改嵌套对象,影响原数组!
+          console.log(arr1[2].a) // 999 - 被改变了!
+
+          // 示例4: 数组浅拷贝 - slice()
+          const arr3 = arr1.slice() // 浅拷贝
+          arr3[3].push(6) // 修改嵌套数组,影响原数组!
+          console.log(arr1[3]) // [4, 5, 6] - 被改变了!
+
+          // 示例5: 数组浅拷贝 - concat()
+          const arr4 = arr1.concat() // 浅拷贝
+          arr4[3][0] = 999 // 修改嵌套数组,影响原数组!
+          console.log(arr1[3][0]) // 999 - 被改变了!
+
+          // 浅拷贝方法总结:
+          // 1. 对象: {...obj}, Object.assign({}, obj)
+          // 2. 数组: [...arr], arr.slice(), arr.concat()
+          // 3. 特点: 只复制第一层,嵌套对象/数组共享引用
+          // 4. 适用场景: 简单对象(无嵌套),或需要共享嵌套引用的场景
+          // 5. 注意事项: 修改嵌套对象会影响原对象,可能导致意外副作用
 
           const port = env.PORT ?? 3000; //env.PORT 为 null/undefined 时用 3000
           //可选链
