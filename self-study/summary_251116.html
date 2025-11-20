@@ -660,7 +660,34 @@
           //想要取代 obj.hasOwnProperty.call(...) 之类冗长写法时，用 Reflect.* 版本通常更直观
           //Reflect 只是方法集合，不会自动处理响应式等逻辑，需要和 Proxy/自定义代码配合
 
-          //装饰器提案
+          // reflect vs window ？？
+          //window = 浏览器窗口的总管，管理环境与 DOM；
+          //Reflect = 语言层面的工具箱，专门处理对象、函数的底层操作。两者 API 范围不同，作用不同，只是在浏览器里都能直接访问
+
+          //装饰器提案 decorators proposal
+          //decorator是es提案（stage3）语法糖，用于在类声明时候对类，类方法，访问器，字段“声明式扩展” 为了提供标准方式复用逻辑（日志，权限验证，依赖注入，自动绑定），避免手写繁琐包装代码
+          //类定义阶段运行，不在实例化阶段
+          //以元编程为目标：提供标准化、可组合方式包装类成员：配合metdata提案，实现更完成的依赖注入/反射能力
+          function log(target, context) {
+            const original = target
+            return function (...args) {
+              console.log(`Calling ${context.name} with`, args)
+              return original.call(this, ...args)
+           }
+          }
+
+          class User {
+            name = 'alice'
+
+            @log
+            say(msg) {
+               return `${this.name}: ${msg}`
+            }
+            }
+
+            const u = new User()
+            u.say('hello')
+            // 输出：Calling say with ['hello']
 
           //TypedArray
 
