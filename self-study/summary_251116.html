@@ -731,8 +731,42 @@
           
           
           //Web Worker 浏览器提供的后台线程执行js机制，用来把耗时或密集型任务从主线程分离，避免页面卡顿。运行在完全独立上下文里，没有DOM/window, 只能通过消息和主线程通信
-          
+          //文件必须同源，需要在服务器环境加载（不能直接file:// 运行）
+          //独立线程：worker不能操作dom，也不会阻塞UI
+          // 通信方式：通过 postMessage / onmessage 传递数据（结构化克隆或共享内存）
+          //生命周期：需要手动 worker.terminate() 关闭，或在 Worker 内 self.close()
+          const worker = new Worker('worker.js')
 
+          worker.postMessage({ type: 'start', payload: 100000000 }) // 异步发送
+
+          worker.onmessage = e => {
+            console.log('结果', e.data)
+          }
+        // 不再使用来释放资源
+        // worker.terminate()
+
+        self.onmessage = e => {
+          if (e.data.type === 'start') {
+            const sum = heavyComputation(e.data.payload)
+            self.postMessage(sum)          // 把结果发回主线程
+        }
+        }
+
+        function heavyComputation(n) {
+           let total = 0
+           for (let i = 0; i < n; i++) total += i
+           return total
+        }
+
+        //数据传输可能涉及拷贝成本，可用 Transferable（如 ArrayBuffer）或 SharedArrayBuffer 优化?
+        // Transferable 对象在传输过程中不会被复制，而是直接转移所有权，提高性能
+        // SharedArrayBuffer 允许多个线程共享同一块内存，适合多线程协作
+        // 使用方式：postMessage(data, transferList)
+        // transferList: 要转移的所有 Transferable 对象
+        // 主线程：const buffer = new ArrayBuffer(1024)
+        // 子线程：self.postMessage(buffer, [buffer])
+        // 主线程：const [buffer] = e.ports
+          
           
     </script>
   </body>
