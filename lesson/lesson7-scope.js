@@ -81,7 +81,7 @@ c2() //2
 
 //作业：const curryAdd = a => b => c => a + b + c; => 转化为普通函数
 
-// 柯里化
+// 柯里化 可以部分应用参数 也可以一次性传入所有参数 curryAdd(1)(2)
 const curryAdd = a => b => c => a + b + c
 
 // 普通函数
