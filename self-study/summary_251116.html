@@ -637,9 +637,28 @@
 
           
 
-          // proxy
+          // proxy ES6提供的代理对象构造器 定制对某个对象各种操作行为
+          const proxy = new Proxy(target, handler);
+          //target: 被代理的对象
+          //handler: 带若干 “trap”（拦截器）的方法对象，比如 get、set、has、deleteProperty 等
+          //handler.get(target, property, receiver)
+          //handler.set(target, property, value, receiver)
+          //handler.apply(target, thisArg, argumentsList)
+          //handler.construct(target, argumentsList, newTarget)
+          //handler.deleteProperty(target, property)
+          //handler.enumerate(target)
+          // 常见用途：属性访问控制、校验/格式化入参、自动追踪依赖、实现响应式、虚拟属性
 
-          // reflect
+          // reflect ES6引入的全局对象 把之前散落在object上，或只能通过运算符完成的元编程接口统一成API 所有方法静态不需要new
+          // 常见用途：属性访问控制、校验/格式化入参、自动追踪依赖、实现响应式、虚拟属性
+          // 改善object系api：很多object.*方法范湖boolean/str,不一致，调用需要手动call/apply;reflect提供同名方法(Reflect.get, Reflect.set, Reflect.defineProperty) 返回值更统一(成功 true/失败 false)
+          // 配合proxy使用：proxy的trap里需要默认逻辑 直接用对应的relfect方法转发，保持和原生行为一致
+          //Reflect.get(target, key, receiver),Reflect.set(target, key, value, receiver)
+          //Reflect.apply(func, thisArg, args)、Reflect.construct(target, argList)
+          //Reflect.deleteProperty(target, key)、Reflect.getOwnPropertyDescriptor(target, key)对应 delete target[key]、Object.getOwnPropertyDescriptor
+          //写 Proxy 时，trap 内直接调用响应的 Reflect.，能避免重复实现默认行为，也更不容易出错
+          //想要取代 obj.hasOwnProperty.call(...) 之类冗长写法时，用 Reflect.* 版本通常更直观
+          //Reflect 只是方法集合，不会自动处理响应式等逻辑，需要和 Proxy/自定义代码配合
 
           //装饰器提案
 

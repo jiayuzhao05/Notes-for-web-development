@@ -37,6 +37,13 @@
         const clickHandler =(name)=>{console.log('button clicked'name)
         return <button onclick={()=>clickHandler('jack')}>clickme</button>
 
+        function dump<T>(arg:T): T {
+        return arg;
+      }
+      let hd = dump<string>('houdunren.com');
+
+      //泛型主要作用就是复用函数时，动态传递不同类型参数，其他应该没什么需要特别注意的了？
+      //这是范型 理解为变量。 意思：类型作为参数传递.比如类型是： string， 我们把string 给到 T;number 就把number 给到T  那么T就是number
 
 </body>
 </html>

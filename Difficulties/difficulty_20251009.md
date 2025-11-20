@@ -1011,3 +1011,6 @@ $(this).css('color', 'red').sibling().css('color', '')
 **比如我在git端push origin后目前所有文件状态是未修改,然后我修改后再push,云端被修改后再次变成默认Unmodified状态???? 这样工作区和git仓库保持一致,表达的是这个意思?**
 
 本地仓 和 远程仓的一致性问题
+
+[Symbol.iterator]算是迭代器本身？“用来告诉 JS 当别人对我用 for...of 要用哪个迭代器？”这句话意思是 下面 for 遍历的时候告诉it 要用[Symbol.iterator]迭代器？
+不算迭代器本身， [Symbol.iterator] 是一个函数 或者说 一个方法。要区分开 迭代器 和迭代对象
