@@ -24,17 +24,118 @@
 
 
           // 深拷贝 vs 浅拷贝
-          // 深拷贝（复制对象的整个结构，包括嵌套的对象和数组）（注意函数/循环引用？？？）
+          // 深拷贝（复制对象的整个结构，包括嵌套的对象和数组）（注意函数/循环引用）
           const deep = structuredClone?.({a:{b:1}}); //structuredClone 是浏览器内置函数，支持深拷贝,把对象完整复制一份，新对象和原对象不共享嵌套引用，支持很多复杂类型（map，set，date，arrayBuffer，结构化引用，循环引用）
           JSON.parse(JSON.stringify({a:{b:1}})); //JSON.parse把字符串解析成全新对象，深拷贝
           JSON.stringify({fn:()=>{}}); // "{}" 函数会丢失
           //深拷贝可能循环引用 JSON爆炸
 
+          // 为什么深拷贝需要注意函数和循环引用?
+          // 1. 循环引用问题 - JSON.stringify会无限递归导致栈溢出
+          const objA = { name: "A" }
+          const objB = { name: "B" }
+          objA.ref = objB // A引用B
+          objB.ref = objA // B引用A (形成循环引用 A <-> B)
+          
+          // JSON.stringify遇到循环引用会报错
+          try {
+            JSON.stringify(objA) // TypeError: Converting circular structure to JSON
+          } catch (e) {
+            console.log("circular reference error:", e.message) // 无法序列化循环引用
+          }
+          
+          // 2. 函数问题 - JSON.stringify会忽略函数
+          const objWithFn = {
+            name: "test",
+            fn: function() { return "hello" },
+            arrow: () => "world",
+            method() { return "method" }
+          }
+          const jsonStr = JSON.stringify(objWithFn)
+          console.log(jsonStr) // '{"name":"test"}' - 函数被丢失了!
+          const parsed = JSON.parse(jsonStr)
+          console.log(parsed.fn) // undefined - 函数不存在了
+          
+          // 3. 其他JSON.stringify不支持的类型也会丢失
+          const objWithSpecialTypes = {
+            date: new Date(), // 变成字符串
+            regex: /test/g, // 变成空对象 {}
+            undefined: undefined, // 被忽略
+            symbol: Symbol("test"), // 被忽略
+            bigint: BigInt(123), // 报错
+            map: new Map([["key", "value"]]), // 变成 {}
+            set: new Set([1, 2, 3]) // 变成 {}
+          }
+          // JSON.stringify(objWithSpecialTypes) // 可能报错或丢失数据
+          
+          // 4. structuredClone可以处理循环引用和更多类型
+          const objC = { name: "C" }
+          const objD = { name: "D" }
+          objC.ref = objD
+          objD.ref = objC // 循环引用
+          
+          try {
+            const cloned = structuredClone(objC) // 可以处理循环引用
+            console.log(cloned.ref.ref === cloned) // true - 保持了循环引用结构
+          } catch (e) {
+            console.log("structuredClone错误:", e)
+          }
+          
+          // 5. 手动实现深拷贝需要考虑循环引用检测
+          function deepClone(obj, visited = new WeakMap()) {
+            // 处理基本类型和null
+            if (obj === null || typeof obj !== "object") return obj
+            
+            // 检测循环引用
+            if (visited.has(obj)) {
+              return visited.get(obj) // 返回已访问过的引用
+            }
+            
+            // 处理Date
+            if (obj instanceof Date) return new Date(obj)
+            
+            // 处理RegExp
+            if (obj instanceof RegExp) return new RegExp(obj)
+            
+            // 处理数组
+            if (Array.isArray(obj)) {
+              const cloned = []
+              visited.set(obj, cloned) // 记录访问
+              obj.forEach(item => {
+                cloned.push(deepClone(item, visited))
+              })
+              return cloned
+            }
+            
+            // 处理对象
+            const cloned = {}
+            visited.set(obj, cloned) // 记录访问,防止循环引用
+            for (let key in obj) {
+              if (obj.hasOwnProperty(key)) {
+                cloned[key] = deepClone(obj[key], visited)
+              }
+            }
+            return cloned
+          }
+          
+          // 使用WeakMap记录已访问的对象,避免循环引用导致的无限递归
+          const testObj = { a: 1 }
+          testObj.self = testObj // 自引用
+          const cloned = deepClone(testObj)
+          console.log(cloned.self === cloned) // true - 保持了循环引用结构
+          
+          // 总结:
+          // 1. 循环引用: JSON.stringify会报错,需要检测和记录已访问对象
+          // 2. 函数: JSON.stringify会忽略,需要特殊处理或使用其他方法
+          // 3. 特殊类型: Date/RegExp/Map/Set等需要特殊处理
+          // 4. structuredClone: 浏览器原生API,支持循环引用和更多类型
+          // 5. 手动实现: 需要使用WeakMap记录访问,避免无限递归
+
           // 浅拷贝（复制对象的引用，不包括嵌套的对象和数组）
           // 浅拷贝: 只复制对象的第一层属性,嵌套的对象和数组仍然共享引用
           // 修改嵌套对象会影响原对象,因为它们指向同一个内存地址
 
-          // 示例1: 对象浅拷贝 - 扩展运算符
+          // 1: 对象浅拷贝 - 扩展运算符
           const original = {
             name: "Alice",
             age: 25,
@@ -47,12 +148,12 @@
           shallow1.address.city = "Shanghai" // 修改嵌套对象,影响原对象!
           console.log(original.address.city) // "Shanghai" - 被改变了!
 
-          // 示例2: 对象浅拷贝 - Object.assign()
+          // 2: 对象浅拷贝 - Object.assign()
           const shallow2 = Object.assign({}, original) // 浅拷贝
           shallow2.hobbies.push("swimming") // 修改嵌套数组,影响原对象!
           console.log(original.hobbies) // ["reading", "coding", "swimming"] - 被改变了!
 
-          // 示例3: 数组浅拷贝 - 扩展运算符
+          // 3: 数组浅拷贝 - 扩展运算符
           const arr1 = [1, 2, { a: 3 }, [4, 5]]
           const arr2 = [...arr1] // 浅拷贝
           arr2[0] = 99 // 修改第一层元素,不影响原数组
@@ -60,17 +161,17 @@
           arr2[2].a = 999 // 修改嵌套对象,影响原数组!
           console.log(arr1[2].a) // 999 - 被改变了!
 
-          // 示例4: 数组浅拷贝 - slice()
+          // 4: 数组浅拷贝 - slice()
           const arr3 = arr1.slice() // 浅拷贝
           arr3[3].push(6) // 修改嵌套数组,影响原数组!
           console.log(arr1[3]) // [4, 5, 6] - 被改变了!
 
-          // 示例5: 数组浅拷贝 - concat()
+          // 5: 数组浅拷贝 - concat()
           const arr4 = arr1.concat() // 浅拷贝
           arr4[3][0] = 999 // 修改嵌套数组,影响原数组!
           console.log(arr1[3][0]) // 999 - 被改变了!
 
-          // 浅拷贝方法总结:
+          // 浅拷贝方法:
           // 1. 对象: {...obj}, Object.assign({}, obj)
           // 2. 数组: [...arr], arr.slice(), arr.concat()
           // 3. 特点: 只复制第一层,嵌套对象/数组共享引用
