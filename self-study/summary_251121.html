@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //隐式绑定（implicit binding） 和 显式绑定（explicit binding）
+        //implicit: obj.fn()
+        const obj = {
+            value: 100,
+            show: function() {
+                console.log(this.value);
+            }
+        }
+        obk.show(); //100 this===obj
+        // 坑：丢失隐式绑定
+        const fn = obj.show;
+        fn(); //undefined this指向window不是 obj
+
+
+        //explicit: call,apply,bind
+        function greet(greeting,punctuation) {
+            console.log(greeting + this.name + punctuation);
+        }
+        greet.call(user,'Hello','!'); //Hello obj.name !
+        greet.apply(user,['Hello','!']); //Hello obj.name !
+        const bound = greet.bind(user,'Yo')
+        bound('?'); //Yo user.name ?
+
+        //new绑定（new binding）
+        function Person(name,age) {
+            this.name = name;
+            this.age = age;
+        }
+        const person = new Person('John',20); //this===person 
+        //new绑定优先级高于显式绑定,如果函数new调用，this强制绑定到新对象
+
+        //this
+
+    </script>
+</body>
+</html>
