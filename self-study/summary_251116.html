@@ -683,14 +683,30 @@
             say(msg) {
                return `${this.name}: ${msg}`
             }
-            }
-
+            } //日志注入
+            
             const u = new User()
             u.say('hello')
-            // 输出：Calling say with ['hello']
+            // Calling say with ['hello']
+
+            //提案仍可能变动（Syntax / API 细节）
+            //仅在类上可用，无法修饰普通函数
+            //需要编译器支持（Babel/TypeScript 配置 experimentalDecorators 或 @babel/plugin-proposal-decorators 等）
+            
+            //常见用途：
+            // 日志 / 性能测量：如 @log, @time.
+            // 权限控制 / feature flag：在方法执行前校验权限。
+            // 自动绑定 this：@autobind 确保方法拿到的是实例。
+            // 依赖注入：配合 metadata，自动注入服务。
+            // 响应式 / MobX：给字段加 @observable 等特性
 
           //TypedArray
-
+          //typedarray是用来读写“原始二进制数据”视图，适合处理文件、网络、音视频缓冲区、WebGL 等需要高性能、定长、无符号/有符号数操作
+          //core:
+          //arrayBuffer:原始的二进制数据块（固定长度，无法直接读写）
+          //TypedArray 视图:基于 ArrayBuffer 的一个“视窗”，规定了读写单位和类型（如 Int8, Uint16, Float32 等），访问就像普通数组 view[i]
+          //DataView:更灵活的视图，可按任意类型读取，不受大小端限制
+          
           //Web Worker 
 
           
