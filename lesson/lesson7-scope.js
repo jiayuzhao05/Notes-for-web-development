@@ -78,3 +78,16 @@ c1() //2
 c1() //3
 c2() //1
 c2() //2
+
+//作业：const curryAdd = a => b => c => a + b + c; => 转化为普通函数
+
+// 柯里化
+const curryAdd = a => b => c => a + b + c
+
+// 普通函数
+function add(a, b, c) {
+  return a + b + c
+}
+
+// 参数一次性传入的写法
+const add2 = (a, b, c) => a + b + c
