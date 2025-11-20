@@ -23,12 +23,16 @@
 // //转化为普通函数 c没传不影响结果
 // // const curryAdd = (a,b,c) => a + b + c; 
 
-const curryAdd1 = function (a) {
+const curryAdd1 = function (a,a1) {
+  console.log(a,a1)
   return function (b) {
+    console.log(b)
     return function (c) {
+      console.log(c)
       return a + b + c;
     };
   };
 };
 
-console.log(curryAdd1(1,2))
+console.log(curryAdd1(1,2)) //多参数转化为单参数 链式调用 一次只能接受一个参数，返回新函数
+//非严格：const curryAdd1 = function (a,a1) {}
