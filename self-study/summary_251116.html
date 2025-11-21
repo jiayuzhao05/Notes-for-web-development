@@ -24,13 +24,159 @@
 
 
           // 深拷贝 vs 浅拷贝
-          // 深拷贝（复制对象的整个结构，包括嵌套的对象和数组）（注意函数/循环引用？？？）
+          // 深拷贝（复制对象的整个结构，包括嵌套的对象和数组）（注意函数/循环引用）
           const deep = structuredClone?.({a:{b:1}}); //structuredClone 是浏览器内置函数，支持深拷贝,把对象完整复制一份，新对象和原对象不共享嵌套引用，支持很多复杂类型（map，set，date，arrayBuffer，结构化引用，循环引用）
           JSON.parse(JSON.stringify({a:{b:1}})); //JSON.parse把字符串解析成全新对象，深拷贝
           JSON.stringify({fn:()=>{}}); // "{}" 函数会丢失
           //深拷贝可能循环引用 JSON爆炸
 
+          // 为什么深拷贝需要注意函数和循环引用?
+          // 1. 循环引用问题 - JSON.stringify会无限递归导致栈溢出
+          const objA = { name: "A" }
+          const objB = { name: "B" }
+          objA.ref = objB // A引用B
+          objB.ref = objA // B引用A (循环引用 A <-> B)
+
+          // JSON.stringify遇到循环引用会报错
+          try {
+            JSON.stringify(objA) // TypeError: Converting circular structure to JSON
+          } catch (e) {
+            console.log("circular reference error:", e.message) // 无法序列化循环引用
+          }
+
+          // 2. 函数问题 - JSON.stringify会忽略函数
+          const objWithFn = {
+            name: "test",
+            fn: function() { return "hello" },
+            arrow: () => "world",
+            method() { return "method" }
+          }
+          const jsonStr = JSON.stringify(objWithFn)
+          console.log(jsonStr) // '{"name":"test"}' - 函数被丢失了!
+          const parsed = JSON.parse(jsonStr)
+          console.log(parsed.fn) // undefined - 函数不存在了
+
+          // 3. 其他JSON.stringify不支持的类型也会丢失
+          const objWithSpecialTypes = {
+            date: new Date(), // 变成字符串
+            regex: /test/g, // 变成空对象 {}
+            undefined: undefined, // 被忽略
+            symbol: Symbol("test"), // 被忽略
+            bigint: BigInt(123), // 报错
+            map: new Map([["key", "value"]]), // 变成 {}
+            set: new Set([1, 2, 3]) // 变成 {}
+          }
+          // JSON.stringify(objWithSpecialTypes) // 可能报错或丢失数据
+
+          // 4. structuredClone处理循环引用和更多类型
+          const objC = { name: "C" }
+          const objD = { name: "D" }
+          objC.ref = objD
+          objD.ref = objC // 循环引用
+
+          try {
+            const cloned = structuredClone(objC) // 处理循环引用
+            console.log(cloned.ref.ref === cloned) // true - 保持了循环引用结构
+          } catch (e) {
+            console.log("structuredClone错误:", e)
+          }
+
+          // 5. 手动实现深拷贝需要考虑循环引用检测
+          function deepClone(obj, visited = new WeakMap()) {
+            // 处理基本类型和null
+            if (obj === null || typeof obj !== "object") return obj
+
+            // 检测循环引用
+            if (visited.has(obj)) {
+              return visited.get(obj) // 返回已访问过的引用
+            }
+
+            // 处理Date
+            if (obj instanceof Date) return new Date(obj)
+
+            // 处理RegExp
+            if (obj instanceof RegExp) return new RegExp(obj)
+
+            // 处理数组
+            if (Array.isArray(obj)) {
+              const cloned = []
+              visited.set(obj, cloned) // 记录访问
+              obj.forEach(item => {
+                cloned.push(deepClone(item, visited))
+              })
+              return cloned
+            }
+
+            // 处理对象
+            const cloned = {}
+            visited.set(obj, cloned) // 记录访问,防止循环引用
+            for (let key in obj) {
+              if (obj.hasOwnProperty(key)) {
+                cloned[key] = deepClone(obj[key], visited)
+              }
+            }
+            return cloned
+          }
+
+          // 使用WeakMap记录已访问的对象,避免循环引用导致的无限递归
+          const testObj = { a: 1 }
+          testObj.self = testObj // 自引用
+          const cloned = deepClone(testObj)
+          console.log(cloned.self === cloned) // true - 保持了循环引用结构
+
+          // 总结:
+          // 1. 循环引用: JSON.stringify会报错,需要检测和记录已访问对象
+          // 2. 函数: JSON.stringify会忽略,需要特殊处理或使用其他方法
+          // 3. 特殊类型: Date/RegExp/Map/Set等需要特殊处理
+          // 4. structuredClone: 浏览器原生API,支持循环引用和更多类型
+          // 5. 手动实现: 需要使用WeakMap记录访问,避免无限递归
+
           // 浅拷贝（复制对象的引用，不包括嵌套的对象和数组）
+          // 浅拷贝: 只复制对象的第一层属性,嵌套的对象和数组仍然共享引用
+          // 修改嵌套对象会影响原对象,因为它们指向同一个内存地址
+
+          // 1: 对象浅拷贝 - 扩展运算符
+          const original = {
+            name: "Alice",
+            age: 25,
+            address: { city: "Beijing", street: "Main St" },
+            hobbies: ["reading", "coding"]
+          }
+          const shallow1 = { ...original } // 浅拷贝
+          shallow1.name = "Bob" // 修改第一层属性,不影响原对象
+          console.log(original.name) // "Alice" - 未改变
+          shallow1.address.city = "Shanghai" // 修改嵌套对象,影响原对象!
+          console.log(original.address.city) // "Shanghai" - 被改变了!
+
+          // 2: 对象浅拷贝 - Object.assign()
+          const shallow2 = Object.assign({}, original) // 浅拷贝
+          shallow2.hobbies.push("swimming") // 修改嵌套数组,影响原对象!
+          console.log(original.hobbies) // ["reading", "coding", "swimming"] - 被改变了!
+
+          // 3: 数组浅拷贝 - 扩展运算符
+          const arr1 = [1, 2, { a: 3 }, [4, 5]]
+          const arr2 = [...arr1] // 浅拷贝
+          arr2[0] = 99 // 修改第一层元素,不影响原数组
+          console.log(arr1[0]) // 1 - 未改变
+          arr2[2].a = 999 // 修改嵌套对象,影响原数组!
+          console.log(arr1[2].a) // 999 - 被改变了!
+
+          // 4: 数组浅拷贝 - slice()
+          const arr3 = arr1.slice() // 浅拷贝
+          arr3[3].push(6) // 修改嵌套数组,影响原数组!
+          console.log(arr1[3]) // [4, 5, 6] - 被改变了!
+
+          // 5: 数组浅拷贝 - concat()
+          const arr4 = arr1.concat() // 浅拷贝
+          arr4[3][0] = 999 // 修改嵌套数组,影响原数组!
+          console.log(arr1[3][0]) // 999 - 被改变了!
+
+          // 浅拷贝方法:
+          // 1. 对象: {...obj}, Object.assign({}, obj)
+          // 2. 数组: [...arr], arr.slice(), arr.concat()
+          // 3. 特点: 只复制第一层,嵌套对象/数组共享引用
+          // 4. 适用场景: 简单对象(无嵌套),或需要共享嵌套引用的场景
+          // 5. 注意事项: 修改嵌套对象会影响原对象,可能导致意外副作用
 
           const port = env.PORT ?? 3000; //env.PORT 为 null/undefined 时用 3000
           //可选链
@@ -187,11 +333,16 @@
           c(); //2
           c(); //3
 
-          //高阶函数
-          const once = fn => {
-            let done = false, val;
-            return (...args) => done ? val : (done = true, val = fn(...args));
-          }
+          //高阶函数 接收函数作为参数/返回函数的函数
+          const once = fn => { //once 高阶函数 接收函数fn“只会执行一次的新版函数” 返回新函数
+            let done = false, val;//done:fn是否执行过，val:保存fn第一次执行结果 之后复用
+            return (...args) => done ? val : (done = true, val = fn(...args)); //三元表达式
+          } //让某个函数 只执行一次，后面再怎么调用，都复用第一次的返回值
+          //使用场景：只需初始化一次的逻辑（绑定事件、初始化配置、发起一次请求等）
+
+          //三元表达式
+          //如果done为true，返回之前保存的 val，不再调用 fn
+          //如果done为false，调用fn保存结果到val，done=true，下次再调用，返回val
 
           //错误处理
           try {
@@ -260,17 +411,20 @@
             double = (x) => x * 2;
           compose(inc, double)(3); // 7
 
-          // 记忆化？？？？
-          const memo = (fn) => {
-            const cache = new Map();
-            return (...args) => {
-              const key = JSON.stringify(args);
-              if (cache.has(key)) return cache.get(key);
-              const val = fn(...args);
-              cache.set(key, val);
-              return val;
+          // 记忆化 memoization 给纯函数加一层缓存 相同参数只算一次 下次直接用记住的结果 减少重复计算
+          const memo = (fn) => { //记忆化高阶函数memo接收函数fn 返回新函数 “带缓存版本”
+            const cache = new Map(); //缓存容器map（key-value） 存储参数和结果
+            return (...args) => { //新函数 参数是fn的参数 （...args 是fn的参数）
+              const key = JSON.stringify(args); //参数序列化成字符串 作为缓存key（同一参数组合->同一key)
+              if (cache.has(key)) return cache.get(key); //如果缓存中有，返回缓存结果，不再调用fn
+              const val = fn(...args); //否则调用fn计算结果（新结果）
+              cache.set(key, val); //这次结果存入缓存
+              return val; //返回结果
             };
           };
+          //什么时候适合用？
+          //fn是纯函数 同样输入得到同样输出
+          // 计算开销大+重复调用多
 
           // 正则
           /^\d{4}-\d{2}-\d{2}$/.test("2025-01-01"); // true
@@ -306,8 +460,8 @@
           wm.set(key, 123);
 
           // map vs weakmap
-          //weakmap 弱引用：键对象如果没有其它引用会自动被 GC
-          //weakmap 不可遍历 因为key随时被回收，遍历没有意义。不像map可以（keys()、values()、entries()）
+          // weakmap 弱引用：键对象如果没有其它引用会自动被 GC
+          // weakmap 不可遍历 因为key随时被回收，遍历没有意义。不像map可以（keys()、values()、entries()）
           // weakmap没有size（key随时可能被回收） 适合自动清理的缓存
           // weakmap 将数据和对象绑定但不阻止对象被垃圾回收
           // map适合key频繁访问的场景，weakmap适合key自动清理的场景
@@ -317,7 +471,64 @@
           // 3.自动清理缓存的memoization
 
 
-          //弱引用 vs 强引用
+          // 弱引用 vs 强引用
+          // 强引用(Strong Reference): 阻止对象被垃圾回收,只要存在强引用,对象就不会被回收
+          // 弱引用(Weak Reference): 不阻止对象被垃圾回收,如果对象没有其他强引用,即使存在弱引用也会被回收
+
+          // 1: 强引用 - Map/Set/Array/Object
+          const strongMap = new Map()
+          let obj1 = { name: "obj1" }
+          strongMap.set(obj1, "data") // 强引用: Map持有obj1的强引用
+          obj1 = null // 即使obj1变量置为null,对象仍被Map引用,不会被回收
+          // obj1对象仍然存在于内存中,因为Map持有强引用
+
+          // 2: 弱引用 - WeakMap/WeakSet
+          const weakMap = new WeakMap()
+          let obj2 = { name: "obj2" }
+          weakMap.set(obj2, "data") // 弱引用: WeakMap持有obj2的弱引用
+          obj2 = null // obj2变量置为null后,对象没有其他强引用,会被垃圾回收
+          // obj2对象会被回收,WeakMap中的条目也会自动删除
+
+          // 3: 强引用导致内存泄漏
+          const cache = [] // 全局数组持有强引用
+          function createTempNode() {
+            const node = document.createElement("div")
+            cache.push(node) // 强引用: 数组持有node的强引用
+            return node
+          }
+          let tempNode = createTempNode()
+          tempNode = null // 即使tempNode置为null,node仍被cache数组引用,无法回收
+          // 导致内存泄漏: node永远不会被回收,除非手动清空cache
+
+          // 4: 弱引用避免内存泄漏
+          const weakCache = new WeakMap() // WeakMap持有弱引用
+          function createTempNode2() {
+            const node = document.createElement("div")
+            weakCache.set(node, { data: "some data" }) // 弱引用: 不阻止回收
+            return node
+          }
+          let tempNode2 = createTempNode2()
+          tempNode2 = null // tempNode2置为null后,node没有其他强引用,会被回收
+          // WeakMap中的条目也会自动删除,不会造成内存泄漏
+
+          // 5: 对比 - DOM节点缓存
+          // 强引用方式(有问题):
+          const domCache = new Map() // 强引用,可能导致内存泄漏
+          function cacheDOM(node, data) {
+            domCache.set(node, data) // 即使DOM被移除,仍被Map引用,无法回收
+          }
+
+          // 弱引用方式(推荐):
+          const domWeakCache = new WeakMap() // 弱引用,自动清理
+          function cacheDOMWeak(node, data) {
+            domWeakCache.set(node, data) // DOM被移除后自动回收,WeakMap条目自动删除
+          }
+
+          // 关键区别总结:
+          // 1. 强引用: 对象被引用时不会被GC回收,可能导致内存泄漏
+          // 2. 弱引用: 对象没有其他强引用时会被GC回收,自动清理,避免内存泄漏
+          // 3. WeakMap/WeakSet: 键必须是对象,不可遍历,没有size属性(因为随时可能被回收)
+          // 4. WeakMap适合存储临时数据,自动清理缓存,避免内存泄漏
 
           // 防抖：停止触发后等待 N ms 才执行（如输入框）
           const debounce = (fn, wait = 300) => {
@@ -411,7 +622,7 @@
             }
           }
             let hd = new User("anna")
-            console.log(hd.name) 
+            console.log(hd.name)
             let fenney = new User("fenney")
             console.log(fenney.name)
 
@@ -424,19 +635,137 @@
           }
           Hd.say();
 
-          
 
-          // proxy
 
-          // reflect
+          // proxy ES6提供的代理对象构造器 定制对某个对象各种操作行为
+          const proxy = new Proxy(target, handler);
+          //target: 被代理的对象
+          //handler: 带若干 “trap”（拦截器）的方法对象，比如 get、set、has、deleteProperty 等
+          //handler.get(target, property, receiver)
+          //handler.set(target, property, value, receiver)
+          //handler.apply(target, thisArg, argumentsList)
+          //handler.construct(target, argumentsList, newTarget)
+          //handler.deleteProperty(target, property)
+          //handler.enumerate(target)
+          // 常见用途：属性访问控制、校验/格式化入参、自动追踪依赖、实现响应式、虚拟属性
 
-          //装饰器提案
+          // reflect ES6引入的全局对象 把之前散落在object上，或只能通过运算符完成的元编程接口统一成API 所有方法静态不需要new
+          // 常见用途：属性访问控制、校验/格式化入参、自动追踪依赖、实现响应式、虚拟属性
+          // 改善object系api：很多object.*方法范湖boolean/str,不一致，调用需要手动call/apply;reflect提供同名方法(Reflect.get, Reflect.set, Reflect.defineProperty) 返回值更统一(成功 true/失败 false)
+          // 配合proxy使用：proxy的trap里需要默认逻辑 直接用对应的relfect方法转发，保持和原生行为一致
+          //Reflect.get(target, key, receiver),Reflect.set(target, key, value, receiver)
+          //Reflect.apply(func, thisArg, args)、Reflect.construct(target, argList)
+          //Reflect.deleteProperty(target, key)、Reflect.getOwnPropertyDescriptor(target, key)对应 delete target[key]、Object.getOwnPropertyDescriptor
+          //写 Proxy 时，trap 内直接调用响应的 Reflect.，能避免重复实现默认行为，也更不容易出错
+          //想要取代 obj.hasOwnProperty.call(...) 之类冗长写法时，用 Reflect.* 版本通常更直观
+          //Reflect 只是方法集合，不会自动处理响应式等逻辑，需要和 Proxy/自定义代码配合
 
-          //TypedArray
+          // reflect vs window ？？
+          //window = 浏览器窗口的总管，管理环境与 DOM；
+          //Reflect = 语言层面的工具箱，专门处理对象、函数的底层操作。两者 API 范围不同，作用不同，只是在浏览器里都能直接访问
 
-          //Web Worker 
+          //装饰器提案 decorators proposal
+          //decorator是es提案（stage3）语法糖，用于在类声明时候对类，类方法，访问器，字段“声明式扩展” 为了提供标准方式复用逻辑（日志，权限验证，依赖注入，自动绑定），避免手写繁琐包装代码
+          //类定义阶段运行，不在实例化阶段
+          //以元编程为目标：提供标准化、可组合方式包装类成员：配合metdata提案，实现更完成的依赖注入/反射能力
+          function log(target, context) {
+            const original = target
+            return function (...args) {
+              console.log(`Calling ${context.name} with`, args)
+              return original.call(this, ...args)
+           }
+          }
 
-          
+          class User {
+            name = 'alice'
+
+            @log
+            say(msg) {
+               return `${this.name}: ${msg}`
+            }
+            } //日志注入
+
+            const u = new User()
+            u.say('hello')
+            // Calling say with ['hello']
+
+            //提案仍可能变动（Syntax / API 细节）
+            //仅在类上可用，无法修饰普通函数
+            //需要编译器支持（Babel/TypeScript 配置 experimentalDecorators 或 @babel/plugin-proposal-decorators 等）
+
+            //常见用途：
+            // 日志 / 性能测量：如 @log, @time.
+            // 权限控制 / feature flag：在方法执行前校验权限。
+            // 自动绑定 this：@autobind 确保方法拿到的是实例。
+            // 依赖注入：配合 metadata，自动注入服务。
+            // 响应式 / MobX：给字段加 @observable 等特性
+
+          //TypedArray 让js以接近底层语言方式处理二进制数据
+          //typedarray是用来读写“原始二进制数据”视图，适合处理文件、网络、音视频缓冲区、WebGL 等需要高性能、定长、无符号/有符号数操作
+          //core:
+          //arrayBuffer:原始的二进制数据块（固定长度，无法直接读写）
+          //TypedArray 视图:基于 ArrayBuffer 的一个“视窗”，规定了读写单位和类型（如 Int8, Uint16, Float32 等），访问就像普通数组 view[i]
+          //DataView:更灵活的视图，可按任意类型读取，不受大小端限制
+          //Typedarray type:
+          //Int8Array:有符号8位整数 范围-128~127 每元素字节1
+          //Uint8Array:无符号8位整数 范围0~255 每元素字节1
+          //Uint8ClampedArray:无符号8位整数，超出范围自动截断 每元素字节1
+          //Int16Array:有符号16位整数 范围-32768~32767
+          //Uint16Array:无符号16位整数 范围0~65535 每元素字节2
+          //Int32Array:有符号32位整数 每元素字节4
+          //Uint32Array:无符号32位整数 范围0~4294967295 每元素字节4
+          //Float32Array:32位浮点数 范围-3.4028234663852886e+38~3.4028234663852886e+38 每元素字节4
+          //Float64Array:64位浮点数 范围-1.7976931348623157e+308~1.7976931348623157e+308 每元素字节8
+
+          // typedarray vs array vs arraybuffer
+          // array:普通数组，动态长度，元素类型可以不同
+          // arraybuffer:原始二进制数据块，固定长度，无法直接读写
+
+          // typedarray:基于 arraybuffer 的视图，规定了读写单位和类型 长度固定；元素类型固定，赋值会自动截断或解释为指定类型
+          // 存储结构紧凑，直接映射到内存，性能高
+          // 不支持 push/pop，但支持 set, subarray, map, reduce 等大部分数组方法
+          // 常与 Web APIs 交互，例如 WebGL、Canvas、WebSocket/Fetch 的二进制数据
+
+          //什么时候用？
+          // 操作音视频/图片 buffer（如 WebGL、Canvas 图像数据）;解析网络协议、读取文件 ArrayBuffer;与低级 API 交互需要二进制格式时;需要固定类型和高性能的数值运算
+
+
+          //Web Worker 浏览器提供的后台线程执行js机制，用来把耗时或密集型任务从主线程分离，避免页面卡顿。运行在完全独立上下文里，没有DOM/window, 只能通过消息和主线程通信
+          //文件必须同源，需要在服务器环境加载（不能直接file:// 运行）
+          //独立线程：worker不能操作dom，也不会阻塞UI
+          // 通信方式：通过 postMessage / onmessage 传递数据（结构化克隆或共享内存）
+          //生命周期：需要手动 worker.terminate() 关闭，或在 Worker 内 self.close()
+          const worker = new Worker('worker.js')
+
+          worker.postMessage({ type: 'start', payload: 100000000 }) // 异步发送
+
+          worker.onmessage = e => {
+            console.log('结果', e.data)
+          }
+        // 不再使用来释放资源
+        // worker.terminate()
+
+        self.onmessage = e => {
+          if (e.data.type === 'start') {
+            const sum = heavyComputation(e.data.payload)
+            self.postMessage(sum)          // 把结果发回主线程
+        }
+        }
+
+        function heavyComputation(n) {
+           let total = 0
+           for (let i = 0; i < n; i++) total += i
+           return total
+        }
+
+        //数据传输可能涉及拷贝成本，可用 Transferable（如 ArrayBuffer）或 SharedArrayBuffer 优化?
+        // Transferable 对象在传输过程中不会被复制，而是直接转移所有权，提高性能
+        // SharedArrayBuffer 允许多个线程共享同一块内存，适合多线程协作
+        // 使用方式：postMessage(data, transferList)
+        // transferList: 要转移的所有 Transferable 对象
+        // 主线程：const buffer = new ArrayBuffer(1024)
+        // 子线程：self.postMessage(buffer, [buffer])
+        // 主线程：const [buffer] = e.ports
     </script>
   </body>
 </html>
