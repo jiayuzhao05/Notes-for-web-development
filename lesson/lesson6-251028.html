@@ -82,11 +82,34 @@
       FuncOuter({ name: "fenney" }, 1); //1 第一个参数是对象自变量(key:value)
 
       //箭头函数 vs 普通函数: 箭头不是普通函数的语法糖
-      // this/arguments不绑定,继承外层this 需要显式传参?
-      // 没有原型,没有 constructor,没有prototype属性?
-      // 不能用做构造函数 不能new ?
-      //不绑定自己的 this，arguments，super，new.target的函数表达式
-      //箭头函数参数可以用...获取剩余参数
+      // 1. this/arguments不绑定:
+      //    - this: 不绑定自己的this,继承外层作用域的this(词法绑定,静态)
+      //    - arguments: 没有arguments对象,需要用剩余参数...args获取
+      // 2. 没有原型: 没有prototype属性,没有constructor,没有原型链
+      // 3. 不能用做构造函数: 不能new,会报错
+      // 4. 不绑定自己的 this, arguments, super, new.target的函数表达式
+      // 5. 箭头函数参数可以用...获取剩余参数
+
+      // 示例1: arguments 处理
+      function normalFunc() {
+        console.log(arguments) // 有arguments对象
+        const arrow = (...args) => {
+          // console.log(arguments) // 报错: arguments is not defined
+          console.log(args) // 使用剩余参数
+        }
+        arrow(1, 2, 3)
+      }
+      // normalFunc(1, 2, 3)
+
+      // 示例2: 没有prototype
+      const arrowFunc = () => {}
+      const normalFunc2 = function () {}
+      // console.log(arrowFunc.prototype) // undefined
+      // console.log(normalFunc2.prototype) // {constructor: ƒ}
+
+      // 示例3: 不能new
+      // const Arrow = () => {}
+      // new Arrow() // TypeError: Arrow is not a constructor
 
       //this是静态,this指向函数声明时所在作用域下this值
       function getName() {

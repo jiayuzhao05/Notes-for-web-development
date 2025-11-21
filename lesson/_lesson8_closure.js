@@ -20,5 +20,6 @@ console.log(result.get()) //2
 //作业 currify
 const curryAdd = a => b => c => a + b + c;
 //转化为普通函数
+const add = (a, b, c) => a + b + c;
 
 //下节课讲 this

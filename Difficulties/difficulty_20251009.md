@@ -1011,3 +1011,27 @@ $(this).css('color', 'red').sibling().css('color', '')
 **比如我在git端push origin后目前所有文件状态是未修改,然后我修改后再push,云端被修改后再次变成默认Unmodified状态???? 这样工作区和git仓库保持一致,表达的是这个意思?**
 
 本地仓 和 远程仓的一致性问题
+
+[Symbol.iterator]算是迭代器本身？“用来告诉 JS 当别人对我用 for...of 要用哪个迭代器？”这句话意思是 下面 for 遍历的时候告诉it 要用[Symbol.iterator]迭代器？
+不算迭代器本身， [Symbol.iterator] 是一个函数 或者说 一个方法。要区分开 迭代器 和迭代对象
+
+浅拷贝是不是一种机制 实现浅拷贝有很多种方法 并且在修改第一层不会改变原对象 但如果修改嵌套对象就会影响原对象了？
+嗯：对拷贝对象中的嵌套属性进行修改，原对象也会被修改。
+
+const once = fn => { 
+            let done = false, val;
+            return (...args) => done ? val : (done = true, val = fn(...args))
+          } 
+
+三元表达式  done ? val : (done = true, val = fn(...args)) 能不能写成"done ? val : (val = fn(...args),done = true) "?后面括号里参数顺序换个位置？
+ok
+
+reflect和window区别 都是全局对象?
+完全不同的两个东西。 reflect 是 拦截js操作的方法。 window 是顶层对象。
+
+| 特性       | 静态方法             | 实例方法                | 动态方法                               |
+| ---------- | -------------------- | ----------------------- | -------------------------------------- |
+| 绑定位置   | 类本身               | `Class.prototype`       | 运行时决定（挂在实例或通过表达式生成） |
+| 调用方式   | `Class.method()`     | `instance.method()`     | 依定义方式决定                         |
+| `this` 指向| 类（或调用者设置）   | 实例                   | 取决于赋值的上下文                     |
+| 场景       | 工具函数、工厂函数   | 行为操作实例数据        | 灵活扩展、按需生成函数                 |
