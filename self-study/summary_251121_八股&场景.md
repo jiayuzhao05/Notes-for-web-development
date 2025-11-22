@@ -486,5 +486,130 @@ function isElementInViewport(el) {
 | 分片上传     | 上传文件分片，信息保存在本地                                 |
 |              | 服务端保存已上传分片                                         |
 | 断点续传处理 | 重新上传时，客户端将本地分片hash值和服务端已存在分片比对；只上传缺失、失败分片 |
-|              |                                                              |
+| 合并         | 客户端发送合并请求，服务端根据文件标识、类型、分片顺序合并文件，合并完成后删除临时分片文件 |
+
+Symbol 实现class私有方法
+
+通过symbol()创建 传入描述字符串 每个值唯一
+
+Object.getOwnPropertySymbols()获取对象的所有Symbol属性，Symbol.for()创建和获取，相同key会返回相同的Symbol值
+
+
+
+**vuex 刷新页面丢失数据的情况**
+
+状态存储在内存，页面刷新，vue应用初始化，数据充值
+
+solution：
+
+结合 localStorage/sessionStorage
+
+使用 vuex-persistedstate 插件
+
+```js
+import createPersistedState from 'vuex-persistedstate'
+
+export default new Vuex.Store({
+  // ...
+  plugins: [createPersistedState()]
+})
+```
+
+服务端渲染SSR 如果是nuxt.js项目，利用内置SSR特性保持状态
+
+
+
+**number有最大值么**
+
+最大安全正数 2^53 - 1 仅在此范围内可以保持精确，还有一个最大可表示正数，超过这个值变成infinity。js内部存储number（64位双精度浮点数）
+
+
+
+**forEach可以异步么**
+
+可以 但不会等待异步执行完毕后在执行下一个循环 换成for of/promise.all
+
+
+
+blob(binary large object)
+
+处理二进制数据obj 不可变原始数据类文件对象 存储二进制数据 处理文件上传、下载等 创建后内容不可变 存储从小到大数据
+
+
+
+-------------
+
+**TS**
+
+编译实现变量类型推导依赖类型检查器
+
+编译器对源代码语法分析，生成抽象语法树AST
+
+
+
+基础类型：
+
+`never` 永不存在的值的类型（用于抛出异常或无限循环的函数）
+
+`unknown` 表示未知类型,比 `any` 更安全
+
+`any` 关闭TS类型检查
+
+
+
+高级类型
+
+Partial<T> 可选属性
+
+`Required<T>` 必选属性
+
+Readonly<T>
+
+Pick<T, K>   从T选取属性K
+
+Type Pick<T, K extends keyof T> = { [P in K]: T[P]}
+
+Omit<T, K>  从T中移除属性K
+
+Type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T,K>>
+
+
+
+泛型 类型参数化 创建可重用组件啊 保持类型安全 处理API响应、工具函数
+
+```js
+//1.函数泛型
+function indentity<T>(arg:T):T{
+  return arg;
+}
+
+//2.接口泛型
+interface GenericInterface<T>{
+  value:T
+  getValue:()=>T
+}
+
+//3.类泛型
+class GenericClass<T> {
+  private value: T;
+  
+  constructor(value: T) {
+    this.value = value;
+  }
+  
+  getValue(): T {
+    return this.value;
+  }
+}
+
+//4.泛型约束(extends)
+function getLength<T extends {length:number}>(obj:T):number{
+  return obj.length
+}
+
+//5.默认泛型类型
+function createArray<T = string>(length: number, value: T): Array<T> {
+  return Array(length).fill(value);
+}
+```
 
