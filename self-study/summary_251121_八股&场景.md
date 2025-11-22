@@ -354,3 +354,104 @@ event.stopPropagation() vs stopImmediatePropagation()
 
 event阻止事件冒泡到父节点，stop还阻止钙元素上同事件监听器被触发
 
+
+
+load发现在浏览器加载什么时机？
+
+在页面和所有资源完全加载后触发，初始化第三方脚本或库，执行依赖于图片尺寸的布局调整，统计页面加载时间，启动视频播放或动画。
+
+
+
+function vs object
+
+function可以调用自身，都是obj实例，obj子类型，继承obj所有属性和方法
+
+
+
+长列表渲染
+
+无限滚动、虚拟滚动、分页
+
+
+
+axios vs fetch vs ajax
+
+| ajax(Asynchronous JavaScript and XML) | 异步技术，匀速网页不重新加载和服务器交换数据                 |
+| ------------------------------------- | ------------------------------------------------------------ |
+|                                       | 使用 XMLHttpRequest 对象发送和接收 HTTP 请求和响应           |
+|                                       | 概念，不是具体技术                                           |
+| Fecth API                             | JS内置用来发送HTTP请求和响应处理的API（较新，在旧浏览器需要polyfill) |
+|                                       | return Promise, `.then()` 链式调处理响应                     |
+| Axios                                 | 基于Promise的HTTP客户端，在浏览器或nodejs运行                |
+|                                       | 包含AJAX高级特性，如拦截请求和响应、转换请求、响应数据       |
+|                                       | return promise，`.then()` 和 `.catch()` 处理响应             |
+
+
+
+**如何判断元素在可视区域？**
+
+**getBoundingClientRect()** 比较视窗位置信息判断元素是否在可视区域
+
+```js
+function isElementInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&  //documentElement根结点
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+```
+
+**IntersectionObserver API**  观察元素是否进入/退出可视区域，设置threshold判断元素进入/退出程度
+
+```js
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        console.log('Element is in the viewport');
+      } else {
+        console.log('Element is not in the viewport');
+      }
+    });
+  },
+  { threshold: 0.5 } // 当元素至少 50% 可见时触发回调
+);
+
+observer.observe(document.querySelector('#myElement'));
+```
+
+**scrollTop, clientHeight**
+
+```js
+function isElementInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+  const elementTop = rect.top + scrollTop;
+  const elementBottom = elementTop + el.offsetHeight;
+
+  return (
+    elementTop >= scrollTop &&
+    elementBottom <= scrollTop + viewportHeight
+  );
+}
+```
+
+
+
+| e.target  | 事件来源                                                     |
+| --------- | ------------------------------------------------------------ |
+| e.current | 当前正在处理时间元素                                         |
+|           | 事件委托和时间冒泡/捕获，两属性值不同，开发者根据具体需求选择合适属性 |
+
+|          | CommonJS                                                     | ES Module                                                    |
+| -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 语法     | 动态加载. require()` 导入模块，运行时才会被执行，可以条件判断导入，`module.exports` 导出模块 支持导出单个值或对象 | 静态分析. 使用 `import`（编译时被处理，写在顶部） 和 `export` 导出 支持命名导出和默认导出 |
+| 环境支持 | 设计用于Nodejs，服务端不需要异步                             | 设计用于浏览器环境 支持异步                                  |
+| 引用     | require 值拷贝                                               | import 值引用                                                |
+| 循环依赖 | 加载时已加载模块，出现循环依赖 返回加载模块exports对象       | 编译时已经确定依赖关系，出现循环依赖先加载没有被引用模块，再加载引用模块 |
+
