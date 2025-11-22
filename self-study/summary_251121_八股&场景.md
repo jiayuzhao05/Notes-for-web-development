@@ -318,7 +318,39 @@ mouseenter不支持事件冒泡？？？
 | for of                       | 循环一个可迭代对象的属性，对象或者原型上必须有@iterator部署，否则会报错，如果没有可以通过object.keys转换成可迭代对象 |
 | Object.keys                  | 返回一个由原对象中可以枚举属性的名称组成的数组               |
 | Object.entries               | 一个由原对象中可枚举键值对组成的数组                         |
-| Object.getOwnPropertyNames   | 一个指定对象的所有属性的属性名组成的数组                     |
+| Object.getOwnPropertyNames   | 一个指定对象的所有属性的属性名组成的数组。不包含继承属性 Object.keys() |
 | Object.getOwnPropertySymbols | 一个给定对象所有symbol值组成的数组                           |
 | Reflect.ownKeys              | 由目标对象自身的属性键组成的数组，有点像object.key           |
+
+Object.is vs \==
+
+==没有===严格，如果类型不同转换为相同类型再比较
+
+object.is和\=\==基本一致，但是有两个区别：+0不等于-0，NaN=自身
+
+
+
+isNaN vs Number.isNaN()
+
+isNaN:传入一个值，然后isNaN将其类型转换，如果能转换成数字类型返回false,不能返回true
+
+Number.isNaN():不需要转换类型，严格判断传入值是否为数字类型,不是返回false
+
+
+
+0.1+0.2!=0.3
+
+js数据存储64位双精度，0.1和0.2转换成二进制加减时52位尾数导致转换成10进制的时候转换出错，出现3.000000004，通过tofixed/*10相加再➗10解决
+
+
+
+use strict 
+
+不允许使用8进制数，不允许删除变量和函数，不允许在if中定义函数，this不再指向window而是undefined
+
+
+
+event.stopPropagation() vs stopImmediatePropagation()
+
+event阻止事件冒泡到父节点，stop还阻止钙元素上同事件监听器被触发
 
