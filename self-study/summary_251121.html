@@ -445,11 +445,11 @@
         }
       }
 
-      const userService = new UserService()
-      const proxiedService = createAOPProxy(userService, [loggingAspect])
+      const userServiceAOP = new UserService()
+      const proxiedService = createAOPProxy(userServiceAOP, [loggingAspect])
       proxiedService.getUser(1)  // 自动添加日志功能
 
-      // 4. AOP 常见应用场景
+      // 4. AOP 应用场景
       // a) 日志记录
       const logAspect = {
         before(target, method, args) {
@@ -533,10 +533,472 @@
       // 两者可以结合使用，装饰器可以作为 AOP 的声明式语法
 
       //IOC, Inversion of Control（控制反转）
+      // 控制反转是一种设计原则，将对象的创建和依赖关系的管理交给框架/容器来处理
+      // 传统方式：对象自己创建依赖（控制权在对象内部）
+      // IOC 方式：依赖由外部容器注入（控制权反转到容器）
 
-      //ORM
+      // 1. 传统方式（控制权在对象内部）
+      class UserService {
+        constructor() {
+          // 对象自己创建依赖 - 紧耦合
+          this.logger = new Logger()
+          this.database = new Database()
+        }
+        getUser(id) {
+          this.logger.log(`获取用户: ${id}`)
+          return this.database.query(`SELECT * FROM users WHERE id = ${id}`)
+        }
+      }
+      // 问题：UserService 与 Logger、Database 紧耦合，难以测试和替换
 
-      //序列化
+      // 2. IOC 方式（控制权在容器）
+      class UserServiceIOC {
+        constructor(logger, database) {
+          // 依赖由外部注入 - 松耦合
+          this.logger = logger
+          this.database = database
+        }
+        getUser(id) {
+          this.logger.log(`获取用户: ${id}`)
+          return this.database.query(`SELECT * FROM users WHERE id = ${id}`)
+        }
+      }
+      // 优势：依赖可以轻松替换，便于测试和扩展
+
+      // 3. IOC 容器（依赖注入容器）
+      class IOCContainer {
+        constructor() {
+          this.services = new Map()
+          this.singletons = new Map()
+        }
+
+        // 注册服务
+        register(name, factory, singleton = false) {
+          this.services.set(name, { factory, singleton })
+        }
+
+        // 解析服务（创建实例）
+        resolve(name) {
+          const service = this.services.get(name)
+          if (!service) {
+            throw new Error(`Service ${name} not found`)
+          }
+
+          // 单例模式
+          if (service.singleton) {
+            if (!this.singletons.has(name)) {
+              this.singletons.set(name, this.createInstance(service.factory))
+            }
+            return this.singletons.get(name)
+          }
+
+          // 每次创建新实例
+          return this.createInstance(service.factory)
+        }
+
+        // 创建实例（自动解析依赖）
+        createInstance(factory) {
+          if (typeof factory === 'function') {
+            // 获取构造函数参数
+            const paramNames = this.getParamNames(factory)
+            // 解析依赖
+            const dependencies = paramNames.map(name => this.resolve(name))
+            // 创建实例
+            return new factory(...dependencies)
+          }
+          return factory
+        }
+
+        // 获取函数参数名（简化版）
+        getParamNames(func) {
+          const str = func.toString()
+          const match = str.match(/constructor\s*\(([^)]*)\)/)
+          if (!match) return []
+          return match[1].split(',').map(p => p.trim().split(' ')[0]).filter(p => p)
+        }
+      }
+
+      // 4. 使用 IOC 容器
+      const container = new IOCContainer()
+
+      // 注册服务
+      container.register('Logger', class Logger {
+        log(msg) { console.log(`[LOG] ${msg}`) }
+      }, true) // 单例
+
+      container.register('Database', class Database {
+        query(sql) { return `查询结果: ${sql}` }
+      }, true) // 单例
+
+      container.register('UserService', class UserService {
+        constructor(Logger, Database) {
+          this.logger = new Logger()
+          this.database = new Database()
+        }
+        getUser(id) {
+          this.logger.log(`获取用户: ${id}`)
+          return this.database.query(`SELECT * FROM users WHERE id = ${id}`)
+        }
+      })
+
+      // 解析服务（自动注入依赖）
+      const userServiceIOC = container.resolve('UserService')
+      userServiceIOC.getUser(1)
+
+      // 5. IOC 的核心概念
+      // - 控制反转：对象不再控制自己的依赖，而是由容器控制
+      // - 依赖注入（DI）：依赖通过构造函数、属性或方法注入
+      // - 依赖倒置原则（DIP）：依赖抽象而不是具体实现
+      // - 单一职责原则：每个类只负责自己的职责
+
+      // 6. 依赖注入的三种方式
+      // a) 构造函数注入（最常用）
+      class ServiceA {
+        constructor(serviceB) {
+          this.serviceB = serviceB
+        }
+      }
+
+      // b) 属性注入
+      class ServiceB {
+        setServiceC(serviceC) {
+          this.serviceC = serviceC
+        }
+      }
+
+      // c) 方法注入
+      class ServiceC {
+        doSomething(serviceD) {
+          return serviceD.process()
+        }
+      }
+
+      // 7. IOC 的优势
+      // - 松耦合：对象不直接依赖具体实现，而是依赖抽象
+      // - 可测试性：可以轻松注入 mock 对象进行单元测试
+      // - 可维护性：修改实现不影响使用方
+      // - 可扩展性：可以轻松替换或添加新的实现
+      // - 单一职责：每个类专注于自己的职责
+
+      // 8. IOC 的缺点
+      // - 学习曲线：需要理解 IOC 概念和容器使用
+      // - 调试困难：依赖关系隐藏在容器中
+      // - 性能开销：容器需要解析和创建对象
+      // - 过度使用：简单场景可能过度设计
+
+      // 9. IOC 与 DI 的关系
+      // IOC 是设计原则（控制反转）
+      // DI 是实现方式（依赖注入）
+      // IOC 容器是实现 DI 的工具
+      // 
+      // IOC 可以通过以下方式实现：
+      // - 依赖注入（DI）：最常见
+      // - 依赖查找（DL）：较少使用
+      // - 服务定位器（Service Locator）：反模式
+
+      // 10. 框架中的 IOC
+      // - Spring (Java): 最经典的 IOC 容器实现
+      // - Angular: 内置 IOC 容器，使用装饰器声明依赖
+      // - NestJS: 基于 TypeScript 的 IOC 容器
+      // - InversifyJS: JavaScript/TypeScript 的 IOC 容器库
+
+      // 11. Angular 中的 IOC 示例
+      // @Injectable({
+      //   providedIn: 'root'  // 单例服务
+      // })
+      // export class UserService {
+      //   constructor(
+      //     private http: HttpClient,      // 自动注入
+      //     private logger: LoggerService  // 自动注入
+      //   ) {}
+      // }
+      // 
+      // Angular 的 IOC 容器会自动解析构造函数中的依赖并注入
+
+      // 12. IOC 实现示例
+      function createIOC() {
+        const services = {}
+        return {
+          // 注册服务
+          register(name, factory) {
+            services[name] = factory
+          },
+          // 解析服务
+          resolve(name) {
+            const factory = services[name]
+            if (!factory) throw new Error(`Service ${name} not found`)
+            
+            // 如果是类，自动解析依赖
+            if (typeof factory === 'function') {
+              const deps = factory.toString()
+                .match(/constructor\s*\(([^)]*)\)/)?.[1]
+                ?.split(',')
+                .map(d => d.trim().split(' ')[0])
+                .filter(d => d) || []
+              
+              const instances = deps.map(dep => this.resolve(dep))
+              return new factory(...instances)
+            }
+            return factory
+          }
+        }
+      }
+
+      // 使用示例
+      const ioc = createIOC()
+      ioc.register('Logger', class Logger {
+        log(msg) { console.log(msg) }
+      })
+      ioc.register('UserService', class UserService {
+        constructor(Logger) {
+          this.logger = new Logger()
+        }
+      })
+      const userServiceSimple = ioc.resolve('UserService')
+      
+      //IOC 是设计原则（控制反转）DI 是实现方式（依赖注入）IOC 容器 是实现 DI 的工具
+      // Spring (Java): 最经典的 IOC 容器实现;NestJS: 基于 TypeScript 的 IOC 容器
+      
+      //ORM（对象关系映射）
+      // Object-Relational Mapping，将关系数据库的表结构映射到面向对象的类
+      // 允许开发者使用面向对象的方式操作数据库，而不需要直接编写 SQL
+
+      // 1. ORM 核心
+      // - 表（Table）→ 类（Class）
+      // - 行（Row）→ 对象（Object/Instance）
+      // - 列（Column）→ 属性（Property）
+      // - 关系（Relationship）→ 对象关联（Association）
+
+      // 2. 传统 SQL vs ORM
+      // 传统 SQL 方式（原生 SQL）
+      // const sql = "SELECT * FROM users WHERE id = ?"
+      // const result = db.query(sql, [1])
+      // const user = { id: result[0], name: result[1], email: result[2] }
+
+      // ORM 方式（面向对象）
+      // const user = User.findById(1)
+      // console.log(user.name, user.email)
+
+      // 3. 基本操作（CRUD）
+      // Create（创建）
+      // const user = new User({ name: 'Alice', email: 'alice@example.com' })
+      // await user.save()
+      // 或
+      // const user = await User.create({ name: 'Alice', email: 'alice@example.com' })
+
+      // Read（读取）
+      // const user = await User.findById(1)
+      // const users = await User.findAll({ where: { name: 'Alice' } })
+      // const user = await User.findOne({ where: { email: 'alice@example.com' } })
+
+      // Update（更新）
+      // user.name = 'Bob'
+      // await user.save()
+      // 或
+      // await User.update({ name: 'Bob' }, { where: { id: 1 } })
+
+      // Delete（删除）
+      // await user.destroy()
+      // 或
+      // await User.destroy({ where: { id: 1 } })
+
+      // 4. ORM 关系映射
+      // 一对一（One-to-One）
+      // class User {
+      //   hasOne(Profile)
+      // }
+      // class Profile {
+      //   belongsTo(User)
+      // }
+
+      // 一对多（One-to-Many）
+      // class User {
+      //   hasMany(Post)
+      // }
+      // class Post {
+      //   belongsTo(User)
+      // }
+
+      // 多对多（Many-to-Many）
+      // class User {
+      //   belongsToMany(Role)
+      // }
+      // class Role {
+      //   belongsToMany(User)
+      // }
+
+      // 5. ORM 查询构建器
+      // 链式查询
+      // const users = await User
+      //   .where('age', '>', 18)
+      //   .where('status', 'active')
+      //   .orderBy('created_at', 'desc')
+      //   .limit(10)
+      //   .get()
+
+      // 关联查询
+      // const user = await User
+      //   .with('posts')
+      //   .with('profile')
+      //   .find(1)
+
+      // 6. ORM 的优势
+      // - 提高开发效率：减少 SQL 编写，使用面向对象方式
+      // - 代码可维护性：业务逻辑更清晰，易于理解
+      // - 数据库无关性：可以轻松切换数据库（MySQL、PostgreSQL 等）
+      // - 类型安全：TypeScript/强类型语言提供类型检查
+      // - 防止 SQL 注入：ORM 使用参数化查询
+      // - 关系管理：自动处理表之间的关联
+      // - 迁移支持：版本控制数据库结构
+
+      // 7. ORM 的缺点
+      // - 性能开销：ORM 生成的 SQL 可能不是最优的
+      // - 学习曲线：需要学习 ORM 的 API 和概念
+      // - 复杂查询：某些复杂 SQL 难以用 ORM 表达
+      // - 调试困难：生成的 SQL 可能不易理解
+      // - 过度抽象：可能隐藏数据库细节，导致性能问题
+
+      // 8. 常见 ORM 框架
+      // JavaScript/TypeScript:
+      // - Sequelize: 支持多种数据库，功能丰富
+      // - TypeORM: TypeScript 优先，装饰器语法
+      // - Prisma: 现代 ORM，类型安全，代码生成
+      // - Mongoose: MongoDB 的 ODM（对象文档映射）
+
+      // Python:
+      // - SQLAlchemy: Python 最流行的 ORM
+      // - Django ORM: Django 框架内置
+      // - Peewee: 轻量级 ORM
+
+      // Java:
+      // - Hibernate: 最流行的 Java ORM
+      // - MyBatis: 半自动 ORM，SQL 映射
+      // - JPA: Java 持久化 API 规范
+
+      // PHP:
+      // - Eloquent: Laravel 框架内置
+      // - Doctrine: Symfony 框架使用
+
+      // 9. TypeORM 示例（TypeScript）
+      // import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm'
+      // 
+      // @Entity('users')
+      // class User {
+      //   @PrimaryGeneratedColumn()
+      //   id: number
+      // 
+      //   @Column()
+      //   name: string
+      // 
+      //   @Column()
+      //   email: string
+      // 
+      //   @OneToMany(() => Post, post => post.user)
+      //   posts: Post[]
+      // }
+      // 
+      // @Entity('posts')
+      // class Post {
+      //   @PrimaryGeneratedColumn()
+      //   id: number
+      // 
+      //   @Column()
+      //   title: string
+      // 
+      //   @ManyToOne(() => User, user => user.posts)
+      //   @JoinColumn({ name: 'user_id' })
+      //   user: User
+      // }
+
+      // 10. Sequelize 示例（JavaScript）
+      // const { Sequelize, DataTypes } = require('sequelize')
+      // 
+      // const User = sequelize.define('User', {
+      //   id: {
+      //     type: DataTypes.INTEGER,
+      //     primaryKey: true,
+      //     autoIncrement: true
+      //   },
+      //   name: {
+      //     type: DataTypes.STRING,
+      //     allowNull: false
+      //   },
+      //   email: {
+      //     type: DataTypes.STRING,
+      //     unique: true
+      //   }
+      // })
+      // 
+      // // 使用
+      // const user = await User.create({ name: 'Alice', email: 'alice@example.com' })
+      // const users = await User.findAll()
+
+      // 11. Prisma 示例（现代 ORM）
+      // // schema.prisma
+      // model User {
+      //   id    Int    @id @default(autoincrement())
+      //   name  String
+      //   email String @unique
+      //   posts Post[]
+      // }
+      // 
+      // model Post {
+      //   id     Int    @id @default(autoincrement())
+      //   title  String
+      //   userId Int
+      //   user   User   @relation(fields: [userId], references: [id])
+      // }
+      // 
+      // // 使用
+      // const user = await prisma.user.create({
+      //   data: { name: 'Alice', email: 'alice@example.com' }
+      // })
+      // 
+      // const users = await prisma.user.findMany({
+      //   include: { posts: true }
+      // })
+
+      // 12. ORM 迁移（Migration）
+      // 版本控制数据库结构，类似于 Git 管理代码
+      // 
+      // // 创建迁移
+      // npx typeorm migration:create -n CreateUsersTable
+      // 
+      // // 运行迁移
+      // npx typeorm migration:run
+      // 
+      // // 回滚迁移
+      // npx typeorm migration:revert
+
+      // 13. ORM 查询优化
+      // - 使用索引：在经常查询的字段上创建索引
+      // - 延迟加载 vs 预加载：避免 N+1 查询问题
+      // - 批量操作：使用批量插入/更新
+      // - 原生 SQL：复杂查询使用原生 SQL
+      // - 查询缓存：缓存常用查询结果
+
+      // 14. N+1 查询问题
+      // 问题：获取用户列表，然后获取每个用户的文章
+      // const users = await User.findAll()  // 1 次查询
+      // for (const user of users) {
+      //   const posts = await user.getPosts()  // N 次查询（N 个用户）
+      // }
+      // 总共：1 + N 次查询
+      // 
+      // 解决：使用预加载（Eager Loading）
+      // const users = await User.findAll({
+      //   include: [{ model: Post }]  // 1 次查询，使用 JOIN
+      // })
+
+      // 15. ORM 最佳实践
+      // - 使用事务：确保数据一致性
+      // - 验证数据：在模型层进行数据验证
+      // - 使用作用域：封装常用查询
+      // - 避免过度查询：只查询需要的字段
+      // - 监控性能：分析生成的 SQL
+      // - 合理使用缓存：减少数据库查询
+
+      //序列化（Serialization）
     </script>
   </body>
 </html>
