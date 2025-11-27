@@ -133,12 +133,406 @@
       const service = new UserService(logger);
 
       //Angular
+      // Google维护的前端框架（TypeScript编写），用于构建大型、可维护的单页应用（SPA）与企业级应用
+      // 强调结构化、强类型、依赖注入与完整生态
 
-      //动态代理
+      // 1. Component（组件）- UI的基本单位
+      // 由 TypeScript 类 + HTML 模板 + CSS 组成
+      // @Component({
+      //   selector: 'app-user',
+      //   template: '<h1>{{name}}</h1>',
+      //   styleUrls: ['./user.component.css']
+      // })
+      // export class UserComponent {
+      //   name = 'Angular';
+      // }
 
-      //AOP
+      // 2. Module - 功能聚合单元
+      // 根模块为 AppModule，按特性切分（如 UserModule）
+      // @NgModule({
+      //   declarations: [UserComponent],
+      //   imports: [BrowserModule],
+      //   providers: [UserService],
+      //   bootstrap: [AppComponent]
+      // })
+      // export class AppModule { }
 
-      //IOC, Inversion of Control
+      // 3. Template & Data Binding
+      // 插值 {{ }}、属性绑定 [prop]、事件绑定 (event)、双向绑定 [(ngModel)]
+      // <div>{{title}}</div>                    // 插值
+      // <button [disabled]="isDisabled">Click</button>  // 属性绑定
+      // <button (click)="handleClick()">Click</button>  // 事件绑定
+      // <input [(ngModel)]="name">             // 双向绑定
+
+      // 4. Directive（指令）- 为元素添加行为
+      // 结构指令（*ngIf、*ngFor）、属性指令（[ngClass]）
+      // <div *ngIf="isVisible">显示内容</div>
+      // <li *ngFor="let item of items">{{item}}</li>
+      // <div [ngClass]="{'active': isActive}">内容</div>
+
+      // 5. Service & DI（依赖注入）
+      // 业务逻辑复用与解耦，通过构造函数注入
+      // @Injectable({
+      //   providedIn: 'root'  // 单例服务
+      // })
+      // export class UserService {
+      //   getUsers() { return []; }
+      // }
+      // constructor(private userService: UserService) { }  // 依赖注入
+
+      // 6. Routing（路由）- RouterModule 管理页面导航
+      // 支持守卫、懒加载
+      // const routes: Routes = [
+      //   { path: 'users', component: UserComponent },
+      //   { path: 'users/:id', component: UserDetailComponent }
+      // ];
+
+      // 7. Forms（表单）
+      // 模板驱动表单与响应式表单（FormControl/FormGroup）
+      // 模板驱动: <form #form="ngForm">
+      // 响应式: this.form = new FormGroup({ name: new FormControl('') });
+
+      // 8. HttpClient - 基于 RxJS 的 HTTP 请求，返回 Observable
+      // this.http.get<User[]>('/api/users').subscribe(users => { });
+
+      // 9. RxJS/Observable - 响应式编程，流式处理事件/数据
+      // Observable、Subject、BehaviorSubject、操作符（map、filter、switchMap）
+
+      // 10. Lifecycle Hooks（生命周期）
+      // ngOnInit、ngOnDestroy、ngOnChanges、ngAfterViewInit 等
+
+      // 11. Change Detection（变更检测）
+      // 默认策略与 OnPush 优化策略
+
+      // 12. Angular CLI - ng new/build/serve/generate，脚手架与构建工具
+      // ng new my-app
+      // ng generate component user
+      // ng serve
+      // ng build
+
+      // 何时选择 Angular?
+      // - 大型团队/企业项目：需要统一规范、强类型、内置路由/表单/HTTP/DI 的"一体化方案"
+      // - 长周期维护：CLI、严格结构和 AOT 构建便于持续迭代与优化
+      // - 需要完整的框架生态，而不是库的组合
+
+      //动态代理（Dynamic Proxy）
+      // 在运行时动态创建代理对象，拦截对目标对象的操作
+      // 与静态代理（编译时确定）不同，动态代理在运行时生成代理类
+
+      // 1. JavaScript 中的 Proxy（ES6 动态代理实现）
+      const target = { name: "Alice", age: 25 }
+      const handler = {
+        get(target, prop, receiver) {
+          console.log(`访问属性: ${prop}`)
+          return Reflect.get(target, prop, receiver)
+        },
+        set(target, prop, value, receiver) {
+          console.log(`设置属性: ${prop} = ${value}`)
+          return Reflect.set(target, prop, value, receiver)
+        },
+        has(target, prop) {
+          console.log(`检查属性: ${prop}`)
+          return prop in target
+        }
+      }
+      const proxy = new Proxy(target, handler)
+      proxy.name        // 触发 get trap
+      proxy.age = 26    // 触发 set trap
+      'name' in proxy   // 触发 has trap
+
+      // 2. 动态代理 vs 静态代理
+      // 静态代理：编译时确定代理类，需要为每个被代理类编写代理类
+      // 动态代理：运行时生成，一个代理类可以代理多个目标类
+
+      // 静态代理（需要手动编写代理类）
+      class RealSubject {
+        request() { return "真实请求" }
+      }
+      class StaticProxy {
+        constructor(realSubject) {
+          this.realSubject = realSubject
+        }
+        request() {
+          console.log("代理前处理")
+          const result = this.realSubject.request()
+          console.log("代理后处理")
+          return result
+        }
+      }
+
+      // 动态代理示例（运行时生成）
+      function createDynamicProxy(target, beforeHook, afterHook) {
+        return new Proxy(target, {
+          get(target, prop, receiver) {
+            if (typeof target[prop] === 'function') {
+              return function(...args) {
+                beforeHook && beforeHook(prop, args)
+                const result = target[prop].apply(target, args)
+                afterHook && afterHook(prop, result)
+                return result
+              }
+            }
+            return Reflect.get(target, prop, receiver)
+          }
+        })
+      }
+
+      // 3. 动态代理应用场景
+      // a) 日志记录
+      const loggedProxy = new Proxy(target, {
+        get(target, prop) {
+          console.log(`[LOG] 访问: ${prop}`)
+          return target[prop]
+        }
+      })
+
+      // b) 数据验证
+      const validatedProxy = new Proxy(target, {
+        set(target, prop, value) {
+          if (prop === 'age' && (value < 0 || value > 150)) {
+            throw new Error('年龄无效')
+          }
+          target[prop] = value
+          return true
+        }
+      })
+
+      // c) 性能监控
+      const monitoredProxy = new Proxy(target, {
+        get(target, prop) {
+          const start = performance.now()
+          const result = target[prop]
+          const end = performance.now()
+          console.log(`${prop} 执行时间: ${end - start}ms`)
+          return result
+        }
+      })
+
+      // d) 懒加载
+      const lazyProxy = new Proxy({}, {
+        get(target, prop) {
+          if (!target[prop]) {
+            target[prop] = expensiveOperation() // 首次访问才执行
+          }
+          return target[prop]
+        }
+      })
+
+      // e) 响应式系统（Vue 3 使用 Proxy 实现）
+      function reactive(target) {
+        return new Proxy(target, {
+          get(target, key) {
+            track(target, key) // 收集依赖
+            return target[key]
+          },
+          set(target, key, value) {
+            target[key] = value
+            trigger(target, key) // 触发更新
+            return true
+          }
+        })
+      }
+
+      // 4. 动态代理的优势
+      // - 灵活性：运行时决定代理行为
+      // - 代码复用：一个代理类可以代理多个目标类
+      // - 解耦：代理逻辑与业务逻辑分离
+      // - 透明：对调用者来说，代理对象和原对象使用方式相同
+
+      // 5. 动态代理的局限性
+      // - 性能开销：每次操作都要经过代理层
+      // - 调试困难：调用栈更复杂
+      // - 某些操作无法拦截（如 ===、instanceof）
+
+      // 6. 其他语言中的动态代理
+      // Java: java.lang.reflect.Proxy（基于接口）
+      // Python: __getattr__、__setattr__ 或第三方库
+      // C#: DispatchProxy（.NET Core）
+
+      //AOP（面向切面编程）- 动态代理的典型应用
+      // AOP (Aspect-Oriented Programming) 是一种编程范式
+      // 将横切关注点（cross-cutting concerns）从业务逻辑中分离出来
+      // 通过动态代理等技术，在不修改原代码的情况下添加功能
+
+      // 1. AOP 核心
+      // - Aspect（切面）：横切关注点的模块化（如日志、事务、安全）
+      // - Join Point（连接点）：程序执行过程中的特定点（方法调用、异常抛出等）
+      // - Pointcut（切点）：匹配连接点的表达式，定义哪些连接点会被拦截
+      // - Advice（通知）：在切点上执行的动作（前置、后置、环绕、异常、最终）
+      // - Target（目标对象）：被代理的原始对象
+      // - Proxy（代理对象）：AOP 框架创建的对象，包含切面逻辑
+
+      // 2. AOP vs OOP
+      // OOP: 纵向关注点（业务逻辑的垂直划分）
+      // AOP: 横向关注点（跨越多个模块的通用功能）
+      // 
+      // 日志功能在 OOP 中需要在每个方法里写日志代码 AOP 可以将日志逻辑抽取为切面，自动应用到所有方法
+      
+      // 3. 使用动态代理实现 AOP（JavaScript 示例）
+      // 定义切面（Aspect）
+      const loggingAspect = {
+        before(target, method, args) {
+          console.log(`[BEFORE] 调用 ${target.constructor.name}.${method}`, args)
+        },
+        after(target, method, result) {
+          console.log(`[AFTER] ${method} 返回:`, result)
+        },
+        around(target, method, args, originalMethod) {
+          const start = performance.now()
+          const result = originalMethod.apply(target, args)
+          const end = performance.now()
+          console.log(`[AROUND] ${method} 执行时间: ${end - start}ms`)
+          return result
+        }
+      }
+
+      // 创建 AOP 代理工厂
+      function createAOPProxy(target, aspects) {
+        return new Proxy(target, {
+          get(target, prop, receiver) {
+            const originalMethod = target[prop]
+            if (typeof originalMethod === 'function') {
+              return function(...args) {
+                // 前置通知
+                aspects.forEach(aspect => {
+                  if (aspect.before) aspect.before(target, prop, args)
+                })
+
+                let result
+                let error
+                try {
+                  // 环绕通知
+                  const aroundAspect = aspects.find(a => a.around)
+                  if (aroundAspect) {
+                    result = aroundAspect.around(target, prop, args, originalMethod)
+                  } else {
+                    result = originalMethod.apply(target, args)
+                  }
+
+                  // 后置通知
+                  aspects.forEach(aspect => {
+                    if (aspect.after) aspect.after(target, prop, result)
+                  })
+                } catch (e) {
+                  error = e
+                  // 异常通知
+                  aspects.forEach(aspect => {
+                    if (aspect.error) aspect.error(target, prop, error)
+                  })
+                  throw e
+                } finally {
+                  // 最终通知
+                  aspects.forEach(aspect => {
+                    if (aspect.finally) aspect.finally(target, prop)
+                  })
+                }
+
+                return result
+              }
+            }
+            return Reflect.get(target, prop, receiver)
+          }
+        })
+      }
+
+      // 使用示例
+      class UserService {
+        getUser(id) {
+          return { id, name: `User${id}` }
+        }
+        saveUser(user) {
+          return `保存用户: ${user.name}`
+        }
+      }
+
+      const userService = new UserService()
+      const proxiedService = createAOPProxy(userService, [loggingAspect])
+      proxiedService.getUser(1)  // 自动添加日志功能
+
+      // 4. AOP 常见应用场景
+      // a) 日志记录
+      const logAspect = {
+        before(target, method, args) {
+          console.log(`[LOG] ${method}(${args.join(', ')})`)
+        }
+      }
+
+      // b) 性能监控
+      const performanceAspect = {
+        around(target, method, args, originalMethod) {
+          const start = Date.now()
+          const result = originalMethod.apply(target, args)
+          const duration = Date.now() - start
+          if (duration > 100) {
+            console.warn(`[PERF] ${method} 执行缓慢: ${duration}ms`)
+          }
+          return result
+        }
+      }
+
+      // c) 事务管理
+      const transactionAspect = {
+        before(target, method, args) {
+          console.log('[TX] 开始事务')
+        },
+        after(target, method, result) {
+          console.log('[TX] 提交事务')
+        },
+        error(target, method, error) {
+          console.log('[TX] 回滚事务')
+        }
+      }
+
+      // d) 权限检查
+      const securityAspect = {
+        before(target, method, args) {
+          const user = getCurrentUser()
+          if (!user || !user.hasPermission(method)) {
+            throw new Error('权限不足')
+          }
+        }
+      }
+
+      // e) 缓存
+      const cacheAspect = {
+        cache: new Map(),
+        around(target, method, args, originalMethod) {
+          const key = `${method}_${JSON.stringify(args)}`
+          if (this.cache.has(key)) {
+            console.log(`[CACHE] 命中缓存: ${key}`)
+            return this.cache.get(key)
+          }
+          const result = originalMethod.apply(target, args)
+          this.cache.set(key, result)
+          return result
+        }
+      }
+
+      // 5. AOP 的优势
+      // - 关注点分离：业务逻辑与横切关注点分离
+      // - 代码复用：切面可以在多个地方复用
+      // - 易于维护：修改横切逻辑只需修改切面
+      // - 降低耦合：业务代码不需要知道切面的存在
+      // - 提高可读性：业务代码更清晰，专注于核心逻辑
+
+      // 6. AOP 的缺点
+      // - 调试困难：调用栈更复杂
+      // - 性能开销：每次调用都要经过代理层
+      // - 理解成本：需要理解 AOP 概念和实现机制
+      // - 过度使用可能导致代码难以追踪
+
+      // 7. 框架中的 AOP
+      // - Spring (Java): 使用动态代理和 CGLIB 实现 AOP
+      // - Angular: 使用装饰器（Decorator）实现 AOP 风格的功能
+      // - NestJS: 使用装饰器和拦截器实现 AOP
+      // - Express.js: 中间件（Middleware）是 AOP 的一种实现
+
+      // 8. 装饰器模式 vs AOP
+      // 装饰器模式：静态的、编译时的代码增强
+      // AOP: 动态的、运行时的横切关注点处理
+      // 两者可以结合使用，装饰器可以作为 AOP 的声明式语法
+
+      //IOC, Inversion of Control（控制反转）
 
       //ORM
 
