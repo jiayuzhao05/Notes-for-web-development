@@ -18,7 +18,7 @@ const add1 = partial1((a, b) => a + b, 1); //add1 变体
 add1(4); // 5
 
 //...args ...kwargs
-//下节课工程体系化 
-// 作业：做小项目 vite + react。to do list
+// 下节课工程体系化 
+// 作业：做小项目 vite + react to do list
 
 
