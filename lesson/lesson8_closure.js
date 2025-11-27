@@ -9,7 +9,7 @@ function closureFunc() {
   }
 
 const result = closureFunc();
- // result() //对象无法执行{XXXXX}()
+// result() //对象无法执行{XXXXX}()
 
 // console.log(result.get); //[Function get] 函数，但没被执行
 // console.log(result.get()); //0
