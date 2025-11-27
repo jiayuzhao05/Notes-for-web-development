@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<>, initial-scale=1.0">
+    <title>用户操作js</title>
+</head>
+<body>
+    <button id="btnA" class="btn">获取验证码a</button> 
+    <button id="btnB" class="btn">获取验证码b</button>
+
+    <script>
+        //method1
+        /**const btnAElement = document.querySelector('#btnA')
+        const btnBElement = document.querySelector('#btnB')
+
+        function helloFun(){
+            const btnElement = this //quote btn
+            if (btnElement.disabled) return //avoid repeated click
+            this.disabled = true
+            let i = 5
+            this.textContent = `${i}s后倒计时`
+
+            let timer = setInterval(function(){
+                i--
+                if (i>0) {
+                    btnElement.textContent = `${i}s后倒计时`
+                } else {
+                    clearInterval(timer)
+                    btnElement.textContent = '获取验证码'
+                    btnElement.disabled = false
+                }
+            },1000)
+        }
+
+        btnAElement.addEventListener('click',helloFun)
+        btnBElement.addEventListener('click',helloFun)**/
+        
+        //method2 class
+        const btnElement = document.querySelectorAll('.btn')
+
+        btnElement.forEach(btnElement=>{
+            btnElement.addEventListener('click',function(){
+                const btnElement = this
+                if (btnElement.disabled) return
+                this.disabled = true
+
+                let i = 5
+                btnElement.textContent = `after ${i}s, get verification code again`
+
+                let timer = setInterval(function(){
+                    i--
+                    if(i>0) {
+                        btnElement.textContent = `after ${i}s, get verification code again`
+                    } else {
+                        clearInterval(timer)
+                        btnElement.textContent = 'get verification code'
+                        btnElement.disabled = false
+                }
+             },1000)
+            })
+            })
+    </script>
+</body>
+</html>
+
+<!--用户点击按钮 => 用户监听
+禁用 => js执行 DOM渲染更新 浏览器渲染帧
+5s 倒计时
+恢复按钮原样 -->

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>JS 思维导图（按图严格还原）</title>
+    <dateCreated>2025-10-15T19:46:47.321475</dateCreated>
+  </head>
+  <body>
+    <outline text="JS">
+      <outline text="Syntax 语法">
+        <outline text="Data Types 数据类型">
+          <outline text="Reference 引用类型">
+            <outline text="object"/>
+            <outline text="array"/>
+            <outline text="function"/>
+            <outline text="date"/>
+            <outline text="regexp"/>
+          </outline>
+          <outline text="Special 特殊值与类型">
+            <outline text="number"/>
+            <outline text="string"/>
+            <outline text="boolean"/>
+            <outline text="undefined"/>
+            <outline text="symbol"/>
+            <outline text="bigint"/>
+          </outline>
+        </outline>
+        <outline text="Type Conversion 类型转换">
+          <outline text="Explicit 显式转换">
+            <outline text="Number()"/>
+            <outline text="String()"/>
+            <outline text="Boolean()"/>
+          </outline>
+          <outline text="Implicit 隐式转换">
+            <outline text="+'2' → 2"/>
+            <outline text="'5' * 2 → 10"/>
+            <outline text="== 与 === 差异"/>
+          </outline>
+        </outline>
+        <outline text="Variables &amp; Scope 变量与作用域">
+          <outline text="var">
+            <outline text="函数作用域"/>
+            <outline text="变量提升"/>
+          </outline>
+          <outline text="let">
+            <outline text="块级作用域"/>
+            <outline text="无提升"/>
+          </outline>
+          <outline text="const">
+            <outline text="只读引用（指针不可变）"/>
+          </outline>
+          <outline text="Scope Chain 作用域链">
+            <outline text="从内到外查找变量"/>
+          </outline>
+        </outline>
+        <outline text="Functions &amp; this 函数与 this">
+          <outline text="普通函数">
+            <outline text="this 指向调用者"/>
+          </outline>
+          <outline text="箭头函数">
+            <outline text="不绑定 this，继承外层"/>
+          </outline>
+          <outline text="call / apply / bind">
+            <outline text="显式修改 this"/>
+          </outline>
+          <outline text="回调函数 Callback">
+            <outline text="作为参数传入执行"/>
+          </outline>
+        </outline>
+      </outline>
+      <outline text="DOM 操作">
+        <outline text="获取元素">
+          <outline text="querySelector / querySelectorAll"/>
+          <outline text="getElementById / getElementsByClassName"/>
+          <outline text="父子兄弟：parentNode / children / nextElementSibling"/>
+        </outline>
+        <outline text="修改内容与结构">
+          <outline text="innerHTML（不安全）"/>
+          <outline text="textContent / innerText（安全）"/>
+          <outline text="insertAdjacentText / appendChild / removeChild"/>
+          <outline text="document.createElement() 动态创建"/>
+        </outline>
+        <outline text="样式与属性">
+          <outline text="element.style.color = 'red'"/>
+          <outline text="element.classList.add('active')"/>
+          <outline text="setAttribute / getAttribute"/>
+        </outline>
+        <outline text="事件监听">
+          <outline text="addEventListener(type, handler)"/>
+          <outline text="event.target / event.currentTarget"/>
+          <outline text="stopPropagation / preventDefault"/>
+          <outline text="if (el.disabled) return;  防重复触发"/>
+        </outline>
+        <outline text="DOM 性能优化">
+          <outline text="避免频繁操作 DOM"/>
+          <outline text="使用 fragment 或一次性 innerHTML 更新"/>
+          <outline text="缓存查询结果（querySelectorAll）"/>
+        </outline>
+      </outline>
+      <outline text="Objects &amp; prototype 对象与原型">
+        <outline text="Object 构造/字面量">
+        </outline>
+        <outline text="prototype 原型链继承">
+        </outline>
+        <outline text="Object.create() 自定义继承">
+        </outline>
+        <outline text="instanceof 判断关系">
+        </outline>
+      </outline>
+    </outline>
+  </body>
+</opml>

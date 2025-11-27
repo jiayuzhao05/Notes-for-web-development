@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>Week 2 - Advanced Layout &amp; CSS Fundamentals</title>
+    <dateCreated>2025-10-13T21:56:26.525734</dateCreated>
+  </head>
+  <body>
+    <outline text="Week 2 - Advanced Layout &amp; CSS Fundamentals">
+      <outline text="1) Advanced Styling">
+        <outline text="Selectors">
+          <outline text="Basic: element, class, ID, attribute, pseudo-class, pseudo-element"/>
+          <outline text="Combinators: descendant (space), child (&gt;), adjacent sibling (+), general sibling (~)"/>
+          <outline text="Practice: CSS Diner"/>
+        </outline>
+        <outline text="Icons">
+          <outline text="Icon Font / SVG"/>
+          <outline text="Accessibility: aria-hidden for decorative icons; accessible name for informative icons"/>
+        </outline>
+        <outline text="Web Fonts">
+          <outline text="@font-face / Google Fonts"/>
+          <outline text="Font stack &amp; fallback"/>
+          <outline text="font-display strategy"/>
+        </outline>
+        <outline text="CSS Filters &amp; Animations">
+          <outline text="Gradients: linear-gradient()"/>
+          <outline text="Filters: blur / brightness / contrast / saturate"/>
+          <outline text="Animations: @keyframes, animation-*, transition"/>
+          <outline text="Performance: prefer transform/opacity (GPU composed), be careful with parallax"/>
+        </outline>
+      </outline>
+
+      <outline text="2) Modern Layouts">
+        <outline text="CSS Columns">
+          <outline text="column-count, column-gap, column-rule, column-span"/>
+          <outline text="Newspaper-style multi-columns; content flows automatically"/>
+          <outline text="Masonry-like effect, but not precise grid control"/>
+        </outline>
+        <outline text="Flexbox (1D)">
+          <outline text="Content-out (layout driven by content)"/>
+          <outline text="Main/Cross axes; justify-content, align-items, gap, flex-wrap"/>
+          <outline text="flex: grow / shrink / basis"/>
+          <outline text="Use cases: nav bar, evenly spaced cards, wrapping lists"/>
+        </outline>
+        <outline text="CSS Grid (2D)">
+          <outline text="Layout-in (define grid, then place content)"/>
+          <outline text="grid-template-rows / columns / areas, fr unit, auto placement"/>
+          <outline text="Use cases: page skeleton, dashboards, complex newspaper layout"/>
+        </outline>
+        <outline text="Flexbox vs Grid">
+          <outline text="Row OR column control → Flexbox"/>
+          <outline text="Row AND column control → Grid"/>
+          <outline text="Heuristic: Flexbox lets content allocate space; Grid fixes layout then places content"/>
+        </outline>
+      </outline>
+
+      <outline text="3) Responsive Design">
+        <outline text="Media Queries: width / resolution based"/>
+        <outline text="Mobile-first with min-width breakpoints"/>
+        <outline text="Flexible units: %, vw, vh, rem"/>
+        <outline text="Responsive images: max-width: 100%"/>
+      </outline>
+
+      <outline text="4) Accessibility (a11y)">
+        <outline text="Semantic HTML &amp; meaningful structure"/>
+        <outline text="Keyboard usability: Tab order, focus styles, Enter/Space activation"/>
+        <outline text="Color &amp; contrast; avoid color-only meaning"/>
+        <outline text="Alt text for images; captions/descriptions for media"/>
+      </outline>
+
+      <outline text="5) CSS Resets &amp; Frameworks">
+        <outline text="box-sizing: border-box"/>
+        <outline text="Reset vs Normalize"/>
+        <outline text="Bootstrap: grid system, components, theming (import only what you need)"/>
+      </outline>
+
+      <outline text="6) Core CSS Principles &amp; Interview Facts">
+        <outline text="Rendering modes">
+          <outline text="Standards (CSS1Compat) vs Quirks (BackCompat)"/>
+        </outline>
+        <outline text="Semantics &amp; SEO">
+          <outline text="Use semantic tags; helpful meta: keywords, description, author, robots, charset"/>
+        </outline>
+        <outline text="Linking CSS: href vs @import">
+          <outline text="&lt;link rel=&quot;stylesheet&quot; href=&quot;...&quot;&gt; loads in parallel (non-blocking)"/>
+          <outline text="@import is serial, can block rendering; nested imports add latency; compat issues"/>
+        </outline>
+        <outline text="Inline vs Inline-block">
+          <outline text="inline: horizontal margin/padding effective; vertical does not affect line box (IE6 ignores vertical entirely)"/>
+          <outline text="inline-block: width/height and all margins/paddings work"/>
+          <outline text="Typical inline-block: img, button-like items"/>
+        </outline>
+        <outline text="Display categories">
+          <outline text="Empty elements: img, br, input, link, meta"/>
+          <outline text="Block elements: h1–h6, p, div, ul/ol/li, dl, form, table"/>
+          <outline text="Inline elements: a, span, em, strong, img, input, select"/>
+          <outline text="Inline-block elements: button, img, input, select, label, textarea"/>
+        </outline>
+        <outline text="Box model &amp; BFC">
+          <outline text="Standard vs Quirks box sizing"/>
+          <outline text="BFC/IFC/GFC/FFC definitions"/>
+          <outline text="Margin collapsing (within same BFC)"/>
+        </outline>
+      </outline>
+
+      <outline text="7) Positioning &amp; Stacking">
+        <outline text="Position: static, relative, absolute, fixed, sticky"/>
+        <outline text="Fixed may anchor to transformed ancestor (transform != none)"/>
+        <outline text="Stacking order (low→high): background/border → negative z → block (normal flow) → float → inline → z=0 → positive z"/>
+      </outline>
+
+      <outline text="8) Performance &amp; Animation">
+        <outline text="Use transform: translate to promote GPU layers"/>
+        <outline text="visibility triggers repaint; display triggers reflow"/>
+        <outline text="Batch DOM via documentFragment"/>
+        <outline text="Use requestAnimationFrame for smooth animations"/>
+        <outline text="Avoid table layout; selector matching is right-to-left"/>
+      </outline>
+
+      <outline text="9) Units &amp; Sizing">
+        <outline text="px: device pixel-based logical unit"/>
+        <outline text="em: relative to parent font-size (except for font-size on root)"/>
+        <outline text="rem: relative to root element"/>
+        <outline text="vw/vh: viewport width/height percentage"/>
+        <outline text="rpx: mini-program adaptive unit"/>
+      </outline>
+    </outline>
+  </body>
+</opml>

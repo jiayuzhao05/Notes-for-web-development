@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+                                                                                    //JIT:Just In Time Compilation 即时编译
+                                                                            //性能提升可能需要考虑的比较少 因为JS本身内部有提前模拟高性能运算
+
+                                                                            //JS中,func是一等公民,可以作为参数传递,与之相反的是OOP语言C++
+                                                                            //symbol:唯一性,不可变性,不可枚举性 类似string的数据类型,解决命名冲突,symbol有很多内置方法
+                                                                            //对象属性不能用for in遍历,可以用for of遍历,reflect.ownKeys()获取所有属性
+                                                                            //symbol声明的属性是没办法通过Object.key() 拿到，所以可以实现私有属性?????
+                                                                            let s = symbol('s') //数据类型声明,s为参数,调用该对象tostring()转换为字符串,生成symbol值,对symbol实例描述
+                                                                            let s1 = symbol.for('s')
+                                                                            console.log(s === s1) //false symbol参数只对当前symbol值描述
+                                                                            //symbol值不能和其他类型值运算,报错;显式-->string,boolean,不能转换为number
+                                                                            //Object.getOwnPropertySymbol 方法可以获取指定对象的所有Symbol属性名
+
+                                                                            let data = {
+                                                                                up:Symbol('up'),
+                                                                                down:Symbol('down')
+                                                                            }
+                                                                            //method1
+                                                                            game[data.up] = function(){
+                                                                                console.log('up')
+                                                                            }
+                                                                            //method2
+                                                                            let play = {
+                                                                                name="run",
+                                                                                [Symbol('say')]:function(){
+                                                                                    console.log('say')
+                                                                                }
+                                                                            }
+                                                                            console.log(play)
+
+
+                                                                            //iterator
+                                                                            for (let i in data){} //i是key name
+                                                                            for (let i of data){} //i是value
+                                                                            const arr = [1,2,3]
+                                                                            console.log(arr) //arr有symbol.iterator属性?????
+
+                                                                            //itertor工作原理
+                                                                            let xiyou = ['唐僧','孙悟空','猪八戒','沙僧']
+                                                                            let iterator = xiyou[Symbol.iterator]()
+                                                                            console.log(iterator.next()) //{ value: '唐僧', done: false }
+                                                                            console.log(iterator.next()) //{ value: '孙悟空', done: false }
+                                                                            console.log(iterator.next()) //{ value: '猪八戒', done: false }
+                                                                            console.log(iterator.next()) //{ value: '沙僧', done: false }
+                                                                            console.log(iterator.next()) //{ value: undefined, done: true }
+                                                                            //iterator.next()返回一个对象,value是当前值,done是是否结束
+
+                                                                            // 自定义iterator
+                                                                            const dataObj = {
+                                                                                name: 'zzl',
+                                                                                lis: ['wxl', '11', 'hll'],
+                                                                                // 为 dataObj 添加iterator
+                                                                                [Symbol.iterator]() {
+                                                                                    // 保存外层 this（dataObj 对象）的引用
+                                                                                    let _this = this
+                                                                                    let index = 0
+
+                                                                                    // 返回迭代器对象
+                                                                                    return {
+                                                                                        next:function() {
+                                                                                            // 在普通的 next 函数内部，this 不指向 dataObj
+                                                                                            if(index < _this.lis.length) {
+                                                                                                const result = {
+                                                                                                    value: _this.lis[index], // 使用 _this 访问外层对象的属性
+                                                                                                    done: false
+                                                                                                }
+                                                                                                index++
+                                                                                                return result
+                                                                                            } else {
+                                                                                                return {done: true}
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+
+                                                                            var arr = ['blue','green','yellow','balck','orange']
+                                                                            let it = iterator(arr)
+                                                                            console.log(it.next())
+
+                                                                            function iterator(arr){
+                                                                                  let nextIndex = 0
+                                                                                  return {
+                                                                                    next: function() {
+                                                                                      return nextIndex < arr.length ? { //条件 ? 值1 : 值2
+                                                                                        value: arr[nextIndex ++] ,done: false //数据未完成
+                                                                                      } : {
+                                                                                        value : undefined,done : true //已完成
+                                                                                      }
+                                                                                    }
+                                                                                  }
+                                                                                }
+
+                                                                                // 伪数组转换为真正数组方法???
+                                                                                //Array.prototype.slice.call(arguments)和Array.from(arguments)
+                                                                                               // 压缩稀疏数组
+                                                                                               var sparse = [1,,,4];
+                                                                                         var dense = sparse.filter(function(){
+                                                                                         	return true; //过滤稀疏元素
+                                                                                         });
+                                                                                         console.log(dense)
+
+                                                                                   // 压缩并删除 undefined 和 null 元素
+                                                                                   var sparse = [1,null,3,undefined,,6];
+                                                                                   var dense = sparse.filter(function(v){
+                                                                                   	return v !== undefined && v != null;
+                                                                                   });
+                                                                                   console.log(dense)
+
+                                                                                   //reduce(callback,initialValue),reduceRight() 累加器 归并函数 化简函数
+                                                                                   //reduce()方法从数组的第一项开始，逐个遍历到最后；reduceRight 则从数组的最后一项开始，向前遍历到第一项
+                                                                                   var max = values.reduce(function(prev,cur){
+                                                                                      return prev > cur ? prev : cur; //返回最大值
+                                                                                   },
+                                                                                  console.log(max); // 4
+
+                                                                                  //在空数组上，不带初始值参数的 reduce()将导致类型异常；如果数组只有一个元素并且没有指定初始值，或者一个空数组并且指定了一个初始值，该方法只是简单的返回那个值而不会调用回调函数????
+                                                                                  var a = [];
+                                                                                  // var b1 = a.reduce(function(x,y){return x + y}); // no initial value 会报错
+                                                                                  // var b2 = a.reduce(function(x,y){return x + x}); 也会报错
+                                                                                  var b3 = a.reduce(function(x,y){return x + y},3); //只返回初始值,initialValue为3
+                                                                                  console.log(b3); // 3
+
+                                                                                  //generator
+                                                                              function * fun(arg){
+                                                                                console.log(arg); //输出aaa
+                                                                                let one = yield 111;
+                                                                                console.log(one); //输出bbb
+                                                                                let two = yield 222;
+                                                                                console.log(two); //输出ccc
+                                                                                let three = yield 333;
+                                                                                console.log(three); //输出ddd
+                                                                              }
+
+                                                                              let a=fun('aaa');
+                                                                              console.log(a.next());//第一次调用next
+                                                                              //next方法可以传入实参
+                                                                             //第二次调用next的实参将作为第一个yield的整体返回结果
+                                                                             console.log(a.next('bbb')) // 输出{value: 222, done: false}
+                                                                             console.log(a.next('ccc')) // 输出{value: 333, done: false}
+                                                                             console.log(a.next('ddd')) // 输出{value: undefined, done: true}
+
+                                                                             // 实例2 模拟获取用户数据，订单数据，商品数据
+                                                                          function one(){
+                                                                              setTimeout(()=>{
+                                                                                  let data='用户数据';
+                                                                                  a.next(data);//第二次调用next的实参将作为第一个yield的整体返回结果
+                                                                              },1000)
+                                                                          }
+                                                                          function two(){
+                                                                              setTimeout(()=>{
+                                                                                  let data='订单数据';
+                                                                                  a.next(data);
+                                                                              },1000)
+                                                                          }
+                                                                          function three(){
+                                                                              setTimeout(()=>{
+                                                                                  let data='商品数据';
+                                                                                  a.next(data);
+                                                                              },1000)
+                                                                          }
+                                                                          function *fun(){
+                                                                              let users= yield one();
+                                                                              console.log(users); //用户数据 作为第一个yield的整体返回结果
+                                                                              let orders= yield two();
+                                                                              console.log(orders); // 订单数据
+                                                                              let goods= yield three();
+                                                                              console.log(goods); // 商品数据
+                                                                          }
+                                                                          //调用生成器函数
+                                                                          let a=fun();
+                                                                          a.next();
+
+                                                                          function fun(){
+                                                                        return new Promise((resolve,reject)=>{
+                                                                            //如果成功就调用resolve
+                                                                            let data='数据库中的数据';
+                                                                            resolve(data);
+                                                                            //promise状态变为成功
+
+                                                                            //如果失败就调用reject
+                                                                            let err='数据库读取失败';
+                                                                            reject(err);//promise状态变为失败
+                                                                        })
+                                                                    }
+
+                                                                    var promise = fun()
+                                                                    promise.then(
+                                                                        //调用then
+                                                                        function(success){
+                                                                            // promise状态变为成功后then会调用第一个回调函数
+                                                                            console.log(success);
+                                                                        },function(err){
+                                                                            // promise状态变为失败后then会调用第二个回调函数
+                                                                            console.log(err);
+                                                                        }
+                                                                    )
+
+
+                                                                    //promise封装读取文件
+                                                                    cosnt fs = require('fs')
+
+                                                                    fs.readFile('./aini.txt',(err,data) => {
+                                                                        // 如果失败，则抛出异常
+                                                                        if(err) throw err;
+                                                                        // 如果没哟出错，则输出内容
+                                                                        console.log(data.toString())
+                                                                    })
+
+                                                                    // 使用Promise封装
+                                                                    cosnt p = new Promise(function(resolve,reject){
+                                                                        fs.readFile('./aini.txt',(err,data) => {
+                                                                            // 如果失败，则抛出异常
+                                                                            if(err) reject(err)
+                                                                            // 如果没出错，则输出内容
+                                                                            resolve(data)
+                                                                    	})
+                                                                    })
+
+                                                                    p.then(function(value){
+                                                                        console.log(value.toString())
+
+                                                                    },function(resson){
+                                                                        console.log('读取失败！！！')
+
+                                                                    })
+
+                                                                    //promise封装Ajax请求
+                                                                    const p = new Promise(function(resolve,reject){
+
+                                                                  cosnt xhr = new XMLHttpRequest()
+
+                                                                  xhr.open('GET','https://api.apiopen.top/getJoke')
+
+                                                                  xhr.send()
+
+                                                                  xhr.onreadystatechange = function(){
+                                                                      if (xhr.randyState == 4){
+                                                                          // 判断状态码
+                                                                          if (xhr.status >= 200 && xhr.status <300){
+                                                                              // 表示成功
+                                                                              resolve(xhr.response)
+                                                                          }else{
+                                                                              reject(xhr.status)
+                                                                          }
+                                                                      }
+                                                                  }
+                                                              })
+
+                                                              p.then(function(value){
+                                                                  console.log(value.toString())
+
+                                                              },function(resson){
+                                                                  console.log(reason)
+                                                              })
+
+                                                              //promise.property.then()
+                                                              const p = new Promise((resolve,reject){
+                                                           setTimeout(() => {
+                                                            resolve('用户数据')
+                                                        	},1000)
+                                                        })
+                                                              // then结果是promise对象,结果由回调函数结果决定
+                                                              //如果回调返回非promise数据,成功,返回值为对象成功值;如果不写return,默认返回undefined,成功的promise
+                                                              const p1 = p.then(value => {
+                                                               console.log(value)
+                                                               return '11232'  // 成功的Promise
+                                                            }.err => {
+                                                               console.warn(reason)
+                                                            })
+
+                                                            //如果返回promise对象,这个promise对象结果决定then()返回结果
+                                                            const p1 = p.then(value => {
+                                                         console.log(value)
+                                                         return new Promise(funtion(resolve,reject){
+                                                              resolve('ok')  // 成功，则then方法返回结果是成功
+                                                              reject('失败了')  // 失败，则then方法返回的结果是失败的
+                                                          )
+                                                      }.err => {
+                                                         console.warn(reason)
+                                                      })
+
+                                                      //set
+                                                      const s = new Set()
+                                                      let arr = [...s] // array.from(s) 转换成arr
+                                                      set.add(5)
+                                                      set.add(“5”) //set判断机制是===, 5 '5' 是两个元素
+
+                                                      let a = new Set([1,2,3,4,5])
+                                                      let b = new Set([4,5,6,7,8])
+                                                      let intersect = new Set([...a].filter(x => b.has(x)))
+                                                      let subtract = new Set([..a].filter(x => !b.has(a)))
+
+
+                                                      //map
+                                                      const m = new Map()
+                                                      m.set({x:1},22)
+                                                      m.get({x:1})
+                                                      m.has({x:1})
+                                                      m.delete({x:1})
+
+                                                      //is map or not
+                                                      map instanceof Map //true/false 通过圆形链查找
+                                                      Object.prototype.toString.call(map) === '[object Map]'
+                                                      //为什么用toString?用的是圆形链顶端toString
+
+                                                      //继承
+                                                      //智能手机
+                                                function SmartPhone(brand,price,color,size){
+                                                    Phone.call(this,brand,price){
+                                                        this.color = color
+                                                        this.size = size
+                                                    }
+                                                }
+
+                                                // 设置子级构造函数的原型
+                                                SmartPhone.prototype = new Phone
+                                                SmartPhone.prototype.constructor = SmartPhone
+
+                                                // 声明子类的方法
+                                                SmartPhone.prototype.photo = function(){
+                                                    console.log('我可以拍照')
+                                                }
+
+                                                SmartPhone.prototype.playGame = function() {
+                                                    console.log('我可以打游戏')
+                                                }
+
+                                                const chuzi = new SmartPhone("锤子",2499,'黑色','505')
+
+                                                // Number.EPSILON  -------------------------- JS表示的最小精度
+                                                // Number.parseInt  Number.parseFloat-------- 字符串转整数
+                                                // Math.trunc -------------------------------数字的小数部分抹掉
+                                                // Math.sign -------------------------------判断一个数到底为正数，负数还是0
+                                                // Object.is --------------------------------> 判断两个值是否完全相等
+                                                console.log(Object.is(NaN,NaN)) //true
+                                                console.log(NaN === NaN) //false
+                                                //=== 和 == 返回 false，因为 NaN 按设计不等于任何值，包括它自己
+                                                // Object.assign ----------------------------> 对象合并
+                                                // Object.setPropertyOf ---------------> 设置Object原型对象
+                                                // Object.getPropertyOf---------------------> 获取对象属性
+
+                                                //module.exports vs exports 同步加载
+                                                //require() vs import()
+                                                if(true){
+                                                   import('./a.js').then(res=>{
+                                                  console.log(res._a)
+                                                }).catch(err=>{
+                                                  console.log(err)
+                                                })
+                                            }
+                                            //babel 将js新语法换成旧语法 更好兼容
+                                            // 安装工具 babel-cli   babel-preset-env  browserify(打包工具)
+                                            // 初始化  npm init -yes
+                                            // 安装  npm i babel-cli babel-preset-env browserify -D
+                                            // 因为局部安装，用 npx 执行命令
+                                            // npx babel aini.js(源文件目录) -d dist/js(打包的目标目录) --presers=babel-preset-env
+                                            // 打包 npx browserify dist/js/app.js -o dist/bundle.js
+
+                                            //async/await ????
+                                            const fs = require("fs");
+
+                                    function readWeiXue() {
+                                      return new Promise((resolve,reject) => {
+                                        fs.readFile('/为学.md',(err,data)=>{
+                                            if(err){
+                                              reject(err)
+                                            }else{
+                                              resolve(data)
+                                            }
+                                          })
+                                      })
+                                    }
+
+                                    function readChaYangShi() {
+                                      return new Promise((resolve,reject) => {
+                                        fs.readFile('/插秧诗.md',(err,data)=>{
+                                            if(err){
+                                              reject(err)
+                                            }else{
+                                              resolve(data)
+                                            }
+                                          })
+                                      })
+                                    }
+
+                                    function readGuanShuYouGan() {
+                                      return new Promise((resolve,reject) => {
+                                        fs.readFile('/观书有感.md',(err,data)=>{
+                                            if(err){
+                                              reject(err)
+                                            }else{
+                                              resolve(data)
+                                            }
+                                          })
+                                      })
+                                    }
+
+                                    async function main() {
+                                      let weixue = await readWeiXue()
+                                      let chayang = await readChaYangShi()
+                                      let guanshu = await readGuanShuYouGan()
+                                      console.log(weixue.toString())
+                                      console.log(chayang.toString())
+                                      console.log(guanxue.toString())
+                                    }
+
+                                    //Object.values()  // 给定对象所有可枚举属性值的数组
+                                    //Object.entries() // 给定对象自身可遍历属性[key, value]的数组
+                                    //Object.getOwnPropertyDescriptors() // 指定对象属性的描述对象 // { property: { value, writable, enumerable, configurable, get, set } }
+
+                                    //JQuery 轻量级 隐式迭代 支持插件扩展,树形菜单、日期控件、轮播图
+                                    $(function () { //jQuery(function(){} //recommended
+                                      ... // 页面DOM加载完成的入口
+                                     }) ;
+
+                                    $(document).ready(function(){ //$是jQuery顶级对象，相当于JS的window
+                                      ... // 页面DOM加载完成的入口
+                                     })
+                                     //DOM渲染完毕即可执行内部代码,jQuery完成封装,类似js中的 DOMContentLoaded
+                                     //jQuery对象:利用$对DOM对象包装后产生的对象(伪数组存储)
+                                     // 伪数组：有 length 和索引访问，但并非 Array 实例
+                                     const pseudoArray1 = {
+                                        0: 'a',
+                                        1: 'b',
+                                        2: 'c',
+                                        length: 3
+                                      }
+
+                                      //jQuery对象和DOM对象的转换
+                                      const $div = $('div') //DOM对象转换为jQuery对象
+                                      const div = $div[0]
+                                      const div = $('div')[0] //jQuery对象转换为DOM对象
+                                      const div = $('#div')[0]
+                                      const div = $('.div')[0]
+                                      const div = $('div').get(0) //jQuery对象转换为DOM对象
+                                      const div = $('div').eq(0)[0]
+                                      const div = $('div').first()[0]
+                                      const div = $('div').last()[0]
+
+                                      //jQuery筛选方法!!
+                                      $('div').eq(0) //索引筛选
+                                      $('div').parent() //父元素筛选
+                                      $('div').find('p') //子元素筛选
+                                      $('div').siblings() //兄弟元素筛选
+                                      $('div').nextAll() //下一个所有元素筛选
+                                      $('div').prevAll() //上一个所有元素筛选
+                                      $('div').next() //下一个元素筛选
+                                      $('div').prev() //上一个元素筛选
+                                      $('div').closest('div') //最近的父元素筛选
+                                      $('div').filter('div') //筛选div元素
+                                      $('div').not('div') //筛选非div元素
+                                      $('div').has('div') //筛选包含div元素
+                                      $('div').is('div') //筛选div元素
+                                      $('div').hasClass('div') //筛选div元素
+                                      //多选一,排他思想:当前元素设置样式，其余的兄弟元素清除样式
+                                      $(this).css('color','red')
+                                      $(this).siblings(). css('color','')
+
+                                      //JQuery操作css
+                                      $(this).css('color')
+                                      $(this).css('color', 'red')
+                                      $(this).css({ "color":"white","font-size":"20px"})
+
+                                      //JQuery操作类
+                                      $('div').addClass('current')
+                                      $('div').removeClass('current')
+                                      $('div').toggleClass('current')
+
+                                      //JQuery操作元素
+                                      $('div').text()
+                                      $('div').html()
+                                      $('div').val()
+                                      $('div').attr()
+                                      $('div').prop()
+
+                                      //jQuery主要封装动画效果
+                                      $('div').show([speed,[easing],[fn]])//speed：三种预定速度之一的字符串(“slow”,“normal”, or “fast”)或表示动画时长的毫秒数值(如：1000)
+                                      $('div').hide([speed,[easing],[fn]])//easing：(Optional) 用来指定切换效果，默认是“swing”，可用参数“linear”
+                                      $('div').toggle([speed,[easing],[fn]]) //显示隐藏
+                                      $('div').fadeIn([speed,[easing],[fn]]) //淡入
+                                      $('div').fadeOut([speed,[easing],[fn]]) //淡出
+                                      $('div').fadeToggle([speed,[easing],[fn]]) //滑动
+                                      $('div').fadeTo([[speed],opacity,[easing],[fn]]) //淡入淡出
+                                      $('div').slideDown([speed,[easing],[fn]]) //下拉
+                                      $('div').slideUp([speed,[easing],[fn]]) //上拉
+                                      $('div').animate(params,[speed],[easing],[fn]) //自定义动画
+                                      hover([over],[out]) //鼠标经过和离开
+
+                                      //动画队列
+                                      stop() //停止当前动画
+                                      //prop(''属性'') 获取属性
+                                      //prop(''属性'', ''属性值'') 设置属性
+                                      //attr(''属性'') 类似getAttribute()
+                                      //attr(''属性'', ''属性值'') 类似setAttribute()
+                                      // 可以读取 HTML5 自定义属性 data-index ，得到的是数字型
+                                      //html() 获取或设置 innerHTML
+                                      //text() 获取或 setTextContent() 设置
+                                      //val() 获取或设置 value
+                                      //append() 向元素内部追加内容
+                                      //prepend() 向元素内部追加内容
+                                      //append() 向元素内部追加内容
+
+                                      $("div").each(function (index, domEle) {xxx})
+                                      $.each(object,function (index, element) {xxx})
+
+                                      element.append('str') //向元素内部追加内容
+                                      element.prepend('str') //向元素内部追加内容
+                                      element.after('str') //向元素外部追加内容
+                                      element.before('str') //向元素外部追加内容
+                                      element.remove() //删除元素
+                                      element.empty() //删除元素内部所有内容
+                                      element.clone() //复制元素
+                                      element.detach() //删除元素
+                                      element.hide() //隐藏元素
+
+                                      //事件处理
+                                      element.事件(function(){})
+                                      $(“div”).click(function(){ 事件处理程序 })
+
+                                      element.on(events,[selector],fn) // on()在匹配元素上绑定一个或多个事件的事件处理函数
+
+                                      $('div').on({
+                                      mouseover: function(){},
+                                      mouseout: function(){},
+                                      click: function(){}
+                                      })
+
+                                      $('div').on(“mouseover mouseout”, function() {
+                                      $(this).toggleClass(“current”);
+                                      })
+
+                                      $('ul').on('click', 'li', function() {
+                                      alert('hello world!');
+                                      })
+
+                                      $("ul").off("click", "li") // 解绑事件委托
+                                      //有些事件希望自动触发, 比如轮播图自动播放功能跟点击右侧按钮一致。可以利用定时器自动触发右侧按钮点击事件，不必鼠标点击触发
+                                      element.trigger("type") //element.click() //element.triggerHandler(type) 不会触发元素默认行为和前二者不同
+
+                                      $("p").on("click", function () {
+                                      alert("hi~");
+                                      });
+
+                                      $("p").trigger("click") // 自动触发点击事件,不需要鼠标点击
+
+                                      $.extend([deep], target, object1, [objectN])//把某个对象拷贝（合并）给另外一个对象使用
+                                      //浅拷贝:被拷贝的对象复杂数据类型地址拷贝给目标对象,修改目标对象影响被拷贝对象
+                                      //深拷贝:前面加true,完全clone(拷贝对象,不是地址),修改目标对象不影响被拷贝对象
+
+                                      //多库共存:jQuery和其他的js库不存在冲突
+                                      //1. 把里面的 $ 符号 统一改为 jQuery。 比如 jQuery('div')
+                                      //2. jQuery 变量规定新名称：$.noConflict() // var xx = $.noConflict()
+
+                                      //Ajax
+                                      $.get(url, [data], [callback])
+
+                                      $.get('http://www.liulongbin.top:3006/api/getbooks', function(res) {
+                                      console.log(res) // res是服务器返回的数据
+                                      })
+
+                                      $.get('http://www.liulongbin.top:3006/api/getbooks', { id: 1 }, function(res) {
+                                      console.log(res)
+                                      })
+
+                                      $.post(url, [data], [callback])
+
+                                      $.post(
+                                      'http://www.liulongbin.top:3006/api/addbook',
+                                      { bookname: '水浒传', author: '施耐庵', publisher: '上海图书出版社' },
+                                      function(res) { // 回调函数
+                                      console.log(res)
+                                      }
+                                  )
+
+                                  $.ajax({ //综合函数
+                                  type: 'POST', // 请求方式，GET 或 POST
+                                  url: '', // 请求的 URL 地址
+                                  data: { },// 这次请求要携带的数据
+                                  success: function(res) { } // 请求成功之后的回调函数
+                              })
+
+                              //Ajax加强
+                              var xhr = new XMLHttpRequest()
+                              //调用open函数,指定请求方式和URL
+                              xhr.open('GET', 'http://www.liulongbin.top:3006/api/getbooks')
+                              xhr.send() //发送Ajax请求
+                              //监听onreadystatechange事件
+                              xhr.onreadystatechange = function(){
+                                if(xhr.readyState === 4){
+                                  if(xhr.status >= 200 && xhr.status < 300){
+                                    console.log(xhr.responseText)
+                                  }
+                                }
+                              }
+                              //如果是post,需要调用open()后,设置content-type属性,调用send()指定发送数据,再监听事件
+                              //序列化:数据对象转换成字符串,比如调用JSON.stringify()
+                              //反序列化:字符串转换为数据对象,调用JSON.parse()
+
+                              //封装Ajax函数???
+
+                              //XMLHttpRequest 可以发送文本信息和上传文件
+                              xhr.timeout = 3000
+                              xhr.ontimeout = function(event){
+                                alert('请求超时')
+                              }
+
+                              //1.定义UI结构
+                              <input type="file" id="file1" />
+                              <button id="btnUpload">上传文件</button>
+                              <br />
+                              <img src="" alt="" id="img" width="800" />
+                              //2.验证是否选择文件
+                              var btnUpload = document.querySelector('#btnUpload')
+                              btnUpload.addEventListener('click', function() {
+                                var files = document.querySelector('#file1').files
+                            if (files.length <= 0) {
+                            return alert('请选择要上传的文件！')
+                            }})
+                            //3.向formdata追加文件
+                            var fd = new FormData()
+                            fd.append('avatar', files[0])
+                            //4.使用xhr发起上传文件请求
+                            var xhr = new XMLHttpRequest()
+                            xhr.open('POST', 'http://www.liulongbin.top:3006/api/upload/avatar')
+                            xhr.send(fd)
+                            //5.监听xhr.upload.onprogress事件
+                            xhr.upload.onprogress = function(event) {
+                              if (event.lengthComputable) {
+                                var percent = event.loaded / event.total * 100 + '%'
+                                console.log(percent)
+                              }
+                            }
+                            //6.监听onreadystatechange事件
+                            xhr.onreadystatechange = function() {
+                              if(xhr.readyState === 4){
+                                if(xhr.status >= 200 && xhr.status < 300){
+                                  console.log(xhr.responseText)
+                                }
+                              }
+                            }
+                            //7.监听onload事件
+                            xhr.onload = function() {
+                              console.log(xhr.responseText)
+                            }
+
+                            var.upload = new XMLHttpRequest()
+                            xhr.upload.onprogress = function(e) {
+                              if (e.lengthComputable) {
+                                var percentComplete = Math.ceil((e.loaded / e.total) * 100)
+                              }
+                            }
+
+                              //Ajax用来提交表单数据
+                              var fd = new FormData()
+                              fd.append('upwd', '123456')
+                              var xhr = new XMLHttpRequest()
+                              xhr.open('POST', 'http://www.liulongbin.top:3006/api/formdata')
+                              xhr.send(fd) //和提交网页表单效果一致
+
+                              var form = document.querySelector('#form1')
+                              form.addEventListener('submit', function(e) {
+                                e.preventDefault()
+                                var fd = new FormData(form)
+                            var xhr = new XMLHttpRequest()
+                            xhr.open('POST', 'http://www.liulongbin.top:3006/api/formdata')
+                            xhr.send(fd)
+                            xhr.onreadystatechange = function() {}
+                            })
+
+
+                            //demo:jQuery实现loading效果
+                            //demo:jQuery实现文件上传,显示文件上传进度
+                            //Axios发起Get请求
+                            axios.get('url', { params: { /*参数*/ } }).then(callback)
+                            var url = 'http://www.liulongbin.top:3006/api/get'
+                            var paramsObj = { name: 'zs', age: 20 }
+                            axios.get(url, { params: paramsObj }).then(function(res) {
+                                var result = res.data
+                                console.log(res)
+                            })
+                            //demo:Axios发起Post请求
+                            //demo:直接使用axios发起请求
+
+                            //formdata
+                            //涉及到文件上传,enctype设置为multipart/form-data;如果不涉及文件上传,enctype设置为application/x-www-form-urlencoded
+                            $('#form1').submit(function(e) {
+                            alert('监听到了表单的提交事件')
+                        })
+                            $('#form1').on('submit', function(e) {
+                            alert('监听到了表单的提交事件')
+                        })
+
+                        //获取表单数据serialize()
+                        $(selector).serialize() //为每个表单元素添加name属性
+                        <form id="form1">
+                        <input type="text" name="username" />
+                        <input type="password" name="password" />
+                        <button type="submit">提交</button>
+                        </form>
+
+                        $('#form1').serialize()
+
+                        //跨域和JSONP
+                        //同源:两个页面的协议，域名和端口都相同,反之跨域
+                        //同源策略限制了从同一个源加载的文档或脚本如何与来自另一个源的资源进行交互,隔离千载恶意文件安全机制
+                        //A网站的JS不允许和非同源的网站C之间资源交互,无法读取非同源网页的 Cookie、LocalStorage 和 IndexedDB,DOM,Ajax请求
+                        //JSONP(JSON with padding)是JSON使用模式,解决主流浏览器跨域数据访问
+                        //JSONP实现原理??????
+                        /*
+                  由于浏览器同源策略限制，网页中无法通过 Ajax 请求非同源的接口数据。但 <script> 标签不受浏览器同源策略影响，通过 src 属性，请求非同源的 js 脚本。
+                  因此，JSONP 实现原理，通过 <script> 标签的 src 属性，请求跨域的数据接口，并通过函数调用，接收跨域接口响应的数据。
+                  */
+
+                  //利用$.ajax()发起JSONP请求
+                  $.ajax({
+                      url: 'http://ajax.frontend.itheima.net:3006/api/jsonp?name=zs&age=20',
+                      dataType: 'jsonp', //自动携带一个 callback=jQueryxxx 的参数，jQueryxxx 是随机生成的一个回调函数名称
+                      success: function(res) {
+                          console.log(res)
+                      }
+                  })
+
+                  // 自定义参数及回调函数名称
+                  $.ajax({
+                      url: 'http://ajax.frontend.itheima.net:3006/api/jsonp?name=zs&age=20',
+                      dataType: 'jsonp',
+                      // 发送到服务端的参数名称，默认值为 callback
+                      jsonp: 'callback',
+                      // 自定义的回调函数名称，默认值为 jQueryxxx 格式
+                      jsonpCallback: 'abc',
+                      success: function(res) {
+                          console.log(res)
+                      }
+                  })
+
+                  //jQuery 中的 JSONP，通过 <script> 标签的 src 属性实现跨域数据访问，只不过jQuery采用动态创建和移除 <script> 标签，发起JSONP 数据请求。
+                  // 发起 JSONP 请求，动态向 <header> 中 append 一个 <script> 标签；
+                  // JSONP 请求成功以后，动态从 <header> 中移除刚才 append 进去的 <script> 标签
+
+                      //节流优化鼠标跟随效果(选择性执行一部分事件,防抖是只保证最后一次触发生效)
+                      $(function() {
+                      var angel = $('#angel')
+                      var timer = null // 1.预定义一个 timer 节流阀
+                      $(document).on('mousemove', function(e) {
+                      if (timer) { return } // 3.判断节流阀是否为空，如果不为空，则证明距离上次执行间隔不足16毫秒
+                      timer = setTimeout(function() {
+                          $(angel).css('left', e.pageX + 'px').css('top', e.pageY + 'px')
+                          timer = null // 2.当设置了鼠标跟随效果后，清空 timer 节流阀，方便下次开启延时器
+                          }, 16)
+                      })
+                  })
+
+
+                  //通信协议 communication protocol
+                  //HTTP协议(HyperText Transfer Protocol):超文本传输协议,用于传输超文本(HTML)的协议
+                  //HTTP 请求消息又叫做 HTTP 请求报文
+                  //HTTP请求消息组成部分识别?????请求行,请求头部,空行,请求体?
+                  //HTTP status code 五种类型
+                  //由三个十进制数字组成，第一个十进制数字定义了状态码的类型，后两个数字用来对状态码进行细分
+                  //1xx:信息性状态码,表示请求已接收，继续处理
+                  //2xx:成功状态码,表示请求已成功接收，理解或接受
+                  //3xx:重定向状态码,表示需要进一步操作以完成请求
+                  //4xx:客户端错误状态码,表示请求有错误，服务器无法处理
+                  //5xx:服务器错误状态码,表示服务器在处理请求时发生错误
+                  //200:成功
+                  //204:成功，无内容
+                  //206:成功，部分内容
+
+                  //promise:异步编程解决方案
+                  //通过自身状态控制异步操作
+                  //状态:pending 未完成,fulfilled 成功,rejected 失败
+                  //promise操作完不会有新的状态变化,实例状态变化只可能发生一次,无法逆转
+                  //promise是对象,也是构造函数
+                  Promise.resolve() //new Promise(resolve => resolve('data'))
+                  const p = Promise.reject('error')
+                  //const p = new Promise((resolve, reject) => reject('error'))
+                  const p = Promise.all([p1,p2,p3]) //都是fulfilled,p.status才是fulfilled
+                  const p = Promise.race([p1, p2, p3]) //只要有一个实例改变状态,p.status就变化,率先改变的promise实例返回值传递给p的回调函数
+
+                  const promises = [ ajax('/200接口'), ajax('/401接口') ];
+
+            Promise.allSettled(promises).then(results=>{
+                // 过滤成功的请求
+                results.filter(item =>item.status === 'fulfilled');
+                // 过滤失败的请求
+                results.filter(item=> item.status === 'rejected');
+            })
+
+            //区分promise.any()和promise.race()
+            //promise.any()不会因为某个promise变成rejected结束,要等到所有参数promise变成rejected结束
+            //demo:手写一个promise构造函数???
+
+            //async/await
+            async function test(){
+              var res1 =  await ajax("http://localhost:3000/news1")
+              var res2 =  await ajax("http://localhost:3000/news2")
+              return res2
+          }
+
+          test().then(res=>{
+      	console.log("返回结果",res)
+        }).catch(err=>{
+      	   console.log("err",err)
+          })
+
+          //nodejs生态包管理器npm:https://www.npmjs.com/
+          // 初次装包完成后，项目文件夹下多一个node_modules文件夹和 package-lock.json配置文件
+          //目录名换成英文,只在开发用到的包记录在devDependencies节点中
+          //npm i 包名 -D   || npm i 包名 --save-dev
+          //npm config get registry
+
+          //Git
+          //配置Git: git cnnfig --global user.name “”, git config --global user>email“”
+          git config --list --global //查看配置信息
+
+          //Git操作的终究结果:工作区文件都处于未修改状态?????
+          //Git三区域:工作区,暂存区,git仓库
+          //Git三状态:staged,modified,commited
+          //unmodified:工作区中文件的内容和 Git仓库中文件的内容保持一致.反之modified是不一致
+          git rm -f index.html // 从 Git 仓库和工作区中同时移除指定的文件
+          git rm --cached index.css // 只从 Git 仓库中移除指定的文件，但保留工作区中对应的文件
+
+          //文件 .gitignore格式规范
+          //以#开头的是注释
+          //以/结尾的是目录
+          //以/开头的是排除当前目录
+          //以!开头的是包含当前目录
+          //以*开头的是排除当前目录
+          //以?开头的是排除当前目录
+          //以[开头的是排除当前目录
+          //以]开头的是排除当前目录
+          //以{开头的是排除当前目录
+
+          //SSH key两部分
+          //1.id_rsa（私钥文件，存放于客户端的电脑中即可）
+          //2.id_rsa.pub（公钥文件，需要放在服务器上）
+
+          //NodeJS
+          //fs是NodeJs内置的文件系统模块，专门用于操作文件
+          //fs.readFile(path, callback) 读取文件
+          //fs.writeFile(path, data, callback) 写入文件
+          //fs.appendFile(path, data, callback) 追加文件
+          //fs.unlink(path, callback) 删除文件
+          //fs.rename(oldPath, newPath, callback) 重命名文件
+          //fs.mkdir(path, callback) 创建目录
+          //fs.rmdir(path, callback) 删除目录
+          //fs.readdir(path, callback) 读取目录
+          //fs.stat(path, callback) 获取文件信息
+          //path.basename()
+          //path.dirname()
+          //path.extname()
+
+          //在 Node.js 中，我们不需要使用 IIS、Apache 等这些第三方 web 服务器软件。因为我们可以基于 Node.js 提供的http 模块，**通过几行简单的代码，就能轻松的手写一个服务器软件**，从而对外提供 web 服务。
+          //module对象存储当前模块信息
+          //require()导入模块时,导入结果以module.exports指向对象为准
+          //exports对象 和module.exports
+          //内置模块的加载优先级最高
+          //Express???
+          //nodemon作用:代码被修改之后，会被 nodemon 监听到，从而实现自动重启项目的效果
+          //Express路由
+          //中间件:多个中间件之间，共享同一份req和res
+          //局部生效的中间件:不使用app.use() 定义的中间件
+
+          //前后端分离的 Web 开发模式，后端只负责提供 API 接口，前端使用 Ajax 调用接口
+          //JWT(JSON Web Token):一种跨域认证解决方案???
+    </script>
+  </body>
+</html>

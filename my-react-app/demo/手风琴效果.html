@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>手风琴</title>
+  <style>
+    ul {
+      list-style: none;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    div {
+      width: 1200px;
+      height: 400px;
+      margin: 50px auto;
+      border: 1px solid red;
+      overflow: hidden;
+    }
+
+    div li {
+      width: 240px;
+      height: 400px;
+      float: left;
+      transition: all 500ms; 
+      background: #eee;
+      border-right: 1px solid #ccc
+    }
+
+    div ul {
+      width: 1200px;
+    }
+  </style>
+</head>
+
+<body> <!--图片和文字，五个图片横向排列，鼠标进入图片，图片变大，其他图片变小-->
+  <div id="box">
+    <ul>
+      <li>
+        <a href="#">
+          <img src="https://picsum.photos/seed/1/800/400" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="https://picsum.photos/seed/2/800/400" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="https://picsum.photos/seed/3/800/400" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="https://picsum.photos/seed/4/800/400" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="https://picsum.photos/seed/5/800/400" alt="">
+        </a>
+      </li>
+    </ul>
+  </div>
+</body>
+<script>
+  // 获取元素
+  const box = document.querySelectorAll('li') // lis = [li, li, li, li, li]
+  // 1、鼠标进入显示图片
+  // 鼠标进入li，当前li变成800，其他li变成100，聚焦展开，其他收缩效果
+  for (let i = 0; i < box.length; i++) {
+    box[i].addEventListener('mouseenter', function () {
+      for (let j = 0; j < box.length; j++) {// 事件触发执行，让所有li默认240宽
+        box[j].style.width = '100px'
+      }
+      this.style.width = '800px'
+    })
+
+    box[i].addEventListener('mouseleave', function () {
+      // 离开li，所有的li恢复默认240宽
+      for (let j = 0; j < box.length; j++) {// 事件触发执行，为了让所有li变成240宽的
+        box[j].style.width = '240px'
+      }
+    })
+
+  }
+// 默认布局：5个li*240px = 1200px，填满容器，容器宽度1200px，若浏览器窗口刚好<=1200px，左右边框可能贴在屏幕边缘，不易察觉；缩小容器宽度或放大浏览器窗口更明显
+// 过渡由CSS transition驱动，动画平滑
+
+//“当前展开、其他收缩”,在事件里必须遍历所有li做一次统一设置，所以j loop
+// i是“遍历绑定”阶段的索引：当前要绑定事件的第几个 li; j是“事件发生时重置”阶段的索引：当前要被重置宽度的第几个 li
+</script>
+
+</html>

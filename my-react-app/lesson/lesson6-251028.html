@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //1.回调函数 编程概念,将函数作为参数给另一个函数,作为参数的函数是回调函数,被入参的是高阶函数
+      /**const Bfunc = (Afunc) => { //领域内运行顺序由Bfunc决定
+                     Afunc();
+                     console.log("helloworld");
+                   };
+
+                   //1s后打印setTimeout()
+                   setTimeout(() => {
+                     console.log("settimeout") //第一个参数是异步回调(高阶组件,异步编程)
+                   }, 1000)
+                   //回调地狱 es6前没有promise
+                   //注意区别无限循环
+                   const oneFunc = (twoFunc) => {
+                     //执行twoFunc
+                   }
+
+                   const twoFunc = (threeFunc) => {
+                     //执行threeFunc
+                   }
+
+                   //.then()链式调用,.catch()捕获错误
+                   //async/await 本质是promise语法糖 内部本质还是promise
+
+                   //2.foreach
+                   // foreach 相当于遍历，inplace 操作是么? 因为他不返回新数组，但是说回调内 async/await 不会逐个等待，异步要注意?
+                   //forEach 不关心这个 Promise，它会立即继续执行下一个元素的迭代，而不会等待当前元素的 Promise 解决。 你需要使用 for of 表达 串行， Promise.all 表达 并行
+                     var numbers = [1,2,3,4,5]
+                     numbers.forEach(function(item,index,array){
+                     array[index] = item * 2
+                     console.log(item,index,array) //或array[index]
+                     })
+
+             //如果要停止foreach(),放入try()并抛出异常
+             function foreach(a,f,t){
+                 try{
+                     a.forEach(f, t);
+                 }
+                 catch(e){
+                     if(e === foreach.break) return;
+                     else throw e;
+                 }
+             }
+             foreach.break = new Error("StopIteration")
+
+                   //3.箭头函数 es6新出定义方式 简洁 this特殊处理
+                   const a = () => {
+                     console.log(a)
+                   }
+
+                   const b = ele => {console.log(b)}
+
+                   const sumFunc = function (a,b) {
+                     const res = a+b
+                     return res
+                   }
+
+                   const result = sumFunc(1,2) //3
+                   **/
+
+      /*const sumFunc1 = (a, b) => a + b; //隐式返回 不需要return
+                   console.log(sumFunc1(1, 2));
+
+                   const sumFunc2 = (now, birth) => ({ name: "fenney", age: now - birth }); //a,b形参
+                   console.log(sumFunc2(2025, 2000));*/
+
+      //1.arguments不同:箭头没arguments
+      function FuncOuter() {
+        //const arrow = () => arguments[0];
+        // return arrow('x');
+        console.log(arguments);
+      }
+
+      FuncOuter({ name: "fenney" }, 1); //1 第一个参数是对象自变量(key:value)
+
+      //箭头函数 vs 普通函数: 箭头不是普通函数的语法糖
+      // 1. this/arguments不绑定:
+      //    - this: 不绑定自己的this,继承外层作用域的this(词法绑定,静态)
+      //    - arguments: 没有arguments对象,需要用剩余参数...args获取
+      // 2. 没有原型: 没有prototype属性,没有constructor,没有原型链
+      // 3. 不能用做构造函数: 不能new,会报错
+      // 4. 不绑定自己的 this, arguments, super, new.target的函数表达式
+      // 5. 箭头函数参数可以用...获取剩余参数
+
+      // 示例1: arguments 处理
+      function normalFunc() {
+        console.log(arguments) // 有arguments对象
+        const arrow = (...args) => {
+          // console.log(arguments) // 报错: arguments is not defined
+          console.log(args) // 使用剩余参数
+        }
+        arrow(1, 2, 3)
+      }
+      // normalFunc(1, 2, 3)
+
+      // 示例2: 没有prototype
+      const arrowFunc = () => {}
+      const normalFunc2 = function () {}
+      // console.log(arrowFunc.prototype) // undefined
+      // console.log(normalFunc2.prototype) // {constructor: ƒ}
+
+      // 示例3: 不能new
+      // const Arrow = () => {}
+      // new Arrow() // TypeError: Arrow is not a constructor
+
+      //this是静态,this指向函数声明时所在作用域下this值
+      function getName() {
+        console.log(this.name);
+      }
+
+      getName(); //undefined
+
+      //call方法调用,同样类似apply/bind
+      getName.call(data); //data.name,this指向data (不受call,apply指向)
+
+      //箭头函数适合和this无关的回调(定时器,数组方法回调)
+      //不适合和this有关的回调(DOM元素事件回调,对象方法)
+      btn.addEventListener("click", function () {
+        //this指向btn
+        //如果用箭头函数,事件源编程外部作用域this值,即此函数作用域
+        //箭头函数不会创建自己的this,也没有自己的作用域,只会从自己作用域链上一层继承this
+      });
+    </script>
+  </body>
+</html>

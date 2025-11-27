@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hello class</title>
+    <style>body { color: purple}</style>
+</head>
+<body>
+    <h1>Hello Class!</h1>
+    <p>uchicago</p>
+    <p>This is Jiayu's lab 1 submission.</p>
+    <p>This is a new paragraph. &lt;p/&gt;</p> 
+
+    <div style="font-weight:bold">
+        This is a <a href="https://www.google.com">link</a>.<br>
+        This is a <a href="name.html">relative link</a>.<br>
+        This is a div &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;a&gt;<br>
+        <hr>
+        <em>Here is more text than I would really like to be on another line</em>
+
+        <h2>This is a smaller header</h2>
+        <h3>this is a subheader</h3>
+        <ol type="I" start="2001" reversed="true">
+            <li>This is the first thing</li>
+            <li>A second thing</li>
+            <li>third time's a charm</li>
+            <li>a fourth thing</li>
+        </ol>
+        <table style="border:1px solid black">
+            <thead>
+                <tr></tr>
+                <th>H</th>
+                <th>K</th>
+                <th>HR</th>
+            <tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td>10 great hits</td>
+                <td>3 terrible strikeouts</td>
+                <td>1 awesome home run</td>
+                </tr>
+
+        <ul>
+        <li>item 1</li>
+        <li>item 2</li>
+        <li>item 3</li>
+        </ul>
+        
+        <head>
+            <meta charset="UTF-8"/>
+            <title> 1-8 mutiple sheet</title>
+            <style>
+                table { border-collapse:collapse; font-family:system-ui, sans-serif}
+                caption { font-weight:600; margin-bottom: .5rem}
+                th,td{border:1px solid #ccc; padding: .4rem .6rem; text-align:center}
+                thead th {background: #f6f7f9}
+                tbody th {background: #f9fafb}
+            </style>
+            </head>
+            <body>
+                <table id="mul">
+                    <caption>1-8 multiple sheet</caption>
+                    <thread>
+                        <tr>
+                            <th scope="col" aria-label="blank"></th>
+                        </tr>
+                    </thred>
+                    <tbody></tbody>
+                </table>
+
+                <script>
+                    const max=8;
+                    const table=document.getElementById('mul')
+                    const theadRow = table.tHead.rows[0]
+                    const tbody = table.tBodies[0]
+
+                    //column head 1-8
+                    for (let c=1; c<=max;c++){
+                        const th=document.createElement('th')
+                        th.scope='col'
+                        th.textContent=ctheadRow.appendChild(th)
+                    }
+
+                    //rows
+                    for (let r=1;r<=max;r++){
+                        const tr=document.createElement('tr')
+
+                        // row head
+                        const rowTh = document.createElement('th')
+                        rowTh.scope='row'
+                        rowTh.textContent=r
+                        tr.appendChild(rowTh)
+                        
+                        // unit r*c
+                        for(let c=1;c<=max;c++){
+                            const td=document.createElement('td')
+                            td.textContent=r*c
+                            tr.appendChild(td)
+                        }
+                        tbody.appendChild(tr)
+                    }
+                </script>
+            </body>
+            </style>
+        </head>
+            </tr>
+        </table>
+        </table>
+    </div>
+</body>
+</html>
