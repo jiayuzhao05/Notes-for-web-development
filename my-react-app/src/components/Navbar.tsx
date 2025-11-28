@@ -10,9 +10,9 @@ export const Navbar = () => {
 				<span className="uppercase">
 					houdunren.com</span>
 			</Link>
-			<Link to='/front'>我的博客</Link>
-			<Link to='/feature'>React特性</Link>
-			<Link to='/front/live'>晚八点直播</Link>
+			<Link to='/front'>my blog</Link>
+			<Link to='/feature'>React feature</Link>
+			<Link to='/front/live'>time schedule</Link>
 		</div>
 	</div>
 }
