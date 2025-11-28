@@ -1039,3 +1039,47 @@ reflect和window区别 都是全局对象?
 
 
 JQuery vs React Query？
+
+
+Electron？
+构建桌面应用（web+nodejs）
+┌─────────────────────────────────────┐
+│         Electron 应用                │
+├─────────────────────────────────────┤
+│  ┌─────────────┐  ┌──────────────┐ │
+│  │ 主进程      │  │  渲染进程     │ │
+│  │ (Main)      │  │  (Renderer)  │ │
+│  │             │  │              │ │
+│  │ - 创建窗口  │  │ - 显示 UI    │ │
+│  │ - 系统 API  │  │ - React/Vue  │ │
+│  │ - Node.js   │  │ - 浏览器 API │ │
+│  └─────────────┘  └──────────────┘ │
+└─────────────────────────────────────┘
+
+router工作原理？
+用于管理页面导航 （tanstack router里有用到） 
+
+声明式 支持嵌套 参数 数据加载
+
+router在electron中工作
+
+用户点击链接 /front/article/123
+    ↓
+TanStack Router 匹配路由规则
+    ↓
+找到 /front/article/$id 路由
+    ↓
+执行 loader 函数获取数据
+    ↓
+渲染 RouteComponent 组件
+    ↓
+显示文章内容
+
+模式：
+broswer router
+URL: http://localhost:5173/front/article/123
+路径: /front/article/123
+
+Hash router
+URL: http://localhost:5173/#/front/article/123
+路径: #/front/article/123
