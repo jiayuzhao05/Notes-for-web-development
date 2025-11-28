@@ -1083,3 +1083,130 @@ URL: http://localhost:5173/front/article/123
 Hash router
 URL: http://localhost:5173/#/front/article/123
 路径: #/front/article/123
+
+
+Axios vs AJAX vs Fetch API？
+
+1.AJAX（Asynchronous JavaScript and XML）技术概念 不是库
+使用 XMLHttpRequest 对象实现异步请求，不刷新页面 与服务器交换数据
+
+代码冗长 需要手动处理状态 手动解析JSON
+
+```
+// 原生 AJAX GET 请求
+const xhr = new XMLHttpRequest()
+xhr.open('GET', 'http://localhost:3000/article')
+xhr.send()
+
+xhr.onreadystatechange = function() {
+  if (xhr.readyState === 4) {
+    if (xhr.status === 200) {
+      const data = JSON.parse(xhr.responseText)
+      console.log(data)
+    } else {
+      console.error('请求失败')
+    }
+  }
+}
+
+// POST 请求
+const xhr = new XMLHttpRequest()
+xhr.open('POST', 'http://localhost:3000/article')
+xhr.setRequestHeader('Content-Type', 'application/json')
+xhr.send(JSON.stringify({ title: '新文章', content: '内容' }))
+
+xhr.onreadystatechange = function() {
+  if (xhr.readyState === 4 && xhr.status === 200) {
+    console.log(JSON.parse(xhr.responseText))
+  }
+}
+```
+
+2. Fetch API
+浏览器原生API 无需额外库 基于promise 替代XMLHttpRequest 
+
+```
+// GET 请求
+fetch('http://localhost:3000/article')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('网络响应错误')
+    }
+    return response.json()  // 需要手动调用 .json()
+  })
+  .then(data => {
+    console.log(data)
+  })
+  .catch(error => {
+    console.error('错误:', error)
+  })
+
+// 使用 async/await
+async function getArticles() {
+  try {
+    const response = await fetch('http://localhost:3000/article')
+    if (!response.ok) {
+      throw new Error('网络响应错误')
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('错误:', error)
+  }
+}
+
+// POST 请求
+fetch('http://localhost:3000/article', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: '新文章',
+    content: '内容'
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+```
+
+局限性：
+不会自动处理 JSON，需要手动调用 .json()
+默认不携带 cookie，需要配置 credentials
+错误处理：HTTP 错误状态码（如 404、500）不会进入 catch，需要检查 response.ok
+不支持请求/响应拦截器
+不支持请求取消（需要使用 AbortController）
+不支持请求超时（需要手动实现）
+
+3.Axios
+基于promise的HTTP客户端库 封装XMLHttpRequest 浏览器和nodejs都支持 支持请求取消和超时
+
+实现JSON转换 自动转换请求和响应数据 支持并发请求
+
+```
+// GET 请求
+axios.get('http://localhost:3000/article')
+  .then(response => {
+    console.log(response.data)  // 自动解析 JSON
+  })
+  .catch(error => {
+    console.error('错误:', error)
+  })
+
+// POST 请求
+axios.post('http://localhost:3000/article', {
+  title: '新文章',
+  content: '内容'
+})
+  .then(response => {
+    console.log(response.data)
+  })
+
+// 使用实例（你的项目方式）
+const http = axios.create({
+  baseURL: 'http://localhost:3000',
+  timeout: 1000
+})
+
+http.get('/article')  // 自动拼接 baseURL
+```
