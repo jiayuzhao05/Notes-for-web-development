@@ -1210,3 +1210,46 @@ const http = axios.create({
 
 http.get('/article')  // 自动拼接 baseURL
 ```
+
+开发环境 vs 生产环境？
+开发：开发和调试 
+
+生产：正式运行 面向用户
+
+
+.scss?
+Sass 的一种语法，本质是 CSS 预处理器，在构建阶段编译成普通 CSS
+
+变量：$primary-color: #4f46e5
+嵌套写法：避免重复写父选择器
+mixin / 函数：封装可复用样式片段
+继承：@extend
+
+```
+$primary: #4f46e5
+
+.button {
+  padding: 8px 16px
+  background: $primary
+  border-radius: 4px
+
+  &:hover {
+    background: darken($primary, 10%)
+  }
+}
+```
+
+写“传统 CSS 规则”，语法更舒服、可复用性更好，最后编译成一个或多个 CSS 文件
+
+tailwind CSS？
+原子化utility-first css 框架
+不再写 .button { ... } 这种类，直接在 HTML/JSX className 上堆工具类
+
+```
+// Navbar.tsx 里：
+<div className="container m-auto h-16 flex items-center gap-6">
+  <Link className="text-primary flex items-center gap-1">
+    ...
+  </Link>
+</div>
+```
