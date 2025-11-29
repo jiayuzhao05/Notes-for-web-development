@@ -1253,3 +1253,22 @@ tailwind CSS？
   </Link>
 </div>
 ```
+
+开发工具类 webpack vs vite vs babel？
+Babel：把“JS/TS代码”翻译成“低版本浏览器也能跑的JS”（转译器 / 编译器）。
+Webpack：把一堆源码和资源打包成浏览器能加载的若干个文件（打包器 / 构建工具）。
+Vite：基于 ES Module 和 Rollup 的新一代前端构建工具，开发时超级快（极速热更新） + 生产时打包（内部用到 Babel/TS 等）。
+
+
+工作流：
+> 源码（TS/ES6/JSX） → Babel/TS 编译 → Webpack 打包 → 浏览器加载
+
+> 源码（TS/React） → Vite 开发服务器（内部调用 esbuild/Babel/TS 编译） → 浏览器直接用 ESM
+
+> 生产构建：Vite → Rollup 打包 → 浏览器加载
+
+
+桌面端应用  vscode vs figma vs postman（接口测试）？
+
+
+
