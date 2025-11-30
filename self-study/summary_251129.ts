@@ -55,3 +55,34 @@ export interface IArticle {
 	content: string;
 	preview: string;
 }
+
+//标签
+var num = 0;
+
+outermost:
+  for(var i = 0; i < 10; i++){
+    for(var j = 0; j < 10; j++){
+      if(j == 5){
+        break outermost;  // 跳出外层循环
+      }
+      console.log(i + "," + j);
+      num++;
+    }
+  }
+
+console.log(num);  // 输出：5
+
+//如果不使用标签
+var num = 0;
+
+for(var i = 0; i < 10; i++){
+  for(var j = 0; j < 10; j++){
+    if(j == 5){
+      break;  // 只跳出内层循环
+    }
+    console.log(i + "," + j);
+    num++;
+  }
+}
+
+console.log(num);  // 输出：50
