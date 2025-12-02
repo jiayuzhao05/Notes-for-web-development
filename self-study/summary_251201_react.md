@@ -1,1 +1,618 @@
 **JSX为什么只允许有一个父节点？**
+
+react在比较新旧虚拟DOM采用同层比较策略（最小节点比较原则） 如果JSX有多个根节点 导致diff打算处理更复杂属性结构比较 降低性能且增加实现复杂度
+
+多节点会使组件渲染结果变得不确定（缺少稳定的key，fragment隐式key[使用 <>...</> 时，React 内部会生成 key，但这些 key 可能不稳定]
+
+JSX最终会被转译为`React.createElement()`（接收一个根元素作为参数，根节点多个导致转译后代码难处理）调用
+
+
+
+如何处理jsx的多节点
+
+```js
+//1.显式 Fragment 添加 key
+function Component({ items }) {
+  return (
+    <React.Fragment key="container">
+      <div key="header">Header</div>
+      {items.map(item => <div key={item.id}>{item.name}</div>)}
+      <div key="footer">Footer</div>
+    </React.Fragment>
+  );
+}
+//2.单个根元素包裹
+function Component({ items }) {
+  return (
+    <div>
+      <div>Header</div>
+      {items.map(item => <div key={item.id}>{item.name}</div>)}
+      <div>Footer</div>
+    </div>
+  );
+}
+//确保条件渲染的稳定性
+function Component({ showExtra }) {
+  return (
+    <>
+      <div key="a">A</div>
+      {showExtra ? <div key="b">B</div> : null}
+      <div key="c">C</div>
+    </>
+  );
+}
+```
+
+
+
+限制
+
+| diff算法 | 特点                                       | 限制                                                         |
+| -------- | ------------------------------------------ | ------------------------------------------------------------ |
+|          | 采用分层比较策略，只比较同层级的节点       | 按位置（索引）比较同级节点。                                 |
+|          | 使用key值优化列表对比，减少不必要的DOM操作 | 类型相同则复用，不同则重建                                   |
+|          | 默认采用双指针算法进行同级比较             | 多根节点时，位置关系可能被误判。如果没有key react按照顺序比较子节点 导致性能问题 |
+|          | 当组件类型不同时会直接销毁重建整个子树     |                                                              |
+
+比较子节点列表，通过key属性识别节点哪些新增、移动、删除 
+
+再根据比较结果 生成最小更新操作 应用到真实DOM
+
+
+
+**何时添加refs？**
+
+react每次更新都是两阶段
+
+| 阶段 |                                | status                                  |
+| ---- | ------------------------------ | --------------------------------------- |
+| 渲染 | React 调用组件确定屏幕显示什么 | `ref.current`=null                      |
+| 提交 | React 把变更应用于 DOM         | React 立即将它们设置到相应的 DOM 节点。 |
+
+**何时使用ref？**
+
+存储timeoutID
+
+存储和操作 DOM 元素
+
+存储不需要被用来计算 JSX 的其他对象
+
+
+
+| 区别     | ref                                      | state                                                    |
+| -------- | ---------------------------------------- | -------------------------------------------------------- |
+| 用途     | 访问DOM节点/保存不会触发渲染的可变值     | 存储组件内部状态数据，state变化时触发组件重新渲染        |
+| 更新机制 | 修改ref.current的值不会导致组件重新渲染  | 修改state使用setState/useState的setter函数，触发重新渲染 |
+| 使用场景 | 适合存储不需要触发渲染的数据/访问DOM元素 | 适合存储会影响UI渲染的数据                               |
+| API      | 通过useRef或React.createRef创建          | 通过useState或this.state/this.setState管理               |
+| 响应性   | ref的变化需要手动处理，不会自动更新UI    | 变化自动反映在UI上                                       |
+
+
+
+fragment 片段
+
+```js
+//1.<React.Fragment>
+//需要给 Fragment 添加 key 属性时（例如在列表渲染中），必须使用完整语法
+import React from 'react';
+
+function Component() {
+  return (
+    <React.Fragment>
+      <td>单元格1</td>
+      <td>单元格2</td>
+    </React.Fragment>
+  );
+}
+
+//2.<>...</>
+function Component() {
+  return (
+    <>
+      <td>单元格1</td>
+      <td>单元格2</td>
+    </>
+  );
+}
+```
+
+|              | fragment   | 普通元素（div） |
+| ------------ | ---------- | --------------- |
+| DOM节点      | 不创建     | 创建            |
+| 可以添加key  | √ 完整语法 | √               |
+| 可以添加属性 | ×          | √               |
+| 影响布局     | ×          | 可能影响        |
+| 性能         | 更轻量     | 稍重            |
+
+
+
+#### 高阶组件 HOC（Higher-Order Component）？？？
+
+函数，接收一个组件并返回一个新的增强组件，概念类似高阶函数，但用于组件
+
+```js
+// 高阶函数示例
+const higherOrderFunction = (fn) => {
+  return (...args) => {
+    console.log('调用前');
+    const result = fn(...args);
+    console.log('调用后');
+    return result;
+  };
+};
+
+// 高阶组件示例
+const higherOrderComponent = (Component) => {
+  return (props) => {
+    // 增强逻辑
+    return <Component {...props} />;
+  };
+};
+```
+
+高阶组件通过包裹（wrapped）被传入的 React 组件，经过一系列处理，最终返回一个相对增强（enhanced）的 React 组件，供其他组件调用。
+
+1. 复用逻辑：高阶组件更像是一个加工 react 组件的工厂，批量对原有组件进行加工，包装处理。我们可以根据业务需求定制化专属的 HOC,这样可以解决复用逻辑。
+2. 强化 props：这个是 HOC 最常用的用法之一，高阶组件返回的组件，可以劫持上一层传过来的 props,然后混入新的 props,来增强组件的功能。代表作 react-router 中的 withRouter。
+3. 赋能组件：HOC 有一项独特的特性，就是可以给被 HOC 包裹的业务组件，提供一些拓展功能，比如说额外的生命周期，额外的事件，但是这种 HOC，可能需要和业务组件紧密结合。典型案例 react-keepalive-router 中的 keepaliveLifeCycle 就是通过 HOC 方式，给业务组件增加了额外的生命周期。
+4. 控制渲染：劫持渲染是 hoc 一个特性，在 wrapComponent 包装组件中，可以对原来的组件，进行条件渲染，节流渲染，懒加载等功能，后面会详细讲解，典型代表做 react-redux 中 connect 和 dva 中 dynamic 组件懒加载。
+
+
+
+HOC vs Hooks
+
+hook可以替代HOC
+
+```js
+// 使用 HOC
+const UserProfile = withAuth(withData(Profile, '/api/user'));
+
+// 使用 Hooks（更清晰）
+function UserProfile() {
+  const isAuthenticated = useAuth();
+  const { data, loading } = useData('/api/user');
+  
+  if (!isAuthenticated) return <div>请登录</div>;
+  if (loading) return <div>加载中...</div>;
+  
+  return <Profile data={data} />;
+}
+```
+
+
+
+**组件通信**
+
+1.父子组件通信（常用）
+
+父传子：props向下传递数据
+
+子传父：回调函数（父组件传递函数给子组件，子组件调用时传参）
+
+```js
+// 父组件
+function Parent() {
+  const [count, setCount] = useState(0);
+  
+  const handleChildClick = (childData) => {
+    console.log('来自子组件的数据:', childData);
+  };
+
+  return <Child count={count} onChildClick={handleChildClick} />
+}
+
+// 子组件
+function Child({ count, onChildClick }) {
+  return (
+    <button onClick={() => onChildClick('子组件数据')}>
+      click me {count}
+    </button>
+  );
+}
+```
+
+
+
+2.跨层级组件通信
+
+- Context API：适合全局状态（如主题、用户信息等）
+- 状态管理库：Redux/MobX等（复杂场景）
+- 事件总线（较少用，可能引起维护问题）
+
+```js
+//context
+const ThemeContext = createContext('light');
+
+function App() {
+  return (
+    <ThemeContext.Provider value="dark">
+      <Toolbar />
+    </ThemeContext.Provider>
+  );
+}
+
+function Toolbar() {
+  return <ThemedButton />;
+}
+
+function ThemedButton() {
+  const theme = useContext(ThemeContext);
+  return <button style={{ background: theme === 'dark' ? '#333' : '#EEE' }}>button</button>;
+}
+```
+
+- 简单父子关系优先用props（只能向下传递 父 → 子）深层嵌套会出现"prop drilling"（逐层传递）
+- 深层嵌套考虑Context
+- 复杂全局状态用Redux
+
+```js
+// ❌ 使用 props - 出现 prop drilling
+function App() {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <Layout theme={theme}>
+      <Header theme={theme}>
+        <Navigation theme={theme}>
+          <Menu theme={theme} />
+        </Navigation>
+      </Header>
+    </Layout>
+  );
+}
+
+// ✅ 使用 Context - 避免 prop drilling
+const ThemeContext = createContext();
+
+function App() {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <Layout>
+        <Header>
+          <Navigation>
+            <Menu /> {/* 直接使用 useContext(ThemeContext) */}
+          </Navigation>
+        </Header>
+      </Layout>
+    </ThemeContext.Provider>
+  );
+}
+
+//redux 调试强大 有中间件支持 有时间旅行
+// 复杂状态场景示例
+// - 多个组件需要共享状态
+// - 状态之间有复杂的依赖关系
+// - 需要撤销/重做功能
+// - 需要中间件（日志、异步处理等）
+// - 需要时间旅行调试
+
+// Redux 示例
+const store = createStore(reducer, applyMiddleware(thunk, logger));
+
+function App() {
+  return (
+    <Provider store={store}>
+      <Dashboard />
+      <Sidebar />
+      <Header />
+    </Provider>
+  );
+}
+
+// 任何组件都可以访问状态
+function Dashboard() {
+  const user = useSelector(state => state.user);
+  const posts = useSelector(state => state.posts);
+  const dispatch = useDispatch();
+  
+  // 复杂的状态逻辑
+  useEffect(() => {
+    dispatch(fetchUserPosts(user.id));
+  }, [user.id, dispatch]);
+  
+  return <div>...</div>;
+}
+
+//alternative method
+// zustand 比 Redux 更简单，但功能强大
+import create from 'zustand';
+
+const useStore = create((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+}));
+
+function Component() {
+  const count = useStore((state) => state.count);
+  const increment = useStore((state) => state.increment);
+  return <button onClick={increment}>{count}</button>;
+}
+
+// Jotai / Recoil
+// 更细粒度的状态管理
+import { atom, useAtom } from 'jotai';
+
+const countAtom = atom(0);
+
+function Component() {
+  const [count, setCount] = useAtom(countAtom);
+  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;
+}
+```
+
+避免过度使用Context导致组件不必要的重渲染
+
+
+
+**hook规则**
+
+只在顶层使用 每次渲染以相同顺序调用hook
+
+只在react函数组件中用hook：只在react函数组件/自定义hook使用hook 不在普通js函数/类组件使用hook
+
+
+
+**为什么react的hook不能放在条件表达式？**
+
+- React 内部是通过一个调用栈来跟踪组件的状态和副作用。
+- 如果Hook 在某些条件下被跳过、重新排列，React 无法追踪管理状态，可能导致 bugs /不符合预期行为。
+- Hook 在函数组件`渲染时`被执行。如果条件语句（如 `if`）控制 Hook 执行顺序,某些 Hook 可能在某次渲染中被调用，其他渲染中则不被调用，破坏了 Hook 的调用顺序。
+
+
+
+
+
+**虚拟DOM virtual DOM** 编程概念 
+
+用一个js对象来表示整个DOM结构，当状态发生改变时会先比较前后两个js对象，得到最小操作序列再应用到真实的DOM上
+
+reconciliation（协调）：用virtual UI表示形式保存在内存 通过库（reactDOM）和真实DOM同步
+
+目的：计算最少DOM操作 提高UI重新渲染性能 不是和真实DOM竞争 不一定比真实DOM快 提供一种机制（开发者不用手动操作DOM 可以写出更可预测代码）
+
+
+
+|      | 真实DOM       | 虚拟DOM                                   |
+| ---- | ------------- | ----------------------------------------- |
+| 优势 | 易用          | 简单方便                                  |
+| 缺点 | 效率低 性能差 | 性能要求高无法优化 首次渲染大量DOM 速度慢 |
+| 区别 | 频繁重排重绘  | 跨平台 不重排重绘                         |
+
+
+
+**useContext**
+
+```js
+// 1.创建上下文（Context）,包含一个 Provider 组件和一个 Consumer 组件。
+const MyContext = React.createContext();
+//2. 使用 Provider 组件包裹组件树。通过 value 属性传递需要共享的数据。
+import MyContext from './MyContext';
+
+const MyProvider = ({ children }) => {
+  const contextValue = { /* 共享数据 */ };
+  return (
+    <MyContext.Provider value={contextValue}>
+      {children}
+    </MyContext.Provider>
+  );
+};
+
+//3. 需要使用上下文值的组件中，使用 useContext Hook 获取上下文值。
+import MyContext from './MyContext';
+
+const MyComponent = () => {
+  const contextValue = useContext(MyContext);
+
+  // 现在可以使用 contextValue 中的数据了
+  return (
+    <div>
+      {/* 使用 contextValue 中的数据 */}
+    </div>
+  );
+};
+```
+
+
+
+**子孙组件如何修改通过useContext获取的值**
+
+使用 `useState` 和 `useContext`
+
+```js
+// 创建上下文
+const MyContext = createContext();
+
+function App() {
+  const [value, setValue] = useState('initial value');
+
+  // 提供上下文
+  return (
+    <MyContext.Provider value={{ value, setValue }}>
+      <ChildComponent />
+    </MyContext.Provider>
+  );
+}
+
+function ChildComponent() {
+  const { value, setValue } = useContext(MyContext);
+
+  // 修改上下文中的值
+  const changeValue = () => {
+    setValue('new value');
+  };
+
+  return (
+    <div>
+      <p>Value: {value}</p>
+      <button onClick={changeValue}>Change Value</button>
+    </div>
+  );
+}
+```
+
+使用 `useReducer`
+
+```js
+const MyContext = createContext();
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'CHANGE_VALUE':
+      return { ...state, value: action.payload };
+    default:
+      return state;
+  }
+}
+
+function App() {
+  const [state, dispatch] = useReducer(reducer, { value: 'initial value' });
+
+  // 提供上下文
+  return (
+    <MyContext.Provider value={{ state, dispatch }}>
+      <ChildComponent />
+    </MyContext.Provider>
+  );
+}
+
+function ChildComponent() {
+  const { state, dispatch } = useContext(MyContext);
+
+  // 修改上下文中的值
+  const changeValue = () => {
+    dispatch({ type: 'CHANGE_VALUE', payload: 'new value' });
+  };
+
+  return (
+    <div>
+      <p>Value: {state.value}</p>
+      <button onClick={changeValue}>Change Value</button>
+    </div>
+  );
+}
+```
+
+
+
+**React 的 useContext 因为value变化导致组件刷新怎么解决？**
+
+|      | 问题                                        | 方案                                                         |
+| ---- | ------------------------------------------- | ------------------------------------------------------------ |
+| 1    | 避免直接将复杂对象作为 Context 的 value     | 避免每次渲染时都创建新的对象或数组作为 `value`，因为引用的变化会导致组件重新渲染 |
+|      |                                             | 使用 `useMemo` 或 `useCallback` 来缓存 `value`，确保只有在值实际变化时，`value` 的引用才会改变 |
+| 2    | 拆分 Context，减少不必要的重新渲染          |                                                              |
+| 3    | 使用 `React.memo` 或 `useMemo` 优化组件     | `React.memo` 是一个高阶组件，用于包裹子组件并避免不必要的重新渲染。结合 `useContext` 使用，以确保当上下文变化时，只有需要更新的子组件才会重新渲染 |
+| 4    | 避免过多的 Context 订阅                     | 合并到一个上下文中 减少组件订阅数量。通过将多个相关值组合到一个对象中 使用useMemo/useCallback优化 减少组件重新渲染 |
+| 5    | 使用 `useReducer` 优化 Context 中的状态管理 | 一些复杂的场景中，使用 `useReducer` 管理 Context 状态比直接使用 `useState` 高效 集中处理更新逻辑 |
+
+
+
+|          | useContext                                                   | useReducer                                                   |
+| -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 功能     | 访问 React 的上下文 (context) 对象,在组件树中共享状态和行为  | 是 useState 的替代方案,用于通过 reducer 函数管理复杂的状态逻辑 |
+| 状态管理 | 通过在组件树共享 context 对象管理状态。context 在多组件中使用,避免prop drilling | 通过 reducer 函数管理组件内部的状态，处理复杂状态逻辑        |
+| 状态更新 | 更新 context 对象，通知所有使用该 context 组件重新渲染       | 更新状态时触发当前组件重新渲染,不影响其他组件                |
+| 适用场景 | 应用程序级别的状态管理,如主题、当前登录用户                  | 组件内部的复杂状态管理,如表单状态、多个状态之间的依赖关系    |
+| 结合适用 | 二者可以结合使用。可以在组件树中共享这些状态                 | 管理组件内部状态                                             |
+
+|              | useReducer                                                   | Redux                                                        |
+| ------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 实现方式     | React 内置Hook,通过 reducer 函数管理组件内部状态。状态更新时触发组件重新渲染 | 一个独立状态管理库,提供`createStore`、`dispatch`、`subscribe` 等 API 管理全局状态。状态更新时通知所有订阅组件重新渲染。 |
+| 状态管理范围 | 管理组件内部状态逻辑,状态范围相对较小                        | 管理应用程序级别全局状态,状态范围较大,适用于复杂应用程序     |
+| 状态更新机制 | 态更新时只会触发当前组件重新渲染,不会影响其他组件            | 状态更新时会通知所有订阅该状态组件重新渲染                   |
+| 代码结构     | 状态管理逻辑集中在 reducer 函数中,组件内部可以直接访问和更新状态 | 要创建 store、reducer、action 等多个模块,代码结构相对更加复杂 |
+| 适用场景     | 适用于组件内部状态管理,尤其在处理复杂的状态逻辑时            | 适用于大型应用程序的全局状态管理,可以方便状态追踪和时间旅行调试 |
+
+
+
+|          | useMemo                                                      | useCallback                    |
+| -------- | ------------------------------------------------------------ | ------------------------------ |
+| 用途     | 缓存计算结果，避免重复计算                                   | 缓存函数本身，避免函数重复创建 |
+| 返回值   | 计算结果的缓存值                                             | 函数的缓存引用                 |
+| 使用场景 | 需要复杂计算的场景 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]); | 需要保持函数引用稳定的场景     |
+| 性能优化 | 都是性能优化手段但优化对象不同，usememo优化计算过程          | 优化函数引用                   |
+
+
+
+**setState**
+
+参数两种形式  用于类组件 该方法通过 `this` 关键字在类组件内部调用 react夜壶优化 但有时需要使用 `shouldComponentUpdate` 生命周期方法手动优化
+
+```js
+//1.对象形式
+this.setState({ property1: value1, property2: value2 })
+//2.函数形式（key异步更新 访问props）
+this.setState((prevState, props) => {
+  return { /* new state */ };
+})
+```
+
+同步异步取决于调用setstate环境
+
+| 异步                                                         | 同步                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 在合成事件和生命周期函数中，`setState`是异步的。调用`setState`后，React 不会立即更新组件的状态，而是将状态更新放入一个队列中,取最后一次执行的结果 | 在原生事件，React 无法控制代码的执行顺序，所以需要立即更新组件的状态 |
+|                                                              | 在`setTimeout`、`setInterval`等函数中，`setState`也是同步    |
+
+| setState(i+1)                                                | setState(i=>i+1)                                             |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 直接传递一个对象，它不会接收到当前的状态值，因此在异步操作中可能导致状态更新不正确 | 传递一个函数，函数接收当前的状态值作为参数`i`，返回新状态值。确保在异步操作中获取到最新的状态值。 |
+
+
+
+**useState 为什么使用数组而不是对象？**
+
+```js
+const[count,setCount] = useState(0);
+
+// 数组解构
+const foo =[1,2,3]
+const [one,two,three] = foo; //可以自己命名
+console.log(one,two,three);
+
+//对象解构
+const user ={ id :123, name :'123'} 
+const {id,name} =user; //必须使用原本的key
+console.log(id,name);
+
+const { state,setState} = useState(false);
+const { state: counter,setState:setCounter} = useState(0);
+
+
+const [state, setState] = useState(initialState)
+//lazy loading
+const [state, setState] = useState(() => {
+  const initialState = someExpensiveComputation(props);
+  return initialState;
+})
+
+const [user, setUser] = useState(() => {
+  const initialUser = JSON.parse(localStorage.getItem('user'))
+  return initialUser || { name: 'John Doe', age: 30 }
+})
+```
+
+
+
+**useEffect**
+
+useEffect(func,[])
+
+- 第二参数无值，每次组建渲染都会触发
+- 第二个参数是空数组，相当于componentDidmount 挂载时
+- 第二个参数有值，参数发生变化时触发
+- 第一个参数函数里加入return 相当于componentUnDidmount 销毁时
+
+
+
+
+
+**React hook vs 生命周期**
+
+
+
+
+
+**网络请求在 componentWillMount 和 componentDidMount 有什么区别**
