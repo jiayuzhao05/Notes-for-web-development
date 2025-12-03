@@ -833,3 +833,39 @@ module.exports = {
 
 
 **loader vs plugin**
+
+**Loader**
+本质是函数，处理非js文件，如css图片字体
+在module.rules中定义
+
+常见：
+babel：将es6+代码转换为es5
+css：处理css文件
+file：处理图片、字体等文件
+sass：将sass代码转换为css
+postcss：预处理css
+url：和file作用一样，设置一个limit，小于它时返回url
+
+
+
+**Plugin**
+具有apply方法的js对象，访问webpack完整的编译生命周期，修改各种配置
+能解决loader无法实现的其他自定义需求，如文件压缩，资源优化等
+在plugins数组中定义
+
+常见：
+HtmlWebpackPlugin：自动生成html文件
+MiniCssExtractPlugin：将css从bundle中提取为单独的文件
+OptimizeCssAssetsWebpackPlugin：优化和最小化css资源
+webpack.HotModuleReplacementPlugin：开启模块化热替换功能
+clean-webpack-plugin：删除构建目录
+DefinePlugin：允许在编译时创建配置的全局对象，不需要安装
+copy-webpack-plugin：赋值文件或者目录到执行区域，例如vue的打包过程中，如果将一些文件放在public下，打包后就会放到dist文件夹中，复制的规则在patterns属性中设置：
+
+- from：设置从哪一个源中开始复制
+- to：复制到的位置，可以省略，会默认复制到打包的目录下
+- globOptions：设置一些额外的选项，其中可以编写需要忽略的文件
+
+
+
+**webpack遇到import如何解析出来？**
