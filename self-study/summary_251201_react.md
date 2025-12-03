@@ -772,5 +772,64 @@ react新的调度算法 通过创建fiber树表示UI渲染过程
 
 
 
+### Suspense原理
+
+1. 当 `Suspense` 包裹的组件中触发异步操作时，`Suspense` 会将该组件标记为暂停状态。
+2. 当组件被标记为暂停状态后，`Suspense` 会使用备用内容。
+3. `Suspense` 会监听异步操作。一旦异步操作完成。
+4. `Suspense` 会将组件的暂停状态解除，并重新渲染被包裹的组件
 
 
+
+### React渲染流程
+
+1. babel把 jsx代码转为 React.createElement（16），jsx(17 react/jsx-runtime） 形式叫render方法。
+2. render方法返回虚拟dom
+3. react把虚拟dom转为fiber，过程分为beighwork和completeWork
+4. beighwork 从下往上 将vdom 转 fiber，比较虚拟 DOM 和旧虚拟DOM，找出需要更新部分，
+   1. 对于需要更新部分，React 创建一个更新队列，按照优先级顺序依次更新 DOM
+   2. 更新过程中，React 递归渲染子组件,
+   3. 渲染过程中，React 调用组件生命周期钩子 如果组件状态变化
+   4. 再次调用render()，重复上述渲染流程
+5. completeWork 从上往下 按顺序创建元素，组装成 dom 树。
+
+
+
+**Webpack**
+
+静态资源打包工具 输出编译好文件 放在浏览器直接运行
+
+本身功能有限：编译js中es module语法 压缩js代码
+
+
+
+基本配置 5大核心概念
+
+1. Entry(入口) 提示webpack从哪个文件开始打包
+2. Output（输出） 指示webpack打包完的文件输出到哪里去，如何命名
+3. Loader(加载器) webpack本身只能处理js\json等资源，其他资源需要借助loader,webpack才能解析
+4. Plugin(插件) 拓展webpack的功能
+5. Mode(模式) development, production
+
+```js
+const path = require("path")
+module.exports = {
+    entry: "./src/main.js",
+    output: {
+        path: path.resolve(__dirname, "dist"), //绝对路径
+        filename: "main.js",
+    },
+    // 加载器
+    module: {
+        rules: [
+       ]
+    },
+    plugins: [
+    ],
+    mode: "development",
+}
+```
+
+
+
+**loader vs plugin**
