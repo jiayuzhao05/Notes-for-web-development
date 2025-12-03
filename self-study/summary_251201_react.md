@@ -745,3 +745,32 @@ react新的调度算法 通过创建fiber树表示UI渲染过程
 - **按需加载**：使用 `React.lazy` 和 `Suspense` 实现组件按需加载。
 - **分批渲染**：使用虚拟列表或分页技术分批渲染数据。
 - **图片懒加载**：使用 `IntersectionObserver` 实现图片懒加载。
+
+
+
+|          | react                                                 | react native                                                 |
+| -------- | ----------------------------------------------------- | ------------------------------------------------------------ |
+| 目标平台 | 构建 Web 应用程序的 JavaScript 库                     | 用于构建跨平台移动应用程序的框架,可以在 iOS 和 Android 上运行 |
+| UI组件   | 使用 HTML 元素作为 UI 组件,如 `div`、`span`、`button` | 使用原生移动平台的 UI 组件,如 `View`、`Text`、`Image` 等,这些组件直接映射到原生的 UI 元素 |
+| 开发体验 | 开发者使用浏览器的开发者工具调试和测试                | 开发者使用特定于移动平台的开发工具,如 Xcode 和 Android Studio |
+
+
+
+**React项目性能优化**
+
+| **`React.memo`**                                             | 默认包裹组件对props浅比较（比较两个对象引用是否相同），确定是否更新，使用自定义 React.memo(MyComponent, (prevProps, nextProps) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `React.lazy` 和 `Suspense` 实现动态组件导入和加载            |                                                              |
+| React.PureComponent                                          | 对组件的 props 和 state 浅比较。  class MyComponent extends React.PureComponent { |
+| 使用 `useCallback` 和 `useMemo` Hooks 缓存计算结果           | `useCallback` 缓存函数引用,`useMemo` 缓存计算结果,减少重复计算 |
+| 使用 `windowing` 或 `virtualization` 技术优化长列表性能      | 仅渲染可见区域,减少 DOM 操作                                 |
+| 使用 `React.Fragment` 减少 DOM 节点                          | `React.Fragment` 在不添加额外 DOM 节点的情况下对子元素分组   |
+| React.Profiler 性能分析                                      | 帮助识别应用程序性能瓶颈                                     |
+| 使用 `shouldComponentUpdate` 生命周期方法使用nextProps, nextState进行 Props 和 State 浅层比较 | 通过比较 props 和 state 的变化,决定是否需要重新渲染组件      |
+| 使用 `React.StrictMode` 发现隐藏性能问题                     | `React.StrictMode` 帮助发现应用程序中的一些潜在问题,例如意外副作用 |
+| 大组件拆分成小组                                             | 优势在于小组件内state更新后不影响大组件render                |
+
+
+
+
+
