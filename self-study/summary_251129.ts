@@ -86,3 +86,19 @@ for(var i = 0; i < 10; i++){
 }
 
 console.log(num);  // 输出：50
+
+//method3： continue
+var num = 0;
+
+outermost:
+  for(var i = 0; i < 10; i++){
+    for(var j = 0; j < 10; j++){
+      if(j == 5){
+        continue outermost;  // 跳到外层循环的下一次迭代
+      }
+      console.log(i + "," + j);
+      num++;
+    }
+  }
+
+console.log(num);  // 输出：50
