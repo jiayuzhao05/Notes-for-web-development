@@ -138,12 +138,101 @@ export const helper = () => {}
 import main, { helper } from './module.mjs'
 
 // 重新导出（聚合）
-// 透传
+// 透传：相当于做一个转发/聚合，不会执行重命名或修改源内容 常用于“总出口”文件，把多个子模块的导出聚合起来
 export * from './mod.js'
 // 带 default
-export { default as main, helper } from './mod.js'
+// export { default as main, helper } from './mod.js'
+// 1. default as main：将源模块的默认导出重命名为 main 并作为命名导出
+//    - 源模块：export default function() {}
+//    - 重新导出后：import { main } from './index.js'（不再是默认导入了）
+// 2. helper：直接透传源模块的命名导出 helper
+//    - 源模块：export const helper = xxx
+//    - 重新导出后：import { helper } from './index.js'
+
+// 等价于：
+// import defaultExport from './mod.js'
+// import { helper } from './mod.js'
+// export { defaultExport as main, helper }
+// 可以同时重命名多个导出
+// export { default as main, helper as helperFunc, PI } from './mod.js'
+
+// ========== 实际使用示例 ==========
+// 文件：math.mjs
+export default function add(a, b) {
+    return a + b
+  }
+  
+  export const PI = 3.14159
+  export function multiply(a, b) {
+    return a * b
+  }
+  
+  // 文件：index.mjs（聚合文件）
+  // 方式1：只透传命名导出（不包含 default）
+  export * from './math.mjs'
+  
+  // 方式2：同时导出 default 和命名导出
+  export { default as add, PI, multiply } from './math.mjs'
+  
+  // 方式3：重命名 default，同时导出命名导出
+  export { default as addFunction, PI, multiply } from './math.mjs'
+  
+  // ========== 使用聚合文件 ==========
+  // 其他文件可以这样导入：
+  // import { addFunction, PI, multiply } from './index.mjs'
+  // 或者
+  // import { add, PI, multiply } from './index.mjs'
+  
+  // ========== 关键点 ==========
+  // 1. default as xxx：将默认导出重命名为命名导出
+  //    - 源模块：export default fn
+  //    - 重新导出：export { default as fn } from './mod.js'
+  //    - 导入：import { fn } from './index.mjs'（不再是默认导入了）
+  //
+  // 2. helper：直接透传命名导出
+  //    - 源模块：export const helper = xxx
+  //    - 重新导出：export { helper } from './mod.js'
+  //    - 导入：import { helper } from './index.mjs'
+  //
+  // 3. 可以同时重命名多个导出
+  //    export { default as main, helper as helperFunc, PI } from './mod.js'
+  //
+  // 4. 与 export * 的区别
+  //    - export * from './mod.js'：只透传命名导出，不包含 default
+  //    - export { default as xxx } from './mod.js'：可以透传 default（需要重命名）
+  
 // 动态导入
 const mod = await import('./mod.js') //返回 { default, ...named }），可按需加载
+
+// commonJS 可以动态导入 可同步也可异步
+//1. commonJS: require() 同步 但可以在条件或函数里做到按需加载（阻塞式）
+function load() {
+    const mod = require('./foo.cjs')
+    return mod
+  }
+
+//现代 Node (CJS 文件里) 也支持原生 `import()`，它是异步 Promise 形式  
+(async () => {
+    const mod = await import('./foo.mjs')   // 或 './foo.cjs'
+    // CommonJS 模块的导出会挂到 mod.default 上
+    console.log(mod.default)
+  })()
+
+
+//JS 可以“动态”加载，`require` 同步、`import()` 异步。异步 `import()` 在 CJS 下返回的命名空间里，`module.exports` 会变成 `default` 属性。
+
+// ESM 也可以动态导入 但import()只能异步，返回 Promise，需 await 或 then
+// ESM 文件
+const mod = await import('./foo.js') // 顶层 await
+mod.doSomething()
+
+// 或函数内
+async function load() {
+  const { doSomething } = await import('./foo.js')
+  doSomething()
+}
+//按需/条件/事件触发加载，减少首屏体积
+//返回模块命名空间对象，默认导出在 mod.default
 
 //JS 拥有词法作用域 从内到外逐级向上查找变量 block->function->global 还没找到reference error
 // node - global
