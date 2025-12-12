@@ -44,7 +44,7 @@ function subtract(a, b) {
 //    - 给 exports 对象添加属性
 //    - 只能添加属性，不能直接赋值（会断开引用）
 //    exports.add = add
-//    - exports = {} 这样写不会生效
+//    - exports = {} 不会生效
 // exports = { multiply, divide }  // ❌ 不会生效
 // 因为 exports 只是 module.exports 的一个引用，直接赋值会断开引用，导出失败
 
@@ -114,7 +114,7 @@ console.log('重命名后:', mul(4, 3))  // 12
 // node - global
 // 浏览器 - window
 //JS 引擎 - chrome V8, safari 功能包括解决并运行AST
-// 在此基础上 闭包不让JS垃圾回收 不能保存太多 所以使用短暂闭包
+// 此基础上 闭包不让JS垃圾回收 不能保存太多 所以使用短暂闭包
 
 // esm - .mjs 
 // commonJS - .cjs
