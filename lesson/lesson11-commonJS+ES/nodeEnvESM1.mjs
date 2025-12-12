@@ -104,7 +104,7 @@ const { multiply: mul } = require('./nodeEnvCMJ2.cjs')  // 可以重命名？？
 console.log('math2.multiply:', math2.multiply(4, 3))  // 12
 console.log('重命名后:', mul(4, 3))  // 12
 
-// 核心区别
+// 区别
 // - module.exports 是真正导出对象，可以直接赋值
 // - exports 只是 module.exports 的一个引用
 // - require() 导入时，返回 module.exports 指向的对象，不能直接赋值
