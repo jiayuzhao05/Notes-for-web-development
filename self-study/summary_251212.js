@@ -149,3 +149,26 @@ const module = await import('./commonjs-module.cjs')
 
 //树摇优化 Tree Shaking 优化JS代码体积 移除未使用的代码 减小最终打包文件的体积
 //名字来源于"摇树让枯叶掉落"的比喻——通过静态分析代码依赖关系，识别并移除那些从未被使用的代码（"枯叶"），只保留真正需要的部分
+// 树摇依赖于 ES6 模块的静态结构特性
+// utils.js - 导出多个函数
+export function add(a, b) {
+    return a + b;
+  }
+  
+  export function multiply(a, b) {
+    return a * b;
+  }
+  
+  export function divide(a, b) {
+    return a / b;
+  }
+  
+  // main.js - 只使用其中一个
+  import { add } from './utils.js';
+  
+  console.log(add(2, 3));
+
+// 树摇要求使用 ES6 的 import/export 语法，而不是 CommonJS 的 require/module.exports
+
+// es6 是静态:导入导出在编译时就确定，可以进行静态分析
+// commonJS 是动态：require() 在运行时动态执行，无法在编译时确定依赖关系

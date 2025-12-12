@@ -119,6 +119,32 @@ console.log('重命名后:', mul(4, 3))  // 12
 // - require() 导入时，返回 module.exports 指向的对象，不能直接赋值
 // - 如果同时使用 module.exports 和 exports，以 module.exports 为准
 
+
+// esmodule 导入导出两种用法
+// 命名导出/导入:可导出多个成员，导入时名字要对上（可用 as 重命名），编辑器有静态检查
+export const a = 1
+export function foo() {}
+const x = 1; export { x, foo as bar }
+
+// 默认导出/导入:只能有一个默认导出，导入时名字随意（不用 as），编辑器有静态检查 常用于主入口或单个主要功能
+export default function () {}
+// or
+// const fn = () => {}; export default fn
+
+//混合使用
+export default main
+export const helper = () => {}
+// 导入
+import main, { helper } from './module.mjs'
+
+// 重新导出（聚合）
+// 透传
+export * from './mod.js'
+// 带 default
+export { default as main, helper } from './mod.js'
+// 动态导入
+const mod = await import('./mod.js') //返回 { default, ...named }），可按需加载
+
 //JS 拥有词法作用域 从内到外逐级向上查找变量 block->function->global 还没找到reference error
 // node - global
 // 浏览器 - window
