@@ -128,3 +128,19 @@ console.log('重命名后:', mul(4, 3))  // 12
 // esm - .mjs 
 // commonJS - .cjs
 // commonJS - .js 默认情况下 除非 package.json = "type": "module"
+
+//如果 npm 包是 commonjs，新项目包是 esm，混装冲突如何解决？
+// 1.好的 npm 包提供下一代 esmodule 包
+//2.配置 vite 打包工具
+//3. 代码解决 import  XX as dotenv from "dotenv"
+//4. 用下一代打包方式 nodenext
+
+//module: esnext 
+// 词法作用域 -> 模块作用域
+// commonJS 没有自带严格模式 是社区规范
+// nodejs 历史规范 
+// V8引擎由大佬写底层 迭代不同浏览器版本（包括功能性，tob/toc 等区分）
+// 
+
+// 新时代如何兼容老浏览器
+// qualifill -> 打包器
