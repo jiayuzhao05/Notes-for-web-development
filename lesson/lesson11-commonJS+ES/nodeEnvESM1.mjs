@@ -15,7 +15,7 @@ export let b = "world"
 // CommonJS 导出两种用法
 
 // 1. module.exports = xxx（直接赋值）
-// 这种方式会完全覆盖导出对象 导出任何类型：对象、函数、字符串、数字等
+// 完全覆盖导出对象 导出任何类型：对象、函数、字符串、数字等
 //    module.exports = { add, subtract }
 //    module.exports = function() {}
 
@@ -28,10 +28,10 @@ function subtract(a, b) {
   }
   
   // 方式1：直接赋值一个对象
-  module.exports = {
-    add,
-    subtract
-  }
+//   module.exports = {
+//     add,
+//     subtract
+//   }
   
   // 方式2：直接赋值一个函数
   // module.exports = add
