@@ -172,3 +172,12 @@ export function add(a, b) {
 
 // es6 是静态:导入导出在编译时就确定，可以进行静态分析
 // commonJS 是动态：require() 在运行时动态执行，无法在编译时确定依赖关系
+
+// commonJS vs esmodule
+// 标准来源：CMJ 社区标准 新增API；ESM 官方标准 新增语法
+// 时态： CMJ 运行态 模块放置到函数 exports module；ESM 运行时（import())+编译时（静态） tree shaking
+
+// 语法： require module.exports vs import export
+// 模块加载机制： 同步 vs 异步
+// this指向： CMJ 空对象 vs import window
+// 循环依赖
