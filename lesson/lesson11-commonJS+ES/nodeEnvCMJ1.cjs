@@ -2,6 +2,7 @@
 // function add(){}
 // module.exports = {add}
 
-// config = 1
-const config = 1
-module.exports = {config}
+// import:config = 1
+// const config = 1
+// module.exports = {config}
+

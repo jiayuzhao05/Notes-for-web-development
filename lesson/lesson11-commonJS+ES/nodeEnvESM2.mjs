@@ -39,6 +39,7 @@ if (true) {
 // obj.name        // 成员访问表达式
 // new Foo()       // 实例化表达式
 
+//---------------------------------
 //活绑定 live bindings 如何实现动态 静态 import？
 // ESModule 导出“引用”，不是一份“值的拷贝”
 
@@ -49,7 +50,31 @@ if (true) {
 // const mod = await import('x')
 
 
+// 活绑定(静态绑定)
+//编译期就知道有哪些绑定，把 import { a } 编译成对“模块内部 a 变量”的只读访问（本质是 getter），因此始终是最新值
+import { count, inc } from './nodeEnvESM1.mjs'
 
+console.log(count) // 0
+inc() // 1
+console.log(count) // 1  ← 这里读的是“活的引用”，不是旧值
 
+// 活绑定(动态绑定)
+let config
+
+if (true) {
+  const module = await import('./nodeEnvESM1.mjs') // 动态 import，返回 Promise
+  config = module.default
+  console.log(config)
+}
+
+//运行时拿到一个“模块对象”，但其属性同样是对导出绑定的 getter，而不是值快照，所以也是活的
+const module = await import('./nodeEnvESM1.mjs')
+
+// module 结构：下列属性是对原模块导出绑定的访问器（getter） 不是简单值拷贝 以后再访问 module.named1，依然会看到导出方最新的值
+{
+  default: ...,
+  named1: ...,
+  named2: ...
+}
 //export如何导出多个值？有什么不能导出的？
 
