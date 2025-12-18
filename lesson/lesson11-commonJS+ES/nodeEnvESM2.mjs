@@ -40,5 +40,16 @@ if (true) {
 // new Foo()       // 实例化表达式
 
 //活绑定 live bindings 如何实现动态 静态 import？
+// ESModule 导出“引用”，不是一份“值的拷贝”
+
+// static import 编译时分析好依赖关系
+// import ... from './module.js'
+
+// dynamic import: 运行时按需加载 返回promise resolve出模块对象
+// const mod = await import('x')
+
+
+
+
 //export如何导出多个值？有什么不能导出的？
 
