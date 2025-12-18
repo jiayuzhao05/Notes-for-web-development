@@ -14,20 +14,20 @@
 //export default 导出后，export default  => obj 不能加{}
 
 // const a = 1
-// // export default a  //不能接变量声明
-// // export default function foo() {} //能接函数声明
-// // export default class Person {} //接类声明
+// export default a  //不能接变量声明
+// export default function foo() {} //能接函数声明
+// export default class Person {} //接类声明
 
-// // export default {}
+// export default {}
 
-// // export function fun(){}
+// export function fun(){}
 
-// // export所有变量能接
-// // export const a = 1 //√
-// // export  123; × 值
-// // export  () => {}; × 表达式expression 不能接
+// export所有变量能接
+// export const a = 1 //√
+// export  123; × 值
+// export  () => {}; × 表达式expression 不能接
 
-// //export function addFun(){}
+//export function addFun(){}
 // function addFun(){console.log("1")} //addFun 引用值
 // export {addFun} 
 
@@ -35,4 +35,7 @@
 // export 一般写在一行
 const config = 1
 export default config // resolve/reject 生成解析值
+// 动态导入时，export default 的值会作为 Promise 解析值的一部分（在 module.default 中）提供给导入方
 // export const config = 1
+
+// default 是打包整个文件 整个文件导出
