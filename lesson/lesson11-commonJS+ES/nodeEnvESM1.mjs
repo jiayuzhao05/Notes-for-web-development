@@ -74,14 +74,14 @@ export function inc() {
 // 循环依赖时，可能拿到一个未完全初始化的对象，属性是 undefined，非常容易踩坑
 
 // ESModule:基于绑定 + 循环依赖
-//导出的是绑定，哪怕一开始是 undefined，之后赋值会“活着”更新
+// 导出的是绑定，哪怕一开始是 undefined，之后赋值会“活着”更新
 // 引擎在编译阶段就知道循环关系，给出更明确的行为（虽然也要小心，但一般比 CJS 稍安全）
 
 // 代码优化：
-// CommonJS: 由于 require 是普通函数调用 + 可以动态拼路径，编译器很难静态分析出到底用到了哪些成员 打包工具很难做真正的 tree-shaking（通常只能靠启发式）
+// CommonJS: 由于 require 是普通函数调用 + 动态拼路径，编译器很难静态分析出到底用到了哪些成员 打包工具很难做真正的 tree-shaking（通常只能靠启发式）
 // ESM:import 必须是静态的，路径是常量字符串，导入的标识符也是固定的;打包器能准确知道“用到了哪些导出”，从而做 tree-shaking，丢掉没用的代码;这也是现代前端库都推荐提供 ESM 入口的原因之一
 
-//动态性：
+// 动态性：
 // CommonJS:更动态  require(someVar) 可以用变量决定模块路径
 // 可以 if (...) module.exports = fnA; else module.exports = fnB
 // 可以在运行时修改 module.exports 对象
