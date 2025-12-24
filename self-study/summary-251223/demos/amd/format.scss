@@ -1,0 +1,39 @@
+$basecolor: #333;
+$borderColor: rgba($baseColor, 88)
+
+.item
+  color: $basecolor;
+  border: 1px solid $borderColor;
+
+.container
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .item
+    margin: 0.10px
+    font-size: 1.1em;
+    &:hover
+      font-weight: bold;
+
+      @for $i from 1 through 10
+        li:nth-child(#{$i})
+          background-color: lighten
+          ($basecolor, $i * 10%)
+
+@mixin abs-center
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+.s1
+  @include abs-center;
+  width: 100px;
+  height: 100px;
+  background-color: $basecolor;
+
+.s2
+  @include abs-center;
+  width: 200px;
+  height: 200px;
+  background-color: $basecolor;
