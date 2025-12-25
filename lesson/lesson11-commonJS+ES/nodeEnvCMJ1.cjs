@@ -4,7 +4,7 @@
 
 // import:config = 1
 // const config = 1
-// module.exports = {config}
+// module.exports = {config} //exports 只是对 module.exports 的一个引用
 
 let count = 0
 function addFun() {
