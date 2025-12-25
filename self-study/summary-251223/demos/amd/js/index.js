@@ -8,7 +8,7 @@ define(['jquery', 'lodash'],function($, _){
         alert('hello, what do you do today?')
     })
 })
-// lodash的throttle节流的方法限制用户访问的次数
-// 不管用户怎么点击,1秒只会触发一次
+// lodash's throttling method limits the number of user visits
+// No matter how the user clicks, it will only be triggered once per second.
     $('.btn-seckill').click(_throttle(function () {
         console.log('Your grab gift request has been sent...',new Date().toTimeString())
