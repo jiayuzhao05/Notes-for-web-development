@@ -13,7 +13,7 @@
 
 //export default 导出后，export default  => obj 不能加{}
 
-// export default 后面要“单个值” 可以接表达式
+// 2.export default 后面要“单个值” 可以接表达式
 // const a = 1
 // export default a  //不能接变量声明
 // export default function foo() {} //√ 能接函数声明
