@@ -35,8 +35,8 @@
 
 //只能有一个export default 可以有多个export
 // export 一般写在一行
-const config = 1
-export default config // resolve/reject 生成解析值
+// const config = 1
+// export default config // resolve/reject 生成解析值
 // 动态导入时，export default 的值会作为 Promise 解析值的一部分（在 module.default 中）提供给导入方
 // export const config = 1
 
@@ -44,11 +44,11 @@ export default config // resolve/reject 生成解析值
 
 // ---------------------------------
 // 活绑定(静态导入)
-export let count = 0
+// export let count = 0
 
-export function inc() {
-  count++
-}
+// export function inc() {
+//   count++
+// }
 
 // CommonJS: 运行时 同步、对象导出 值拷贝风格 像“函数包一层require / module.exports 的脚本”
 // ESModule:编译期 支持异步 基于绑定的模块系统 偏语言级模块（能tree-shaking 等优化）
@@ -90,3 +90,10 @@ export function inc() {
 // 静态 import 路径必须是字面量，不允许拼字符串
 // 顶层 import / export 不能出现在 if / for / 函数 里
 // 运行时想动态加载模块，需要用 import()（Promise）而不是改静态结构
+
+//live binding 指向引用
+export let count = 0 //count放在内存的stack中
+export function addFun() {
+   return count ++
+}
+
