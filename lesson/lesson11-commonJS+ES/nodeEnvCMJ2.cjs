@@ -8,7 +8,7 @@
 const {config:configfromnodeEnvEMJ1} = require('/nodeEnvCMJ1.cjs')
 const {config:configfromnodeEnvEMJ3} = require('/nodeEnvCMJ3.cjs')
 
-let config;
+let config; //变量声明 未初始化 值为undefined
 if (process.env.NODE_ENV === 'production') {
     config = require('./nodeEnvCMJ1.cjs');
 } else {
