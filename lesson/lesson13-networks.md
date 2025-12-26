@@ -22,4 +22,4 @@ ONU光猫 不是路由器 可以有Wi-Fi功能
 
 改拓宽,美国运营商需要和谁联系?
 TCP/IP协议
-networks
+internet networks
