@@ -74,3 +74,30 @@ export default defineConfig({
     // 5. Mode（模式）
     mode: "development" // 或 "production"
   }
+
+//样式不生效,如何调试确定问题?
+// 看computed选项卡 show all styles 绝对定位元素和浮动元素 float:desk 盒类型是block
+// 样式计算过程(浏览器渲染管线第2步)
+//确定声明值
+//层叠
+//继承
+//使用默认值
+
+//important不是权重 是优先级
+
+//什么是css原子化?优势劣势?
+// atomic css css 原子化 
+// tailwind css unocss windi css
+/*.text-red{
+    color:red;
+    width:100px;
+    padding:10px;
+}
+.p-6{
+    padding:6px;
+}
+*/
+
+//劣势:吃团队配置 可读性差 但可以通过组件化(css组件化) 打包体积 css tree-shaking;purgeCSS,uncss
+
+//难点在工程化,源码
