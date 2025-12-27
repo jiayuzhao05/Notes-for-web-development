@@ -31,6 +31,7 @@ module.exports = {
 // vite.config.ts (现代化)
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import { createVerify } from 'crypto'
 
 export default defineConfig({
   plugins: [react()],
@@ -101,3 +102,100 @@ export default defineConfig({
 //劣势:吃团队配置 可读性差 但可以通过组件化(css组件化) 打包体积 css tree-shaking;purgeCSS,uncss
 
 //难点在工程化,源码
+
+// BFF? 作用？
+// Backend For Frontend 后端为前端服务 会加中间层 nodejs吞吐量很好+ 最好前端写 清楚哪些API
+
+//用户登录前 确定ta是谁？
+// uuid:全局唯一标识符 不可变 不可预测 不可伪造
+// 浏览器指纹 fingerprint.js 客户端生成 相对唯一+ 指纹浏览器（收费）（跨境电商 tiktok）
+// ip地址 少用 用户可以伪装
+
+//如何设置精准的setinterval？
+
+//为什么不精确？
+//1.事件循环模型影响回调执行时机
+//2.4ms最小事件（嵌套5层以上后） whatwg wpt.fyi cve-update
+//3.失活页面间隔强制调整1s
+
+//1. 根据performance.now通过时间调整间隔偏差
+//2.  requestAnimationFrame 渲染桢不受页面失真影响 会受到其他影响 可以和1配合使用
+// 3. webworker 不受到失活页面影响 不受渲染桢影响
+
+//如何判断一个属性是否存在？
+//1. boolean判定
+//2. undefined判定
+//3. object.keys() 判断属性是否存在
+// 4. Object.hasOwnProperty()  Reflect.hasOwnProperty() 该方法不看prototype
+// 5. in    Reflect.has()  看prototype
+
+// 文件指纹是什么？ 前端工程化中有何作用？
+// 文件指纹： 用hash/校验和生成的文件唯一标识 该标识对文件内容敏感
+/* 以前加版本号 
+<script src="main.js?v=1.0.0"></script>
+图片 css会加入缓存； html不加入缓存*/
+
+
+// 箭头函数作用？ 消除二义性
+// 八股文问题 简短 一针见血；场景题 项目难点 知无不言
+
+// 何时发生重排＆ 重绘？
+/* 重排： 所有对布局树更改，堆布局树的读取 都会引发重排
+更改，异步重排 */
+dom.style.width='100px';
+dom.style.heigtht='100px';
+dom.style.border='1px solid red';
+
+//读取，同步重排
+dom.style.width='0px';
+dom.style.transition='1s';
+dom.clientHeight;
+dom.style.width='100px';
+
+//布局树和dom树不是一一对应，布局树是dom树的子集
+
+//重绘： 对所有非几何信息读写造成的可见样式的变化引发重绘
+//当元素的样式改变不影响布局（不在文档流中的位置和尺寸）时，浏览器重新绘制元素外观
+//触发重绘的场景：
+//1. 颜色相关：color, background-color, background-image
+//2. 边框样式：border-color, border-style, outline-color, outline-width
+//3. 阴影：box-shadow, text-shadow
+//4. 透明度：opacity (0-1之间)
+//5. 可见性：visibility (hidden/visible)
+//6. 文本装饰：text-decoration
+//注意：重排(回流)一定会触发重绘，但重绘不一定触发重排
+
+//选择结果为true的表达式
+/* null instanceof Object  //fasle
+1 instanceof Number //false
+1 instanceof Object //false
+Number(1) instanceof Number //false
+Number(1)   //1
+new Number(1)   //[Number: 1]
+Number(1).__proto__ === Number.prototype //true 原始类型当做对象去使用时候 js做隐式转换 帮助转换成对象
+// Number(1)本身返回原始值1，但当访问.__proto__属性时，
+// JS引擎会临时将原始值包装成Number包装对象(相当于new Number(1))，这个过程叫做"装箱/Boxing"，包装后的对象.__proto__指向Number.prototype
+// 访问完成后，临时对象会被丢弃，不会影响原始的Number(1)值
+
+Number(1) instanceof Number //false
+// instanceof检查的是对象原型链，Number(1)返回原始值，不是对象实例
+new Number(1).__proto__ === Number.prototype //true   new number(1)是对象
+new Number(1) instanceof Number //true
+// new Number(1)是Number构造函数的实例，返回Number对象
+1..toFixed(2) //"1.00"
+// 1.被解析为1.0（浮点数），访问.toFixed时触发隐式装箱,等价于(1).toFixed(2)/Number(1).toFixed(2)
+// 其他隐式转换：'hello'.length、true.toString()
+*/
+
+//下面哪种动画实现效率最高？
+/* 浏览器渲染原理：
+主线程：解析->样式计算->布局->分层->绘制
+合成线程：分块->光栅化->画
+在css动画中改变元素的transform 主线程都不参与 只影响合成线程中的画 最快
+*/
+
+//什么是reflect？有什么作用？
+/*
+可以完成对象基本操作
+
+*/
