@@ -102,6 +102,43 @@ export default defineConfig({
 //劣势:吃团队配置 可读性差 但可以通过组件化(css组件化) 打包体积 css tree-shaking;purgeCSS,uncss
 
 //难点在工程化,源码
+// 一、工程化为什么是难点？
+// 1. 技术栈复杂且快速变化：
+//    - 打包工具：webpack, vite, rollup, esbuild, turbopack...
+//    - 框架：React, Vue, Angular, Svelte...
+//    - 构建配置：Babel, TypeScript, PostCSS, ESLint, Prettier...
+//    - 包管理：npm, yarn, pnpm, bun...
+//    - 工具链配置复杂，需要理解各种配置文件的作用和相互关系
+
+// 2. 配置复杂且易出错：
+//    - webpack.config.js, vite.config.ts, tsconfig.json, .eslintrc, .prettierrc...
+//    - 每个项目配置可能不同，需要理解配置原理
+//    - 版本兼容性问题：依赖版本冲突、peer dependencies 警告
+//    - 路径解析、别名配置、环境变量处理等
+
+// 3. 性能优化：
+//    - 代码分割（Code Splitting）、懒加载、Tree Shaking
+//    - 打包体积优化、缓存策略、文件指纹
+//    - 构建速度优化、HMR（热模块替换）原理
+//    - 浏览器兼容性处理、polyfill 策略
+
+// 4. 开发体验与工程化的平衡：
+//    - 开发时要求快速热更新，生产时要求体积小、性能好
+//    - 源码映射（Source Map）配置
+//    - 不同环境（dev/prod/test）的配置差异
+
+// 二、源码为什么是难点？
+// 1. 理解底层原理的必要性：
+//    - 只有看源码才能真正理解框架/库的工作机制
+//    - 面试常问：React 的虚拟 DOM 原理、Vue 的响应式原理
+//    - 遇到 bug 时需要追踪到源码层面才能解决
+//    - 性能优化需要理解框架内部实现
+
+// 2. 源码阅读的困难：
+//    - 代码量大：React 源码 10万+ 行，Vue 3 也是数万行
+//    - 抽象层次深：涉及编译、运行时、调度器等复杂概念
+//    - 工程化包装：源码经过编译、压缩，可读性差
+//    - 概念复杂：Fiber 架构、调度算法、Diff 算法等
 
 // BFF? 作用？
 // Backend For Frontend 后端为前端服务 会加中间层 nodejs吞吐量很好+ 最好前端写 清楚哪些API
@@ -112,7 +149,6 @@ export default defineConfig({
 // ip地址 少用 用户可以伪装
 
 //如何设置精准的setinterval？
-
 //为什么不精确？
 //1.事件循环模型影响回调执行时机
 //2.4ms最小事件（嵌套5层以上后） whatwg wpt.fyi cve-update
@@ -196,6 +232,46 @@ new Number(1) instanceof Number //true
 
 //什么是reflect？有什么作用？
 /*
-可以完成对象基本操作
-
+可以完成对象基本操作 直接调用基本方法 不用判断类型
 */
+const obj = {};
+Object.a = 1;
+delete Object.a;
+Object.setPrototypeOf(obj,null,{a:1});
+Object.keys(obj); // obj be ?TOObject(O);let keylist be ?EnumerableOwnProperties(obj,key)；return createArrayFromList(keylist)
+
+const Object = {
+  a:1, 
+  b:2,
+  get c(){
+    console.log(this);
+    return this.a+this.b;
+  }};
+
+const handler = new Proxy(obj,{
+  get(target,key,receiver){
+    console.log(key);
+    return Reflect.get(target,key,receiver);
+  }
+});
+handler.c; //1
+Object.defineProperty(obj,'a',{
+  value:1, 
+  enumerable:true,
+});
+
+console.log(obj.c); //1 2
+
+//如何实现一个只读属性？
+const obj = {};
+// object.defineProperty(obj,prop,descriptor)
+
+Object.defineProperty(obj,'a',{
+  value:1,
+  writable:false,
+  enumerable:true,
+  configurable:true,
+});
+
+writable:false 不能修改
+Object.freeze
