@@ -417,3 +417,304 @@ function createXXX(){
 - 服务端渲染（SSR）减少客户端渲染时间
 - CDN加速资源加载
 */
+
+// 代码输出是什么？
+var x = 1,
+  y = 2;
+var z = function () {
+  var x = 2; // 局部变量，遮蔽全局x
+  return {
+    x, // 对象属性x，创建时值为2（值拷贝）
+    y(a, b) {
+      x = a + b; // 通过闭包访问局部变量x，并修改它
+    },
+    z() {
+      return x; // 通过闭包返回局部变量x的值
+    },
+  };
+};
+var a = z();
+a.y(x, y); // 传入全局x(1)和全局y(2)，闭包中的x变为3
+console.log(a.z(), a.x, x); 
+// 输出：3, 2, 1
+// a.z() 返回闭包中的x = 3
+// a.x 返回对象创建时的x = 2（值拷贝，不会变）
+// x 返回全局变量x = 1
+
+// 关键点：
+// 1. 对象属性x是值拷贝，创建时是2，之后不变
+// 2. 方法y和z中的x通过闭包引用局部变量x，可以修改
+// 3. 全局x和局部x是不同变量，互不影响
+
+
+//上传文件展示上传速度？
+/*XMLHttpRequest
+浏览器支持：fetch 不行
+xhr.upload.adEventListner('progress',e=>{}){}
+promise没有中间状态 只有成和不成
+    */
+
+//创建webworker时如何不指定特定文件？
+const code = console.log('worker');
+
+//1.object url 不用新开文件指定文件 和方法2效果完全相同 在工程化中不希望打包时出现大量worker文件，将其压缩到一个文件中
+const blob = new Blob([code],{type:'application/javascript'});
+const url = URL.createObjectURL(blob);
+console.log(url)
+const worker = new Worker(url);
+//2.data url
+const dataURL = `data:application/javascript,base64,${encodeURLComponent{code}}`;
+const worker = new Worker(url);
+
+//如何清理源码里没有被应用的代码 主要是js，ts，css代码？
+/* 只针对js代码 单模块 ESLint,Terser:文件->AST->分析语法树->删除没有被应用的代码->生成新的AST->新的语法树->生成新的代码
+tree-shaking  多模块 支持js不支持css 必须是esm 静态分析 cms（动态模块化语言）动态搞不定
+PurgeCSS(css 原子化) 针对css不支持js 没有被应用代码清理掉
+自定义 如果陈旧工程太多问题 自己写脚手架
+*/
+
+//下面哪些属于cookie属性？ httponly secure samesite path
+/*
+补充属性：键值对 expires/max-age
+*/
+
+//实现数组转树？
+function arrayToTree(arr){
+  // to do
+  const map = new Map();
+  for(const item of arr) {
+    //找到父节点 O（n）-> O（1）
+    map.set(item.id,item);
+  }
+  const roots = []; //根节点数组
+  for(const item of arr) {
+    //找到item父节点
+    if(item.parent === null) {
+        roots.push(item);
+    }
+    else{
+        const parent = map.get(item.parent);
+        if(!parent.children) {
+            parent.children = [];
+        }
+        parent.children.push(item);
+    }
+    return roots;
+}
+}
+
+arrayToTree([
+  { id: 1, value:1, parent: null },
+  { id: 2, value:2, parent: 1 },
+  { id: 3, value:3, parent: 2 },
+  { id: 4, value:4, parent: 1 },
+])
+
+
+//下面代码输出什么？Vue watch 如何监听多个响应式对象？响应式相关题目 敲响应式源码一遍
+import { watch, reactive } from 'vue';
+
+const state = reactive({
+  a: 1,
+  b: 2,
+  c: 3,
+});
+
+watch( //控制台：3
+  () => {
+    console.log(state.a + state.b);
+    return state.a + state.b; //function1:3 最后运行2次
+  },
+  (val) => { //只有当运行上面函数结果不一样才运行这个函数 所以最后这个函数不运行
+    console.log(val);
+  },
+  {
+    immediate:true,
+  }
+);
+
+setTimeout(() => {
+  state.a++;
+  state.b--;
+  //state.c++; //如果只有这行，则只输出3
+}, 1000);
+// 3 3
+
+
+// 输出什么？
+const s = '123'; //原始类型 没有属性 可迭代对象（实现Symbol.iterator方法）
+s.c = '4'; //产生的临时string对象 设置属性 并立即丢弃临时对象
+s.d = '5'; //产生的临时string对象 设置属性 并立即丢弃临时对象
+const [a, b] = s; //自动装箱 原始类型无法解构 当成对象用 类似const [a, b] = string(s)
+const { c, d } = s; //隐式类型转换 类似const { c, d } = string(s)
+console.log(a); //1 a获得第一个字符'1'
+console.log(b); //2 b 获得第二个字符 '2'
+console.log(c); //undefined s.c没有被保存 无法提取c属性
+console.log(d); //undefined s.d没有被保存 无法提取d属性
+
+
+//获取元素尺寸有多少中方式？区别是什么？
+/*
+1.dom.style.width/height 获取dom cssom树 不回流 dom.dataset.xxx '3em'
+2.getComputedStyle(dom) 计算后的样式 '48px'
+3.offsetWidth scrollWidth clientWidth 布局树中信息 没有单位 '28'
+4.dom.getBoundingClientRect() 视觉尺寸 没有单位 '320' 视觉尺寸和布局树中信息不一致
+*/
+
+// 当QPS达到峰值时，如何处理？ QPS QUeries Second 
+/*
+前端做法
+缓存：本地缓存 服务器缓存 CDN预热
+合并请求：雪碧图...
+懒加载
+用户体验：提示 loading 体感优化
+
+后端扩容
+数据库优化：sql优化 索引 读写分离
+负载均衡
+监控报警
+*/
+
+
+//有A、B和C三个作业同时到达，执行时间分别为4,3,6，且在系统中以单道方式运行，则可以获得最短的平均周转时间的执行顺序为(    )。
+/*
+BAC
+
+周转时间=等待时间+执行时间
+平均周转时间：总周转时间/任务数
+SJF shortest job first 最短任务优先
+*/
+
+//img可见宽度多少？
+<style>
+* { box-sizing: border-box; }
+div, a, img { border: 5px solid; padding: 10px;}
+div{ width: 500px; }
+a { width: 300px; }
+img { width: 100%; }
+</style>
+
+<div>
+  <a>
+    <img>
+  </a>
+</div>
+</body>
+/*css重点只有2个：视觉格式化模型，样式计算
+500-10-10-10=470
+*/
+
+//如何遍历树的前序 中序 后序？
+// 在线计算器（少用eval 容易攻击注入；用逆波兰表达式）或者其他编译器 用后序居多
+
+//AST是什么？在前端有哪些应用场景？
+/*
+abstract syntax tree 抽象语法树 用源代码转换成树形结构
+应用：
+转换代码
+babel
+less/sass
+构建工具
+压缩和混淆
+自定义转换方式
+ESLint, Babel, 构建工具(webpack,swc,esbuild)
+*/
+
+//同一个url地址 如何实现手机打开是移动端页面 电脑打开是web页面？
+/*www.abc.com
+流体布局 100% 相对单位 rem flex grid 1fr
+
+media query 媒介查询
+1.css判断 js逻辑(matchmedia)
+2.差异化越大 开发维护成本越大
+3.打包体积
+适合差异化小站点 
+
+独立开发 独立部署 服务器判断请求头 user-agent 
+*/
+
+//网络调试重点去学
+
+//浏览器如何知晓服务器传递资源类型（js，css，图片等）？
+/*
+响应头中的 content-type 
+不能看后缀 后缀可以伪造
+*/
+
+//有哪些跨域方案？真实项目中如何选择？
+/*
+cors （JSONP太古老）
+代理
+
+保持生产环境和开发环境一致
+生产环境有没有ajax跨域问题？ 没有则两个环境无需处理
+是否需要支持古老浏览器？ Y：生产和开发用JSONP N：生产和开发用CORS
+*/
+
+//如何用JS判断多行文本溢出位置？
+//options:包含字体大小 字体类型 行高等影响溢出位置信息
+function exceedIndex(str,options){
+}
+
+/* 
+通过font-size计算 算不出来
+font-size:16px; //px代表英文顶行和底行高度
+写入canvas  measureText(text) y有几行不好算 行的截断位置
+创建div盒子 //visibility:hidden display:none
+getComputedStyle
+
+//后端响应巨量数据 如何避免性能问题？
+/*
+网络性能：
+const resp =await fetch("xxx");
+await resp.json();
+
+sse(server-sent events)
+websocket(改服务器)
+渲染性能：
+分页（产品同意）
+分片渲染（react fiber）
+虚拟滚动
+canvas （交互行为太多 canvas也困难））
+*/
+
+//页面有100w个任务需要执行 如何保证页面不卡顿？
+/*
+requestAnimationFrame
+requestIdlCallbak
+webworker
+postmessage
+凡是涉及卡顿问题 给浏览器留时间渲染
+*/
+
+//死循环会导致什么后果？无限递归导致什么后果？
+/*
+考察浏览器进程模型 eventloop
+死循环：阻塞 浏览器卡死 无响应
+无限递归：栈溢出
+while(1){}
+
+V8引擎没有尾递归优化
+JS只有变量（stack）和对象（heap）占用内存 
+只要调用函数 出现执行上下文
+*/
+
+//JS不存在引用传递 都是复制粘贴 值传递
+
+
+//JS作用域有哪些？
+/*全局作用域 函数作用域 块作用域  
+模块作用域 type=module
+脚本作用域 script type=text/javascript
+catch作用域 里面定义的函数很怪
+eval作用域
+with作用域
+*/
+
+//下载不一定在文档解析完成后发生 有预下载线程；执行在文档解析后发生
+
+//箭头函数没有自己的this 继承上层作用域的this 类似其他普通变量 因此也不存在通过call()等方法绑定它的this值
+//箭头函数内部use strict 不能用arguments对象；可以根据前面变量名和属性名推断出同名name属性
+
+//若进栈序列为1，2，3，4，5，6，进栈和出栈穿插进行 不可能出现的出栈序列是？ 栈先出后进
+
