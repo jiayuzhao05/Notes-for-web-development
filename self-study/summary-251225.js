@@ -717,4 +717,235 @@ with作用域
 //箭头函数内部use strict 不能用arguments对象；可以根据前面变量名和属性名推断出同名name属性
 
 //若进栈序列为1，2，3，4，5，6，进栈和出栈穿插进行 不可能出现的出栈序列是？ 栈先出后进
+// A: 2,4,3,1,5,6  ✅可能
+// B: 3,2,4,1,6,5  ✅可能  
+// C: 2,3,5,1,6,4  ❌不可能（答案）
+// D: 4,3,2,1,5,6  ✅可能
 
+// 最实用的快速判断方法（针对选择题）：
+// 找出序列中"逆序对"：
+//如果一个大数出栈后，后面出现了比它小且在原序列中在它前面的数，且这个小数不在栈顶，则序列不可能
+
+//cookie和session
+/* session数据保存在服务器；会话cookie关闭浏览器后直接销毁；session安全性比cookie高；cookie被进制时还可以通过header将session id传递回服务器
+单点登录：cookie+session 对服务器压力大 大企业居多
+JWT 小企业居多 分布式方案 对服务器压力小 只需要验证token
+*/
+
+// son instanceof func1; instanceof判断是否存在原型链
+
+//有多个IP地址 如何在最短时间内找出RTT最小的IP（要求并发数最大为10）？
+/*
+round-trip time 请求-收到响应 往返时间
+
+策略：分批并发 + 滑动窗口
+1. 将IP列表分批，每批最多10个（并发限制）
+2. 使用Promise.all并发执行一批请求
+3. 记录每批的RTT结果
+4. 找到最小的RTT对应的IP
+
+优化策略：
+- 如果只需要找到最小的，可以考虑提前返回（找到很小值后不再等待）
+- 但如果要保证准确，需要等待所有请求完成
+- 使用超时机制避免单个请求阻塞太久
+*/
+
+// 方法1：分批并发（基础版本）
+async function findMinRTTIP_Batch(ipList, maxConcurrent = 10) {
+  const results = []
+  
+  // 分批处理
+  for (let i = 0; i < ipList.length; i += maxConcurrent) {
+    const batch = ipList.slice(i, i + maxConcurrent)
+    
+    // 并发请求一批IP
+    const batchResults = await Promise.all(
+      batch.map(async (ip) => {
+        const start = Date.now()
+        try {
+          await fetch(`http://${ip}`, { signal: AbortSignal.timeout(5000) })
+          const rtt = Date.now() - start
+          return { ip, rtt, success: true }
+        } catch (error) {
+          return { ip, rtt: Infinity, success: false }
+        }
+      })
+    )
+    
+    results.push(...batchResults)
+  }
+  
+  // 找到RTT最小的IP
+  const validResults = results.filter(r => r.success)
+  if (validResults.length === 0) return null
+  
+  return validResults.reduce((min, curr) => 
+    curr.rtt < min.rtt ? curr : min
+  )
+}
+
+// 方法2：使用信号量控制并发（推荐）
+async function findMinRTTIP_Semaphore(ipList, maxConcurrent = 10) {
+  const semaphore = Array(maxConcurrent).fill(null)
+  let available = maxConcurrent
+  const results = []
+  
+  async function acquire() {
+    while (available === 0) {
+      await new Promise(resolve => setTimeout(resolve, 10))
+    }
+    available--
+  }
+  
+  function release() {
+    available++
+  }
+  
+  async function measureRTT(ip) {
+    await acquire()
+    try {
+      const start = Date.now()
+      await fetch(`http://${ip}`, { signal: AbortSignal.timeout(5000) })
+      const rtt = Date.now() - start
+      return { ip, rtt, success: true }
+    } catch (error) {
+      return { ip, rtt: Infinity, success: false }
+    } finally {
+      release()
+    }
+  }
+  
+  // 所有请求并发，但受信号量控制
+  const promises = ipList.map(ip => measureRTT(ip))
+  const allResults = await Promise.all(promises)
+  
+  const validResults = allResults.filter(r => r.success)
+  if (validResults.length === 0) return null
+  
+  return validResults.reduce((min, curr) => 
+    curr.rtt < min.rtt ? curr : min
+  )
+}
+
+// 方法3：使用队列控制并发（更优雅）
+class ConcurrencyLimiter {
+  constructor(maxConcurrent) {
+    this.maxConcurrent = maxConcurrent
+    this.running = 0
+    this.queue = []
+  }
+  
+  async execute(task) {
+    return new Promise((resolve, reject) => {
+      this.queue.push({ task, resolve, reject })
+      this.process()
+    })
+  }
+  
+  async process() {
+    if (this.running >= this.maxConcurrent || this.queue.length === 0) {
+      return
+    }
+    
+    this.running++
+    const { task, resolve, reject } = this.queue.shift()
+    
+    try {
+      const result = await task()
+      resolve(result)
+    } catch (error) {
+      reject(error)
+    } finally {
+      this.running--
+      this.process()
+    }
+  }
+}
+
+async function findMinRTTIP_Queue(ipList, maxConcurrent = 10) {
+  const limiter = new ConcurrencyLimiter(maxConcurrent)
+  
+  async function measureRTT(ip) {
+    return limiter.execute(async () => {
+      const start = Date.now()
+      try {
+        await fetch(`http://${ip}`, { signal: AbortSignal.timeout(5000) })
+        const rtt = Date.now() - start
+        return { ip, rtt, success: true }
+      } catch (error) {
+        return { ip, rtt: Infinity, success: false }
+      }
+    })
+  }
+  
+  const results = await Promise.all(ipList.map(ip => measureRTT(ip)))
+  const validResults = results.filter(r => r.success)
+  
+  if (validResults.length === 0) return null
+  
+  return validResults.reduce((min, curr) => 
+    curr.rtt < min.rtt ? curr : min
+  )
+}
+
+// 方法4：提前返回优化（找到很小值后可以提前结束）
+async function findMinRTTIP_EarlyReturn(ipList, maxConcurrent = 10, earlyThreshold = 50) {
+  let minRTT = Infinity
+  let bestIP = null
+  const semaphore = Array(maxConcurrent).fill(null)
+  let available = maxConcurrent
+  let completed = 0
+  
+  async function measureRTT(ip) {
+    await acquire()
+    try {
+      const start = Date.now()
+      await fetch(`http://${ip}`, { signal: AbortSignal.timeout(5000) })
+      const rtt = Date.now() - start
+      
+      if (rtt < minRTT) {
+        minRTT = rtt
+        bestIP = ip
+        // 如果RTT很小，可以考虑提前返回（但这里为了准确性，还是等所有完成）
+      }
+      return { ip, rtt, success: true }
+    } catch (error) {
+      return { ip, rtt: Infinity, success: false }
+    } finally {
+      release()
+      completed++
+    }
+  }
+  
+  // ... (acquire/release 函数同方法2)
+  
+  await Promise.all(ipList.map(ip => measureRTT(ip)))
+  return bestIP ? { ip: bestIP, rtt: minRTT } : null
+}
+
+// 实际使用示例
+const ipList = ['192.168.1.1', '192.168.1.2', '10.0.0.1', /* ...更多IP */]
+const result = await findMinRTTIP_Semaphore(ipList, 10)
+console.log(`最小RTT的IP: ${result.ip}, RTT: ${result.rtt}ms`)
+
+// 1. 并发控制：使用信号量/队列限制同时进行的请求数
+// 2. 超时处理：避免单个请求阻塞太久（如5秒超时）
+// 3. 错误处理：失败的IP标记为Infinity，不影响结果
+// 4. 性能优化：方法2和方法3比方法1更高效，不会等待整批完成才开始下一批
+// 5. 时间复杂度和空
+
+
+//css样式计算过程？
+/*
+1. 确认声明值
+2. 层叠冲突：确定优先级；特殊性（权重）；源次序
+3. 继承
+4. 使用默认值
+*/
+
+//哪些情况触发reflow？
+/*
+修改元素宽高属性
+给元素设置display：none
+给元素设置position：absolute
+*/
