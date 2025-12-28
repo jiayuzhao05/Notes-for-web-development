@@ -273,5 +273,7 @@ Object.defineProperty(obj,'a',{
   configurable:true,
 });
 
+
+
 writable:false 不能修改
 Object.freeze
