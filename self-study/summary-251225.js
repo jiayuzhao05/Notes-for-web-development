@@ -240,21 +240,21 @@ delete Object.a;
 Object.setPrototypeOf(obj,null,{a:1});
 Object.keys(obj); // obj be ?TOObject(O);let keylist be ?EnumerableOwnProperties(obj,key)；return createArrayFromList(keylist)
 
-const Object = {
-  a:1, 
-  b:2,
-  get c(){
-    console.log(this);
-    return this.a+this.b;
-  }};
+// const Object = {
+//   a:1, 
+//   b:2,
+//   get c(){
+//     console.log(this);
+//     return this.a+this.b;
+//   }};
 
-const handler = new Proxy(obj,{
-  get(target,key,receiver){
-    console.log(key);
-    return Reflect.get(target,key,receiver);
-  }
-});
-handler.c; //1
+// const handler = new Proxy(obj,{
+//   get(target,key,receiver){
+//     console.log(key);
+//     return Reflect.get(target,key,receiver);
+//   }
+// });
+// handler.c; //1
 Object.defineProperty(obj,'a',{
   value:1, 
   enumerable:true,
@@ -263,17 +263,157 @@ Object.defineProperty(obj,'a',{
 console.log(obj.c); //1 2
 
 //如何实现一个只读属性？
-const obj = {};
+const obj = {
+  get name(){
+    return 'name';
+  }
+};
 // object.defineProperty(obj,prop,descriptor)
+// Object.defineProperty(obj,'a',{
+//   value:1,
+//   writable:false,
+//   enumerable:true,
+//   configurable:true,
+// });
+// console.log(obj.name);
 
-Object.defineProperty(obj,'a',{
-  value:1,
-  writable:false,
-  enumerable:true,
-  configurable:true,
-});
+//2. Proxy
+const handler = new Proxy(obj, {
+  get(){
+    return 'name';
+  }
+})
+console.log(handler.name);
+
+obj.name = 'name';
+console.log(handler.name);
+
+//3. Object.freeze 对象什么都不能改
 
 
+//什么时候用webworker？
+/* 1.大量CPU密集型任务（大文件上传，图标计算）
+2.任务可被独立拆分 （浏览器渲染管线不能被独立拆分）*/
 
-writable:false 不能修改
-Object.freeze
+//HTTP2有哪些升级？
+/* 二进制分帧：多路复用，优先级，流失传输，hettp对头阻塞；头部压缩，服务器推送*/
+
+/*http1.1队头阻塞：同一个tcp请求下 后到达的请求后响应
+浏览器可以开启几个tcp域名进程
+function start(){
+  for(let i=0;i<100,i++)
+  fetch('http:/localhost:7010/api/'+i)
+  .then(resp=>resp.json())
+  .then(console.log)}
+*/
+
+//手写节流函数 类似技能cd；防抖类似回城
+function throttle(fn,delay){
+  let lasttime = 0;
+  return function (...args){
+    const now = new Date().getTime();
+    if(now - lasttime > wait){
+      lasttime = now;
+      return fn.apply(this,args);
+    }
+  }
+}
+
+// 闭包？是否造成内存泄漏？
+/* 在一个函数环境中，闭包=函数+词法环境 函数内部定义的函数，可以访问函数内部变量 只要产生一个函数都会产生闭包
+
+function m(){
+  var a = 1;
+  return sub(){
+    a;
+  }
+  return sub;
+}
+const s = m();
+
+
+1.持有本该被销毁的函数 造成关联此法环境无法被销毁 函数本身占用空间不多 但是关联此法环境占用空间多
+let handler = ()=>{
+}
+
+dom.addEventHandler('click',handler);
+dom.removeEventHandler('click',handler);
+
+2.（隐蔽内存泄漏点）当多个函数共享此法环境时 导致词法环境膨胀 发生无法访问但无法销毁的数据
+function createXXX(){
+  const big = 'xxx'; //1个词法环境
+  const small = 'x';
+  function s1(){
+    big; //big依然存在此法环境里 虽然s1被销毁 造成内存泄漏
+}
+  function s2(){
+    small;
+  }
+  return s2;
+  }
+  const xxx = createXXX()
+*/
+
+//地址栏输入url后按下回车 发生哪些事？
+/*
+1. URL解析（URL Parsing）：
+   - 解析协议（http/https）、域名、端口、路径、查询参数、锚点
+   - 检查URL格式是否正确
+
+2. DNS查询（DNS Lookup）：
+   - 将域名解析为IP地址
+   - 查询顺序：浏览器缓存 -> 操作系统缓存 -> 本地hosts文件 -> DNS服务器
+   - 如果使用CDN，可能返回最近的服务器IP
+
+3. 建立TCP连接（TCP Connection）：
+   - 三次握手建立TCP连接
+   - HTTPS会进行TLS握手（四次握手）建立安全连接
+
+4. 发送HTTP请求（Send HTTP Request）：
+   - 浏览器构建HTTP请求报文
+   - 包含请求行（方法、路径、协议版本）、请求头、请求体
+   - 通过TCP连接发送到服务器
+
+5. 服务器处理请求（Server Processing）：
+   - 服务器接收请求并处理
+   - 可能查询数据库、执行后端逻辑
+   - 生成HTTP响应
+
+6. 接收HTTP响应（Receive HTTP Response）：
+   - 浏览器接收响应报文（状态行、响应头、响应体）
+   - 状态码：200成功、301/302重定向、404未找到等
+
+7. 解析响应内容（Parse Response）：
+   - 根据Content-Type判断资源类型（HTML、CSS、JS、图片等）
+   - 如果是HTML，开始解析DOM树
+
+8. 渲染页面（Rendering）：
+   a. HTML解析 → DOM树构建
+   b. CSS解析 → CSSOM树构建
+   c. 合并DOM和CSSOM → 渲染树（Render Tree）
+   d. 布局（Layout/Reflow）：计算元素位置和大小
+   e. 绘制（Paint）：填充像素信息
+   f. 合成（Composite）：将图层合成最终页面
+
+9. 加载其他资源：
+   - 解析HTML时遇到link、script、img等标签
+   - 并行下载CSS、JavaScript、图片等资源
+   - 执行JavaScript代码（可能触发DOM操作、重新渲染）
+
+10. 页面交互：
+    - 用户可以与页面交互
+    - JavaScript事件处理
+    - 可能的后续网络请求（AJAX/Fetch）
+
+内存相关：
+- Stack（栈）：存储基本类型变量、函数调用、参数
+- Heap（堆）：存储对象、数组等引用类型
+  let a = { n: 1 }  // a在栈中存储引用地址，{n:1}对象存储在堆中
+
+性能优化点：
+- DNS预解析：<link rel="dns-prefetch" href="//example.com">
+- 预连接：<link rel="preconnect" href="https://example.com">
+- 资源预加载：<link rel="preload">
+- 服务端渲染（SSR）减少客户端渲染时间
+- CDN加速资源加载
+*/
