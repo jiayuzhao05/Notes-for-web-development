@@ -948,4 +948,92 @@ console.log(`最小RTT的IP: ${result.ip}, RTT: ${result.rtt}ms`)
 修改元素宽高属性
 给元素设置display：none
 给元素设置position：absolute
+
+仅仅优化seo 简单渲染 可以直接用无头浏览器 
 */
+
+//console.log([1<2<3,3<2<1]); //[true,true]
+
+//列表分页，快速翻页下的竞态问题？
+/*
+请求顺序不代表收到响应的顺序 
+取消上一次请求
+let xhr = null
+
+function request_XHR(url) {
+  // 取消上一次请求
+  if (xhr) {
+    xhr.abort()
+  }
+  
+  // 发出这一次请求
+  xhr = new XMLHttpRequest()
+  xhr.open('GET', url)
+  xhr.send()
+  
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      console.log(xhr.responseText)
+    }
+  }
+}
+*/
+
+/*defer：异步加载 不阻塞解析 解析完成后按顺序执行
+async：不阻塞解析 下载完成后立即执行
+prefetch：立即加载
+preload：
+*/
+
+//页面加载后发生大量的ajax请求 如何优化？
+/*
+1.请求队列（优先级）
+2.缓存 幂等性
+3.压缩 GZIP
+4.CDN分发
+5.多域名并发
+6.BFF
+7.HTTP2.0 兼容型浏览器
+*/
+
+//哪种方案组合不合理？
+/*
+less+ css modules √
+BEM+postcss √ postcss本身不解决类名冲突问题
+BEM+css in js × css in js不存在类名 所以自动解决类名冲突 二者功能有重叠点
+BEM：css类名命名规范 为了避免类名冲突和类名语义化
+*/
+
+//如果一个包修复了一些bug 对版本号改动 应该改动（补丁版本号） 架构基建涉及版本号管理
+
+//文件上传表单字段，上传文件本质是http请求
+//表单字段名是键值对里的键 
+POST/api/login HTTP/1.1
+Host: localhost:3000
+Content-Type: multipart/form-data;boundary=aaa
+
+//表单格式不一定是multipart/form-data 要看接口格式
+
+//A instanceof B； A.prototype是否出现在B的原型链上
+/*
+Object.keys() 不能遍历出对象原型链上属性
+使用Object.assign(obj1,obj2) 可以实现对象浅拷贝
+for in 循环遍历对象自身和原型链上可枚举属性
+*/
+
+// Promise 执行顺序 某些状态下一个promise吸收另一个promise状态 微队列（A吸收B）
+const p1 = Promise.resolve(1)
+const p2 = new Promise(resolve => resolve(p1))
+p2.then(() => {
+  console.log(2)
+})
+p1.then(() => {
+  console.log(1)
+}).then(() => {
+  console.log(4)
+})
+console.log(3)
+
+//p1： f 1
+//p2： p
+//控制台：3
