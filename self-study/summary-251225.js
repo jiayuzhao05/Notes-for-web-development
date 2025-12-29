@@ -1337,6 +1337,7 @@ function render(html){
 //为什么transform效率高？ transform:rotate(100deg) 只改变draw这一步骤
 
 //index.js
+//滚动歌词条实现
 function parseLrc(){
   var lines = lrc.split('\n');
   for (var i=0;i<lines.length;i++) {
@@ -1368,3 +1369,54 @@ function findIndex(){
     if (curTime<lrcData[i].time) {
       return i-1;
 }
+ return lrcData.length-1;
+  }
+}
+
+//创建歌词元素li
+function createLrcElements(){
+  for (var i=0;i<lrcData.length;i++) {
+    var li = document.createElement('li');
+    li.textContent = lrcData[i].words;
+    dom.ul.appendChild(li); //改动dom树
+}
+}
+createLrcElements()
+//永远不要率先优化
+//事件逻辑 界面逻辑 事件
+
+//容器高度
+var containerHeight = doms.container.clientHeight;
+//li高度
+var liHeight = doms.ul.children[0].clientHeight;
+//最大偏移量
+var maxOffset = doms.ul.clientHeight - containerHeight;
+//设置ul元素偏移量
+function setOffset(){
+  var index = findIndex();
+  var offset = liHeight*index+liHeight/2-containerHeight/2;
+  if(offset<0){
+    offset = 0;
+  }
+  if(offset>maxOffset){
+    offset = maxOffset;
+  }
+  doms.ul.style.transform = `translateY(-${offset}px)`;
+  //清除之前active样式
+  doms.ul.querySelector('.active')
+  if(li){
+    li.classList.remove('active')
+  }
+
+  var li = doms.ul.children[index];
+  if(li){
+    li.classList.add('active')
+  }
+  console.log(offset)
+}
+
+doms.audio.addEventListner('timeupdate',
+  function(){
+  setOffset(); // or setOffset
+  console.log('timeupdate')
+})
