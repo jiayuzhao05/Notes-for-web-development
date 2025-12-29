@@ -1189,3 +1189,68 @@ function pick(nums, target) {
 // }
 
 //SKU组合算法
+const attrs = {
+  color: ['red', 'green', 'blue'],
+  size: ['small', 'medium', 'large'],
+  shape: ['round', 'square', 'triangle']
+}
+
+function generateSKUs(attributes) {
+  const keys = Object.keys(attributes)
+  if (keys.length === 0) return []
+  
+  function combine() {
+    // 递归终止条件：处理完所有属性
+    if (index === keys.length) {
+      return [current]
+    }
+    const key = keys[index]
+    const values = attributes[key]
+    const result = []
+
+    for(const value of values){
+      const next = {...current, [key]: value}
+      result.push(...combine(index+1,next))
+    }
+    return result
+  }
+  return combine(0,{})
+}
+//O(k × N) = O(k × nᵏ);递归深度：O(k),每层处理：O(n) 个值
+//空间复杂度：O(k)（递归栈）
+
+/* 期望输出示例：
+[
+  { color: 'red', size: 'small', shape: 'round' },
+  { color: 'red', size: 'small', shape: 'square' },
+  { color: 'red', size: 'small', shape: 'triangle' },
+  { color: 'red', size: 'medium', shape: 'round' },
+  ...
+  // 总共 3 × 3 × 3 = 27 种组合
+]
+*/
+
+async function async1() {
+  return Promise.resolve(1);
+}
+
+async1().then((res) => {
+  console.log(res); //1 微
+});
+
+new Promise((resolve) => {
+  resolve('2');
+}).then((res) => {
+  console.log(res); //2 微
+}).then(()=> {
+  console.log(3); //3 微
+});
+//同步代码执行完毕执行微队列
+
+//window和document在注册事件上有何区别？
+/*
+1.事件传播机制 window>document
+2.能支持事件有区别
+*/
+
+//防盗链是依托于请求头中的referer 但是可以绕过去 告诉服务器<meta name="referer" content="no-referrer">
