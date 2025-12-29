@@ -1254,3 +1254,117 @@ new Promise((resolve) => {
 */
 
 //防盗链是依托于请求头中的referer 但是可以绕过去 告诉服务器<meta name="referer" content="no-referrer">
+
+
+//浏览器进程模型
+/*
+程序运行需要专属内存空间（进程）每个应用至少有一个进程 进程之间相互独立 即使要通信 需要双方同意
+线程：运行代码的人；一个进程至少有一个线程；主线程：进程开启后自动创建一个线程运行代码
+浏览器 多进程多线程 为了减少崩溃几率 开启浏览器 自动启动多个进程（浏览器进程，网络进程，渲染进程）
+
+浏览器进程：界面显示 用户交互 子进程管理（其他进程由该进程开启）
+网络进程：加载网络资源
+渲染进程：启动后 开启一个渲染主线程（执行HTML，JS，CSS) 默认情况下浏览器为每个标签页开启一个新渲染进程 不同标签页之间不相互影响
+
+setTimeout(fn,3000)
+addEventListener('click',fn)
+
+任务没有优先级 但消息队列有优先级 同一类型任务必须在一个队列 微任务队列优先于其他任务执行
+在一次事件循环中 浏览器根据实际情况从不同队列取出任务执行
+目前chrome实现中至少包含下面队列：
+延时队列：存放计时器到达后回调任务（优先级中）
+交互队列：存放用户操作后产生的事件处理任务（优先级高）
+微队列：用户存放需要最快执行的任务（优先级最高）（使用promise,mutationObserver添加到微队列)
+Promise.resolve().then(fn)
+
+单线程是异步产生的原因 事件循环是异步实现方式
+*/
+for(var i=0;i<10;i++){console.log(1)} //for(;;){console.log(1)} 无限循环
+
+//JS为什么阻止渲染？ 
+var h1 = document.querySelector('h1')
+var btn = document.querySelector('button')
+
+//死循环指定时间
+function delay(duration){}
+
+btn.onclick = function(){
+  h1.textContent = 'Loading...'
+  delay(1000);
+}
+
+setTimeout(function(){
+  console.log(1)
+},0)
+console.log(2)
+//2 1
+
+function delay(duration){
+  var start = Date.now()
+  while(Date.now()-start<duration){}
+}
+
+setTimeout(function(){
+  console.log(1)
+},0)
+
+Promise.resolve().then(function(){
+  console.log(2)
+})
+console.log(3)
+//3 2 1
+//做事件循环题，画出主线程，微队列，演示队列，交互队列
+
+//浏览器如何渲染页面？
+function render(html){
+  //
+  return pixels;
+}
+
+//CSS属性值计算过程：层叠 继承
+//视觉格式化模型：盒模型 包含块
+
+//最终样式 computed style 很多预设值变成绝对值 red-> rgb(255,0,0) ;相对单位变成绝对单位 em->px 得到一个dom树
+// p {
+//   color: red;
+// }
+//DOM树不一定和layout树一一对应
+//内容必须在行盒中 行盒和块盒不能相邻
+//绘制指令：笔移动到（10，30）画一个200*300矩形 红色填充 用canvas （渲染主线程工作到此为止 后续不愁给其他线程完成）
+//光栅化raster用到GPU加速 在GPU进程进行 将每个块变成位图 优先处理靠近视口的块
+
+//渲染进程（沙盒 考虑安全性）：渲染主线程 合成线程
+//为什么transform效率高？ transform:rotate(100deg) 只改变draw这一步骤
+
+//index.js
+function parseLrc(){
+  var lines = lrc.split('\n');
+  for (var i=0;i<lines.length;i++) {
+    var str = lines[i];
+    var parents = str.split(']');
+    var timeStr = parts[0].substring(1);
+    console.log(timeStr)
+    var obj = {
+      time:parseTime(timeStr),
+      words:parts[1],
+    }
+    console.log(str)
+  }
+}
+/*时间字符串解析为数字（s）
+@param {*} timeStr 时间字符串
+@returns 时间数字（s）
+*/
+function parseTime(timeStr){
+  var parts = timeStr.split(':');
+  console.log(+parts[0]*60 +parts[1])
+}
+parseLrc()
+
+//计算出当前情况下LrcData数组中应该高亮显示的歌词下标
+function findIndex(){
+  var curTime = doms.audio.currentTime;
+  for (var i=0;i<lrcData.length;i++) {
+    if (curTime<lrcData[i].time) {
+      return i-1;
+}
