@@ -1068,11 +1068,124 @@ QPS Queries Second 查询每秒 性能指标 ×
 //有一个长度为 n 的数组，初始包含 1 到 n 的升序数字（如 [1, 2, 3, 4, 5, ..., n]）。只允许一种操作：将位置 i 的数字移动到数组的第一个位置。求最少需要多少次操作，才能将初始数组转换为目标数组。
 /**
  * 计算将初始数组 [1, 2, 3, ..., n] 转换为目标数组所需的最少操作次数
- * 操作：只能将位置 i 的数字移动到数组的第一个位置
+ * 只能将位置 i 的数字移动到数组的第一个位置
  * @param {number[]} arr - 目标数组
  * @return {number}
  */
 function getCount(arr) {
   // TODO: 实现算法
 }
+// length(n)-length(最长有序子序列)
 
+// this、bind、new 操作符综合考察
+var name = 'global'
+var obj = {
+  name: 'local',
+  foo: function () { //foo 被 bind(window) 绑定到 window，但 new 会忽略 bind 的绑定
+    this.name = 'foo'
+  }.bind(window),
+}
+
+var bar = new obj.foo() //使用 new 调用 obj.foo，new 会忽略 bind(window)，创建一个新对象；执行 this.name = 'foo'，this 指向新对象；bar = { name: 'foo' }
+setTimeout(function () { //异步执行 在同步代码后输出 此时window.name 仍为 'global'；（因为 new 忽略了 bind，window.name 未被修改）
+  console.log(window.name) //foo 同步 先执行
+}, 0)
+console.log(bar.name)
+
+var bar3 = (bar2 = bar) //bar2、bar3、bar 指向同一个对象
+bar2.name = 'foo2'
+console.log(bar3.name) //foo2 同步先执行
+
+//foo  foo2  global
+
+//如何优化webpack打包速度？
+/*
+1.ESLint 自动删除
+2.多线程打包（webpack5自动包含，webpack4使用thread-loader）
+3.缓存
+4.noParse
+*/
+
+//JS只有在import和arguments中出现引用传递 其他都是值传递 内存独立
+
+//webpack中模块和浏览器中模块有什么区别？
+/*
+webpack中ESM仅存在于编译时态 浏览器中esm存在于运行时态
+*/
+
+/**
+ * 从给定的数组中取出一些数字,并将这些数字分组
+ * 每个数组之和小于等于target
+ * 要求分组尽可能少
+ * @param {number[]} nums 正整数数组
+ * @param {number} target
+ * @return {number[][]} 返回分组后的数组
+ * @example
+ * 输入: nums = [1,2,3,8,9,1,2,3], target = 4
+ * 输出: [[2,2],[3,1],[3,1]]
+ */
+function pick(nums, target) {
+  //先过滤大于target数字 无法放入任何组
+  const validNums = nums.filter(num => num <= target);
+
+  //剩余数字降序排序 优先处理大数 更容易填满数组
+  validNums.sort((a,b)=>b-a);
+
+  //遍历每个数字 尝试放入能容纳它的现有组 否则新建组
+  const groups = [];
+  for (const num of validNums) {
+    let placed = false;
+    for (let i = 0; i<groups.length;i++){
+      const groupSum = groups[i].reduce((sum,n)=> sum+n,0);
+      if (groupSum+num<=target){
+        group[i].push(num)
+        placed = true
+        break
+      }
+    }
+    if (!placed){
+      groups.push([num])
+    }
+  }
+  return groups;
+
+}
+//过滤：O(n)+排序：O(n log n)+分组：O(n × m)=O(n log n + n²) = O(n²)
+
+//优化版贪心 使用最小堆/优先队列
+// function pick(nums, target) {
+//   const validNums = nums.filter(num => num <= target)
+//   validNums.sort((a, b) => b - a)
+  
+//   const groups = []
+//   const groupSums = [] // 维护每个组的和，避免重复计算
+  
+//   for (const num of validNums) {
+//     let placed = false
+//     let minSumIndex = -1
+//     let minSum = Infinity
+    
+//     // 找到当前和最小的组
+//     for (let i = 0; i < groups.length; i++) {
+//       if (groupSums[i] < minSum && groupSums[i] + num <= target) {
+//         minSum = groupSums[i]
+//         minSumIndex = i
+//       }
+//     }
+    
+//     if (minSumIndex !== -1) {
+//       groups[minSumIndex].push(num)
+//       groupSums[minSumIndex] += num
+//       placed = true
+//     }
+    
+//     if (!placed) {
+//       groups.push([num])
+//       groupSums.push(num)
+//     }
+//   }
+  
+//   return groups
+// }
+
+//SKU组合算法
