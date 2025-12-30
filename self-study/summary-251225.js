@@ -1562,9 +1562,10 @@ class UI{
   }
   //更新页角
   updateFooter(){
-    var total = this.uiData.getTotalPrice();
-
+    var total = this.uiData.getTotalPrice()
+    //设置配送费
     this.doms.deliveryPrice.textContent =`delivery fee${this.uiData.deliveryPrice}`
+    //设置起送费
     if(this.uiData.isCrossDeliveryThreshold()){
       this.doms.footerpay.classList.add('active')
     }else{ //到达起送点
@@ -1572,6 +1573,7 @@ class UI{
     }
     this.doms.footerPayInnerSpan.textContent = this.uiData.getTotalPrice();
     //更新还差多少钱
+    this.doms.totalPrice.textContent = total.toFixed(2);
     var dis = this.uiData.deliveryThreshold - total
     dis = Math.round(dis);
     this.doms.footerPayInnerSpan.textConetnt = `${dis} more to go`
