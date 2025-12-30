@@ -1420,3 +1420,167 @@ doms.audio.addEventListner('timeupdate',
   setOffset(); // or setOffset
   console.log('timeupdate')
 })
+
+//luckin coffee下单页面
+class UIGoods{
+  constructor(g){
+    this.data = g,
+    this.choose = 0;
+  }
+  getTotalPrice(){ //获取总价
+    return this.data.price*this.choose;
+  }
+  isChoose(){ //是否选中该商品
+    return this.choose>0;
+  }
+  increase(){ //增加选择数量
+    this.choose++;
+  }
+  decrease(){ //减少选择数量
+    if(this.choose===0){
+      return;
+    }
+    this.choose--;
+  }
+}
+
+// function createUIGoods(g) {
+//   return {
+//     data:g,
+//     choose:0,
+//   }
+// }
+// function UIGoods(g) {
+//   this.data = g,
+//   this.choose = 0;
+// }
+
+// UIGoods.prototype.getTotalPrice = function(){
+//   return this.data.price*this.choose;
+// }
+
+// UIGoods.prototype.isChoose = function(){
+//   return this.choose>0;
+// }
+
+//UI界面数据
+class UI{
+  constructor(){
+    var uigoods = [];
+    for(var i=0;i<goods.length;i++){
+      var uig = new UIGoods(goods[i]);
+      uigoods.push(uig);
+    }
+    this.uiGoods = uigoods;
+    this.deliveryThreshold = 30;
+    this.deliveryPrice = 10;
+    console.log(goods);
+}
+
+getTotalPrice(){
+  var sum = 0;
+  for(var i=0;i<this.uiGoods.length;i++){
+    var g = this.uiGoods[i];
+    sum += g.getTotalPrice();
+  }
+  return sum;
+}
+
+//增加某件商品选中数量
+increase(index){
+  this.UIgoods[index].increase();
+}
+decrease(index){
+  this.UIgoods[index].decrease();
+}
+//得到总共的选择数量
+getTotalChooseNumber(){
+  var sum = 0
+  for(var i=0;i<this.UIGoods.length;i++){
+    sum += this.UIGoods[i].choose;
+}
+  return sum;
+}
+//购物车中有没有东西
+hasGoodsInCar(){
+  return this.getTotalChooseNumber()>0;
+}
+//是否超过配送阈值
+isCrossDeliveryThreshold(){
+  return this.getTotalPrice()>=this.deliveryThreshold;
+}
+}
+
+//整个界面
+class UI{
+  constructor(){
+    this.uiData = new UIData()
+    this.doms = {
+      goodsConatiner: document.querySelector('.goods-list'),
+      deliveryPrice: document.querySelector('footer-car-tip'),
+      footerpay: document.querySelector('footer-pay'),
+      footerPayInnerSpan: document.querySelector('footer-pay-inner span'),
+    }
+    this.createHTML();
+    this.updateFooter();
+}
+  //创建HTML
+  createHTML(){
+  //1.生成html字符串（执行效率低，开发效率高）
+  //2.一个个创建元素（执行效率高，开发效率低）
+  var html = '';
+  for (var i = 0;i<this.uiData.uiGoods.length;i++){
+    var g = this.uiData.uiGoods[i];
+    console.log(g);
+    html += `<div class="goods-item">
+    <img src="${g.data.picture}" alt="">
+    <div class="goods-item-name">${g.data.name}</div>
+    <div class="goods-item-price">${g.data.price}</div>
+    <div class="goods-item-count">${g.data.count}</div>
+    <div class="goods-item-spec">${g.data.spec}</div>
+    <div class="goods-item-confirm">${g.isChoose()?'√':'×'}</div>
+    <div class="goods-item-sub-total">${g.data.subTotal}</div>
+    </div>`;
+}
+}
+  increase(index){
+    this.uiData.increase(index)
+}
+  decrease(index){
+    this.uiData.decrease(index)
+  }
+  //
+  updateGoodsItem(idnex){
+    var goodsDom = this.doms.goodsConatiner.children[index];
+    if(this.uiData.isChoose()){
+      goodsDom.classList.add('active')
+    }else{
+      goodsDom.classList.remove('active')
+    }
+    var span = goodsDom.querySelector('.goods-btns span')
+    span.tetxContent = this.uiData.uiGoods[index].choose;
+  }
+  //更新页角
+  updateFooter(){
+    var total = this.uiData.getTotalPrice();
+
+    this.doms.deliveryPrice.textContent =`delivery fee${this.uiData.deliveryPrice}`
+    if(this.uiData.isCrossDeliveryThreshold()){
+      this.doms.footerpay.classList.add('active')
+    }else{ //到达起送点
+      this.doms.footerpay.classList.remove('active')
+    }
+    this.doms.footerPayInnerSpan.textContent = this.uiData.getTotalPrice();
+    //更新还差多少钱
+    var dis = this.uiData.deliveryThreshold - total
+    dis = Math.round(dis);
+    this.doms.footerPayInnerSpan.textConetnt = `${dis} more to go`
+}
+  }
+
+
+var ui = new UIData()
+// console.log(ui);
+
+var uig = new UIGoods(goods[0]);
+console.log(uig);
