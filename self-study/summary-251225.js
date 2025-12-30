@@ -1578,11 +1578,70 @@ class UI{
     dis = Math.round(dis);
     this.doms.footerPayInnerSpan.textConetnt = `${dis} more to go`
 }
-  }
 
+  //购物车动画
+  carAnimate() {
+    this.doms.car.classList.add('animate');
+    this.doms.car.addEventListener('animationend',()=>{
+      console.log('over');
+      this.classList.remove('animate');
+    })
+  }
+  //抛物线跳跃元素
+  jump(index){
+    var rect = btnAdd.getBoudingClientRect();
+    var start = {
+      x: rect.left,
+      y: rect.top
+    }
+    //跳跃动画
+    var div = document.createElement('div');
+    div.className = 'add-to-cart';
+    var i = document.createElement('i');
+    i.className = 'iconfont i-jiajianzujianjiahao';
+    //设置初始位置
+    div.style.transform = `translate(${start.x}px)`;
+    i.style.transform = `translate(${start.y}px)`;
+    div.appendChild(i);
+    document.body.append(div);
+    //console.log(start,this.jumpTarget)
+    //强行渲染
+    div.clientWidth;
+
+    //设置结束位置
+    div.style.transform = `translate(${this.jumpTarget.x}px)`;
+    i.style.transform = `translate(${this.jumpTarget.y}px)`;
+    
+    var that = this; //保护外层作用域的this（类实例） 在回调函数中途访问 可以访问 this.jumpTarget、this.carAnimate()
+    div.addEventListener('transitionend', function(){
+      console.log('transition over');
+      this.remove(); //移除div
+      that.carAnimate(); //this.carAnimate()会报错 因为div没有carAnimate方法
+    },
+    {
+      once:true, //事件只触发一次
+    })
+}
+}
 
 var ui = new UIData()
 // console.log(ui);
 
 var uig = new UIGoods(goods[0]);
 console.log(uig);
+
+//事件
+ui.doms.goodsConatiner.addEventListener('click',function(e){
+  if (e.target.classList.contains('i-jiajianzujianjiahao')){
+    var index = +e.target.getAttribute('index');
+    ui.increase(index);
+  } else if (e.target.classList.contains('i-jianhao')){
+    var index = +e.target.getAttribute('index');
+    ui.decrease(index);
+  }
+  else if (e.code === 'Minus'){
+    ui.decrease(0)
+  }
+})
+
+
