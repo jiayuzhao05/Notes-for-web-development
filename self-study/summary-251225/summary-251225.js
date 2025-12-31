@@ -1613,7 +1613,7 @@ class UI{
     div.style.transform = `translate(${this.jumpTarget.x}px)`;
     i.style.transform = `translate(${this.jumpTarget.y}px)`;
     
-    var that = this; //保护外层作用域的this（类实例） 在回调函数中途访问 可以访问 this.jumpTarget、this.carAnimate()
+    var that = this; //固定用法 保护外层作用域的this（类实例） 在回调函数中途访问 可以访问 this.jumpTarget、this.carAnimate()
     div.addEventListener('transitionend', function(){
       console.log('transition over');
       this.remove(); //移除div
