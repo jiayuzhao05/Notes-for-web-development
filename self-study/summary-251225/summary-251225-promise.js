@@ -175,3 +175,138 @@ new Promise((resolve, reject) => {
     resolve(2); //无效
     console.log('任务结束');
   });
+
+
+const pro1 =new Promise((resolve)=>{
+    console.log('task start');
+    resolve();
+})
+
+pro1.then(()=>{ //then处理成功 当前代码执行
+   console.log('task finish');
+})
+//catch（）处理失败 当前代码不执行
+
+//常见任务处理方式
+pro.then(处理1).catch(处理2)
+pro.then(处理1).then(处理2)
+pro.then(处理1).then(处理2).catch(处理3)
+
+//promise静态方法
+Promise.resolve(value)
+// new promise(()=>{
+//     resolve(value)
+// })
+
+const pro2 = Promise.all([
+    Promise.resolve(1),
+    Promise.reject(2),
+    Promise.resolve(3)
+]) //任务全部成功则成功
+setTimeout(()=>{
+    console.log(pro2);
+},1000);
+
+//promise.allSettled 任务数组全部已决则成功
+//promise.race 任务数组任一已决则已决 状态和其一致
+
+//exercise5 - fetchStudents 
+/**
+ * 根据页码获取学生数据,返回Promise
+ * @param {Number} page 页码
+ */
+function fetchStudents(page) {
+    return new Promise((resolve,reject)=>{
+        setTimeout(()=>{
+            if (Math.random()>0.1){
+                resolve({
+                    page:page,
+                    data:[`student${page}-1`, `student${page}-2`, `student${page}-3`]
+                });
+            }else{
+                reject(new Error(`Page ${page} fetch failed`));
+            }
+        },Math.random()*1000);
+    })
+}
+
+// 利用 fetchStudents 函数,完成下面的练习
+
+// 练习1: 获取1-10页的学生,最终按照页码的顺序合并成一个数组,任何一页的数据获取出现错误,则任务不再继续,打印错误消息
+// Promise.all
+const proms = new Array(10).fill(1).map((it,i)=>i+1);
+Promise.all(proms)
+    .then((results)=>{
+        console.log(results.flat());
+    })
+    .catch((err)=>{
+        console.log(err);
+    })
+
+// 练习2: 获取1-10页的学生,最终按照页码的顺序合并成一个数组,如果某些页码的数据获取失败,就不加入该数据即可
+// Promise.allSettled
+Promise.allSettled(proms).then((results)=>{
+   return result.filter(r=>r.status==='fulfilled').map((it)=>it.value).flat()
+})
+
+// 练习3: 获取1-10页的学生,打印最先获取到的数据,如果全部都获取失败,则打印所有的错误消息
+// Promise.any (如果支持)
+Promise.any(proms)
+    .then((result)=>{
+        console.log(result);
+    })
+    .catch((err)=>{
+        console.log(err.errors);
+    })
+
+// 练习4: 获取1-10页的学生,打印所有成功的数据,如果全部失败则打印错误
+// 结合 Promise.allSettled 和错误处理
+Promise.race(proms).then(
+    (result)=>{
+        console.log(result);
+    })
+    .catch((err)=>{
+        console.log(err)
+    })
+
+
+//async await 消除异步场景回调
+//async（语法糖）修饰的function返回一定是promise
+async function method(){
+    return 1
+}//return promise or value after resolve
+
+method()  //promise{1}
+
+//await 等待某个promise完成 它必须在async function中
+async function test(){
+    return await Promise.resolve(1)
+}
+test()  //promise{1}
+
+//IIFE
+(async ()=>{
+    await method(1000)
+    console.log('done')
+})()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
