@@ -209,18 +209,18 @@ Number(1) instanceof Number //false
 Number(1)   //1
 new Number(1)   //[Number: 1]
 Number(1).__proto__ === Number.prototype //true 原始类型当做对象去使用时候 js做隐式转换 帮助转换成对象
-// Number(1)本身返回原始值1，但当访问.__proto__属性时，
-// JS引擎会临时将原始值包装成Number包装对象(相当于new Number(1))，这个过程叫做"装箱/Boxing"，包装后的对象.__proto__指向Number.prototype
-// 访问完成后，临时对象会被丢弃，不会影响原始的Number(1)值
+Number(1)本身返回原始值1，但当访问.__proto__属性时，
+JS引擎会临时将原始值包装成Number包装对象(相当于new Number(1))，这个过程叫做"装箱/Boxing"，包装后的对象.__proto__指向Number.prototype
+访问完成后，临时对象会被丢弃，不会影响原始的Number(1)值
 
 Number(1) instanceof Number //false
-// instanceof检查的是对象原型链，Number(1)返回原始值，不是对象实例
+instanceof检查的是对象原型链，Number(1)返回原始值，不是对象实例
 new Number(1).__proto__ === Number.prototype //true   new number(1)是对象
 new Number(1) instanceof Number //true
-// new Number(1)是Number构造函数的实例，返回Number对象
+new Number(1)是Number构造函数的实例，返回Number对象
 1..toFixed(2) //"1.00"
-// 1.被解析为1.0（浮点数），访问.toFixed时触发隐式装箱,等价于(1).toFixed(2)/Number(1).toFixed(2)
-// 其他隐式转换：'hello'.length、true.toString()
+1.被解析为1.0（浮点数），访问.toFixed时触发隐式装箱,等价于(1).toFixed(2)/Number(1).toFixed(2)
+其他隐式转换：'hello'.length、true.toString()
 */
 
 //下面哪种动画实现效率最高？
@@ -662,6 +662,7 @@ font-size:16px; //px代表英文顶行和底行高度
 写入canvas  measureText(text) y有几行不好算 行的截断位置
 创建div盒子 //visibility:hidden display:none
 getComputedStyle
+*/
 
 //后端响应巨量数据 如何避免性能问题？
 /*
