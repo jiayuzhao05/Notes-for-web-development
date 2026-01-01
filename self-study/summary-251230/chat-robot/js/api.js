@@ -38,10 +38,10 @@ async function reg(userInfo) {
     const token = resp.headers.get('authorization')
     localStorage.setItem(TOKEN_KEY, token)
     }
-    return result;
+    return result;}
   
   // 用户登录
-  function login(loginInfo) {
+    async function login(loginInfo) {
     // TODO: 实现登录逻辑
     const resp = await post('./api/user/login',loginInfo)
     const result = await resp.json()
