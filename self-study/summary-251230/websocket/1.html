@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    var ws = new WebSocket('ws://localhost:9527')
+    ws.onopen = function(){
+        console.log('连接成功')
+    }
+    //收到服务器消息后触发
+    ws.onmessage = function(event){
+        console.log(event.data)
+    }
+    ws.onclose = function(){
+        console.log('连接关闭')
+    }
+    ws.onerror = function(event){
+        console.log('连接错误')
+    }
+    ws.onclose = function(){
+        console.log('连接关闭')
+    }
+    //连接状态 0:连接中 1:连接成功 2:连接关闭 3:连接错误
+    ws.readyState
+</body>
+</html>
