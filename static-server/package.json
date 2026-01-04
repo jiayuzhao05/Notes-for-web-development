@@ -1,0 +1,15 @@
+{
+  "name": "static-server",
+  "version": "1.0.0",
+  "description": "静态资源服务器",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["static", "server", "node"],
+  "author": "",
+  "license": "MIT"
+}
+
