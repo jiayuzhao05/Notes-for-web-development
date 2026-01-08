@@ -100,12 +100,230 @@ localhost 回旋地址(特殊 IP) 127.0.0.1:IP 层看到不会分网段 回到�
 192.168.0.178
 关注 en0
 
-比较 MAC 地址和 IP 地址?
+MAC 地址 vs IP 地址?
+
+MAC 地址（Media Access Control Address）网络设备的物理地址，是硬件网卡出厂时分配的全球唯一标识符 像设备的"身份证号码"，跟随硬件，在局域网内用于直接通信
+作用层面：数据链路层（Data Link Layer / Layer 2）
+格式：48 位（6 字节），`XX:XX:XX:XX:XX:XX`（十六进制b比如`b6:94:89:ca:a8:d8`
+
+IP 地址（Internet Protocol Address）在网络中标识设备位置的逻辑地址 像设备的"门牌地址"，可以更换，用于在整个网络中定位和路由
+作用层面：网络层（Network Layer / Layer 3）
+格式：IPv4 为 32 位（4 字节），`XXX.XXX.XXX.XXX`（点分十进制）比如`192.168.0.178`
+
+
+| 对比维度 | MAC 地址 | IP 地址 |
+|---------|---------|---------|
+| 地址类型 | 物理地址（硬件地址） | 逻辑地址（软件地址） |
+| 作用范围 | 局域网（LAN）内有效 | 全球互联网范围内有效 |
+| 唯一性 | 全球唯一（出厂固定） | 可以变化（动态分配） |
+| 可修改性 | 可修改（MAC 地址欺骗） | 可以随意配置 |
+| 地址长度 | 48 位（6 字节） | IPv4: 32 位（4 字节）<br>IPv6: 128 位（16 字节） |
+| OSI 模型层次 | 数据链路层（Layer 2） | 网络层（Layer 3） |
+| 分配方式 | 硬件厂商分配（固化在网卡） | 手动配置或 DHCP 动态分配 |
+| 路由作用 | 不参与路由，仅在局域网内识别设备 | 用于路由和跨网络通信 |
+| 传输距离 | 限于同一物理网络（局域网） | 可以跨越多个网络 |
+
+MAC 地址的使用场景：
+- 局域网内设备识别和数据转发
+- 交换机根据 MAC 地址转发数据帧
+- 无线网络中的设备认证和访问控制
+- ARP（Address Resolution Protocol）协议中，将 IP 地址解析为 MAC 地址
+
+IP 地址的使用场景：
+- 跨网络路由和数据包转发
+- 标识网络中的设备位置
+- 建立端到端的网络连接（TCP/IP）
+- 网络配置和子网划分
+
+4. 工作关系
+
+- 数据发送过程：
+  1. 应用层数据 → 传输层（端口号）
+  2. 传输层 → 网络层（添加 IP 头部，包含源/目标 IP）
+  3. 网络层 → 数据链路层（添加 MAC 头部，包含源/目标 MAC）
+  4. 物理层传输
+
+- ARP 协议：在局域网内，设备通过 ARP 协议查询目标 IP 对应的 MAC 地址
+  - 发送方知道目标 IP，但需要知道目标 MAC 地址才能在局域网内发送数据帧
+  - ARP 查询：`谁有 IP 地址 192.168.0.178？请告诉我你的 MAC 地址`
+  - ARP 响应：`IP 192.168.0.178 的 MAC 地址是 b6:94:89:ca:a8:d8`
+
+```
+设备 A (IP: 192.168.0.1, MAC: AA:AA:AA:AA:AA:AA)
+      ↓
+  想要发送数据到
+      ↓
+设备 B (IP: 192.168.0.2, MAC: BB:BB:BB:BB:BB:BB)
+```
+
+同一局域网内：
+1. A 检查 B 的 IP（192.168.0.2）是否在同一网段
+2. 使用 ARP 查询 B 的 MAC 地址
+3. 数据帧封装：源 MAC (AA:AA...)，目标 MAC (BB:BB...)，IP 头部包含源/目标 IP
+4. 交换机根据 MAC 地址转发到设备 B
+
+跨网络：
+1. A 发现目标 IP 不在同一网段
+2. 发送到默认网关（路由器）
+3. 路由器根据 IP 地址进行路由转发
+4. 每经过一个网络段，MAC 地址会改变（路由器会重新封装），但 IP 地址保持不变
 
 家里对外的 IP?
+在浏览器中访问 或者直接搜索“my IP”
+当前的公网 IP 地址：104.28.227.106 在家就是家里的公网IP，如果在别处就是该网络的公网 IP？
+大多数家庭宽带使用动态 IP 可能会变化；运营商可能使用 NAT，多个家庭共享同一个公网 IP；如果需要固定 IP，可以向运营商申请静态 IP（通常是付费服务）
 
-如何在手机访问页面(利用局域网)(手机和电脑在同一局域网下)
-每层协议 如何代码编写 介质是什么? 通信知识
+如何在手机访问电脑上的页面(手机和电脑在同一局域网下)？
+手机和电脑连接一个 wifi  网址：http://192.168.0.226:5173 如果变化 ifconfig 查询当前 IP
+手机通过局域网IP访问电脑页面 
+获取电脑局域网 IP 地址：192.168.0.226
 
+配置 Vite 允许局域网访问 确保 Vite 开发服务器绑定到0.0.0.0 不仅是localhost 手机才能访问）更新 Vite 配置
+
+终端服务器运行起来
+
+电脑需要通过请求“你要应用程序“node”接受传入网络连接吗?”
+
+在手机浏览器访问 http://192.168.0.226:5173 时，显示的是 my-react-app 项目运行在电脑上的 Vite 开发服务器页面。
+
+还可以用 express/nodejs 和 python flask？
+将服务器绑定到0.0.0.0（而不是 localhost 或 127.0.0.1）否则只能本机访问？
+修改 express server
 
 帧:datalink 段:fromport
+
+每层协议 如何代码编写 介质是什么? 通信知识
+网络协议栈分层 TCP/IP 五层
+层	    	协议/技术	      数据单位	          作用
+5	应用层	HTTP, HTTPS, FTP, SMTP	消息/报文	应用程序数据
+4	传输层	TCP, UDP	段（Segment）	端到端通信
+3	网络层	IP, ICMP, ARP	数据包（Packet）	路由和寻址
+2	数据链路层	Ethernet, WiFi	帧（Frame）	局域网传输
+1	物理层	电信号、光信号、无线电波	比特（Bit）	物理传输
+
+物理层（光纤、网线）
+    ↓
+数据链路层（MAC 地址、交换机）
+    ↓
+网络层（IP 地址、路由器）
+    ↓
+传输层（TCP/UDP、端口号）
+    ↓
+应用层（HTTP/HTTPS、DNS）
+
+5 Application Layer 
+通信介质：
+不直接涉及物理介质
+数据通过下层协议传输
+使用 HTTP/HTTPS 协议格式
+
+4 Transport Layer
+通信介质：
+不直接涉及物理介质
+通过端口号区分应用
+TCP 提供可靠传输（三次握手、四次挥手）
+UDP 提供不可靠传输（无连接）
+
+3 Network Layer
+不直接涉及物理介质
+使用 IP 地址进行路由
+路由器处理 IP 数据包转发
+
+2 Data Link Layer
+有线：双绞线（Cat5/Cat6）、同轴电缆
+无线：WiFi（2.4GHz/5GHz 无线电波）
+光纤：光信号（通过光猫转换为电信号）
+交换机根据 MAC 地址转发帧
+
+1 Physical Layer
+有线介质：
+Twisted Pair：Cat5/Cat6，RJ45 接口
+电信号传输  100Mbps - 10Gbps
+
+Fiber Optic
+光信号传输  光猫转换为电信号  10Gbps - 100Gbps+ ； Coaxial Cable(同轴电缆)
+
+无线介质:
+WiFi（2.4GHz / 5GHz 无线电波）：802.11ac（WiFi 5），802.11ax（WiFi 6）
+
+Bluetooth 2.4GHz
+
+蜂窝网络 无线电波
+
+-------
+DNS Domain Name System 域名转换为 IP 地址
+
+公共 DNS：
+Google Public DNS: 8.8.8.8
+Cloudflare: 1.1.1.1（普通）、1.1.1.2（安全增强，过滤恶意网站）
+国内电信: 114.114.114.114
+
+访问网页时 浏览器先查询 DNS DNS 返回 IP 地址 浏览器用 IP 地址连接服务器
+
+ISP 互联网服务提供商 比如 ATT 电信
+运营自己的 DNS 服务器 管理光纤网络和机房；互联网接入服务
+
+机房 BRAS（Broadband Remote Access Server（宽带远程接入服务器））/SR（Service Router）（汇聚路由器）
+汇聚很多用户的网络流量 PPPoE拨号完成用户认证  分配公网 IP 地址  路由数据包到互联网
+
+光纤骨干网 
+连接各个机房和数据中心的高速网络 光纤传输
+速度快 10Gbps - 100Gbps+； 长距离 可跨国； 低延迟
+
+小区设备箱router
+小区/楼栋的光纤接入点
+我家路由器 → 光猫 → 光纤 → 小区设备箱 → 光纤 → ISP 机房 → 光纤骨干网 → 目标服务器
+
+DNS 层级结构
+
+DNS 查询的 3 个层级
+1. ROOT 服务器（根服务器）：全球只有13 个集群 顶级域名（.com、.org、.cn）
+2. TLD 服务器（顶级域名服务器）- 比如 .com TLD 服务器：管理所有 .com 域名
+3. Authoritative Nameserver - 比如 cloudfalre 存储具体域名；A 记录（IPv4）：域名 → IP 地址；AAAA 记录（IPv6）：域名 → IPv6 地址
+
+DNS 查询流程：
+用户输入: www.example.com
+
+1. 浏览器查询本地 DNS 缓存 → 没找到
+2. 查询操作系统 DNS 缓存 → 没找到
+3. 查询路由器 DNS 缓存 → 没找到
+4. 查询 ISP DNS 服务器 → 没找到
+5. ISP DNS 查询 ROOT 服务器
+   ROOT: "去找 .com TLD 服务器"
+6. 查询 .com TLD 服务器
+   TLD: "去找 example.com 的权威服务器（Cloudflare）"
+7. 查询 Cloudflare 权威服务器
+   Cloudflare: "www.example.com 的 IP 是 93.184.216.34"
+8. 返回 IP 地址给用户
+9. 浏览器用 IP 地址连接服务器
+
+
+URL 结构
+https://www.example.com/path/?query=value&id=10
+│      │   │            │     │
+│      │   │            │     └─ 查询参数（应用层）
+│      │   │            └─────── 路径（应用层）
+│      │   └──────────────────── 域名（需要 DNS 解析）
+│      └──────────────────────── 协议（应用层：HTTPS）
+└─────────────────────────────── 协议类型
+
+CDN Content Delivery Network
+缓存静态资源；就近分发 加速访问 减轻源服务器压力
+
+用户请求 → 就近的 CDN 节点
+         ↓
+    CDN 有缓存？
+    ├─ 是 → 直接返回（快！）
+    └─ 否 → 回源到 Web Server 获取 → 缓存 → 返回用户
+
+Web Server（SSR Server-Side Rendering）
+服务器端生成 HTML 返回 HTML 页面给浏览器 SEO 友好
+
+Backend Server
+http:80（HTTP 协议默认端口） / https:443 （HTTPS 协议默认端口）/ mysql:3306（MySQL 数据库端口） /SSH: 22（远程登录端口）
+
+后端资源
+cache：Redis、Memcached ； 缓存热点数据 加速访问
+
+
+用户在浏览器输入网址 -> DNS 解析 -> 建立连接(三次握手 TLS 握手) -> 发送 HTTP 请求 -> 数据传输(电脑 → 家庭路由器 → 光猫（电信号→光信号) → 小区设备箱 → 光纤 → ISP 机房（BRAS/SR)→ 光纤骨干网 → 目标服务器机房)-> CDN服务器处理->动态请求到达 Web Server（SSR）：Web Server 调用 Backend API->Backend Server 处理:先查 Redis 缓存;缓存未命中 → 查询 MySQL 数据库;获取产品信息（id=10）-> 返回响应(Backend 返回 JSON 数据给 Web Server; Web Server 渲染 HTML 页面;返回完整 HTML 给浏览器)->浏览器渲染
