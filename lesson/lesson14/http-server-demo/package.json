@@ -1,0 +1,15 @@
+{
+    "name": "http-server-demo",
+    "version": "1.0.0",
+    "description": "HTTP/1.1 and HTTP/2 server",
+    "main": "http1-server.js",
+    "scripts": {
+      "http1": "node http1-server.js",
+      "http1:express": "node http1-express.js",
+      "http2": "node http2-server.js",
+      "http2:push": "node http2-server-push.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2"
+    }
+  }
