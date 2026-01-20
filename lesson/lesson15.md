@@ -1,3 +1,5 @@
+光猫：调制解调器
+
 DNS 默认走 TCP
 任何应用和协议都要走五层
 找 baidu.com 的 IP 先找缓存 本地没有则去 ISP ISP 有一个本地 DNS 提供的服务器地址
@@ -17,3 +19,25 @@ localhost
 
 express web 框架
 node 语言
+
+
+缓存压缩
+代理：解析域名
+
+web应用：客户端 CB架构
+CDN服务器：分布主要城市 减少并发
+Nginx:web服务器
+方案2：CORS不报错 不抗压 没有CDN
+
+vscode产生源码 CPU+GPU+内层 机器主机
+web服务器--liverserver
+aws,aliyun，硬件 机器网线，node 产生服务的软件
+mac机器产生服务 IP远程服务
+部署CI/CD 产生软件
+
+缓存压缩
+nodejs 高压 耦合度高
+
+web Application 用express实现
+
+网关 192.168.11 找mac地址
