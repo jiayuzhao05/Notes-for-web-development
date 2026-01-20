@@ -180,3 +180,13 @@ console.log(user[prop])      // 运行时才能确定访问哪个属性
 //动态 import
 const moduleName = condition ? './a.js' : './b.js'
 const mod = await import(moduleName)   // 运行时决定加载哪个模块
+
+//为什么需要动态表达式？
+//很多信息只有在运行时才知道（用户输入 网络数据 当前环境）
+//提高复用性：一套逻辑可以处理不同字段/模块/配置
+//“数据驱动”：前端框架大量依赖动态表达式（模版里的变量/指令/条件渲染）
+//但是难以提前优化
+
+//根据用户权限动态生成菜单
+const menus = allMenus.filter(menu => userRoles.includes(menu.role))
+//useRoles是运行时数据
