@@ -41,3 +41,5 @@ nodejs 高压 耦合度高
 web Application 用express实现
 
 网关 192.168.11 找mac地址
+
+下节课写小型Application
