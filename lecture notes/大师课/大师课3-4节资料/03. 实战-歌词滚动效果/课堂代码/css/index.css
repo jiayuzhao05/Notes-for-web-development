@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #000;
+  color: #666;
+  text-align: center;
+}
+
+audio { /* 元素选择器 - 选择所有 audio 标签 */
+  width: 450px;
+  margin: 30px 0;
+}
+
+.container { /* 类选择器 - 选择所有 class="container" 的元素 */
+  height: 420px;
+  overflow: hidden;
+  /* border: 2px solid #fff; */
+}
+.container ul {
+  /* border: 2px solid #fff; */
+  transition: 0.6s;
+  list-style: none;
+}
+.container li {
+  height: 30px;
+  /* border: 1px solid #fff; */
+  line-height: 30px;
+  transition: 0.2s;
+}
+.container li.active {
+  color: #fff;
+  /* font-size: ; */
+  transform: scale(1.2);
+}
+
+/* ID 选择器 - 只选择 id="player" 的元素 */
+/* #player {
+    margin: 30px 0;
+  } */
+  
+  /* 组合使用 - 选择 class="container" 且 class 包含 "active" 的元素 */
+  /* .container.active {
+    border: 2px solid #fff;
+  } */
