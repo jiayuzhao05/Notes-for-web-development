@@ -1,0 +1,12 @@
+POST /upload/single HTTP/1.1
+Host: localhost:9527
+Content-Type: multipart/form-data; boundary=aaa
+
+--aaa
+Content-Disposition: form-data; name="avatar"; filename="1.png"
+Content-Type: image/png
+
+< ./1.png
+--aaa--
+
+//.http 文件是一种用于编写和测试 HTTP 请求的文本文件，通常用于 API 测试和文档。
