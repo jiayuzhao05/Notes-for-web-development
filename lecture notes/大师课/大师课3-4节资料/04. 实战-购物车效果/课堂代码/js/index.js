@@ -200,18 +200,19 @@ class UI {
   carAnimate() {
     this.doms.car.classList.add('animate');
   }
-  // 抛物线跳跃的元素
+  // 抛物线跳跃的元素：视觉反馈动画：点击商品“加号”时，一个加号图标从商品位置沿抛物线轨迹飞向购物车图标
   jump(index) {
     // 找到对应商品的加号
+    //获取起始位置：点击商品“加号”时，一个加号图标从商品位置沿抛物线轨迹飞向购物车图标
     var btnAdd = this.doms.goodsContainer.children[index].querySelector(
       '.i-jiajianzujianjiahao'
     );
     var rect = btnAdd.getBoundingClientRect();
     var start = {
-      x: rect.left,
-      y: rect.top,
+      x: rect.left, // 加号按钮的左边距
+      y: rect.top,  // 加号按钮的上边距
     };
-    // 跳吧
+    // 跳吧 创建动画元素
     var div = document.createElement('div');
     div.className = 'add-to-car';
     var i = document.createElement('i');
@@ -261,3 +262,20 @@ window.addEventListener('keypress', function (e) {
     ui.decrease(0);
   }
 });
+
+
+/*1. 用户点击商品加号
+↓
+2. 创建动画元素（加号图标）
+   ↓
+3. 设置初始位置（商品加号的位置）
+   ↓
+4. 强制渲染（确保初始位置生效）
+   ↓
+5. 设置结束位置（购物车图标的位置）
+   ↓
+6. CSS transition 自动执行动画（0.5秒）
+   ↓
+7. 动画结束，触发 transitionend 事件
+   ↓
+8. 删除动画元素，触发购物车抖动动画*/
