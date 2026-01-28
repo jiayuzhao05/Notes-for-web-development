@@ -12,8 +12,9 @@ const PORT = 3000
 // 解析 JSON 请求体
 app.use(express.json())
 
-// 1. 用 express 搭建静态资源服务器
+// 1.用 express 搭建静态资源服务器
 // 将"静态页面"目录作为静态资源目录
+//path.resolve()：Node.js 的路径解析方法:路径片段解析为绝对路径;从右到左拼接，直到得到绝对路径
 const staticPageDir = path.resolve(__dirname, '静态页面')
 app.use(express.static(staticPageDir))
 
@@ -27,7 +28,7 @@ app.use(express.static(staticPageDir))
 app.post('/api/user/login', (req, res) => {
   const { loginId, loginPwd } = req.body
 
-  // 简单示例：实际项目中应该查询数据库
+  // 实际项目中应该查询数据库
   // 这里做简单验证，实际应该连接数据库
   if (!loginId || !loginPwd) {
     return res.json({
