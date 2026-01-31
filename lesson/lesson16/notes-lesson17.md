@@ -1,4 +1,4 @@
-# Lesson 17: Express 前后端搭建扩展知识
+# Lesson 17
 
 ## 1. 前后端通信方式：Fetch vs XHR
 
@@ -16,7 +16,7 @@ xhr.onload = function() {
 xhr.send(JSON.stringify({ username: 'admin', password: '123456' }));
 ```
 
-### Fetch API (现代方式，推荐)
+### Fetch API
 ```javascript
 // 基于 Promise 的现代 API
 fetch('/login', {
@@ -48,50 +48,43 @@ async function login(username, password) {
 
 ### Axios (第三方库，最流行)
 ```javascript
-// Axios 封装了 Fetch，提供更好的 API
+// Axios 封装了 Fetch，提供 API
 import axios from 'axios';
 
-// 自动转换 JSON，更简洁的语法
+// 自动转换 JSON
 axios.post('/login', { username: 'admin', password: '123456' })
   .then(response => console.log(response.data))
   .catch(error => console.error(error));
 
-// 配置拦截器、默认配置等
+// 配置拦截器、默认配置
 axios.defaults.baseURL = 'http://localhost:3000';
 axios.defaults.timeout = 5000;
 ```
-
-**对比总结：**
-- XHR: 老旧，回调地狱，不推荐
-- Fetch: 现代浏览器原生支持，基于 Promise
-- Axios: 功能最强大，自动转换 JSON，拦截器，取消请求等
-
----
 
 ## 2. 性能优化与 SEO
 
 ### Lighthouse 评分指标
 Google 的自动化工具，评估 Web 应用质量，包括：
 
-1. **Performance (性能)**
+1. Performance
    - FCP (First Contentful Paint): 首次内容绘制
    - LCP (Largest Contentful Paint): 最大内容绘制
    - TTI (Time to Interactive): 可交互时间
    - TBT (Total Blocking Time): 总阻塞时间
    - CLS (Cumulative Layout Shift): 累积布局偏移
 
-2. **Accessibility (可访问性)**
+2. Accessibility
    - 语义化 HTML
    - label 和 input 的正确关联（我们刚修复的）
    - 键盘导航
    - 屏幕阅读器支持
 
-3. **Best Practices (最佳实践)**
+3. Best Practices 
    - HTTPS 使用
    - 控制台无错误
    - 图片比例正确
 
-4. **SEO (搜索引擎优化)**
+4. SEO (搜索引擎优化)
    - meta 标签完整
    - 语义化标签使用
    - 移动端友好
@@ -122,7 +115,7 @@ Google 的自动化工具，评估 Web 应用质量，包括：
 <!DOCTYPE html>
 <html>
 <head>
-  <title>性能优化示例</title>
+  <title>性能优化</title>
   <!-- 关键 CSS -->
   <style>/* 首屏样式 */</style>
 </head>
@@ -150,7 +143,6 @@ Google 的自动化工具，评估 Web 应用质量，包括：
 </html>
 ```
 
----
 
 ## 3. 单页面应用 (SPA) vs 多页面应用 (MPA)
 
@@ -159,7 +151,6 @@ Google 的自动化工具，评估 Web 应用质量，包括：
 用户操作 → 发送请求 → 服务器渲染完整 HTML → 返回新页面 → 浏览器刷新
 ```
 
-**特点：**
 - ✅ SEO 友好（服务器直接返回完整 HTML）
 - ✅ 首屏加载快
 - ✅ 浏览器前进/后退按钮天然支持
@@ -167,7 +158,7 @@ Google 的自动化工具，评估 Web 应用质量，包括：
 - ❌ 重复加载相同资源（CSS、JS）
 - ❌ 服务器压力大
 
-**Express MPA 示例：**
+Express MPA
 ```javascript
 const express = require('express');
 const app = express();
@@ -191,7 +182,6 @@ app.get('/contact', (req, res) => {
 首次加载完整应用 → 用户操作 → JavaScript 拦截 → 动态更新 DOM → 无刷新切换
 ```
 
-**特点：**
 - ✅ 用户体验流畅（无刷新）
 - ✅ 前后端分离，服务器只提供 API
 - ✅ 组件化开发，代码复用
@@ -199,7 +189,7 @@ app.get('/contact', (req, res) => {
 - ❌ SEO 不友好（需要 SSR 或预渲染）
 - ❌ 需要前端路由管理
 
-**Express + SPA 示例：**
+Express + SPA:
 ```javascript
 const express = require('express');
 const app = express();
@@ -219,11 +209,11 @@ app.post('/api/login', (req, res) => {
 
 // 3. 所有路由都返回同一个 HTML（前端路由处理）
 app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/dist/index.html');
+  res.sendFile(__dirname + '/dist/index.html'); //__dirname = 当前这个脚本文件所在的文件夹的绝对路径;在 Node 里常用来和 path.join() 一起拼路径、读文件
 });
 ```
 
-**对比表格：**
+对比：
 
 | 特性 | MPA (多页面) | SPA (单页面) |
 |------|-------------|-------------|
@@ -234,8 +224,6 @@ app.get('*', (req, res) => {
 | 开发复杂度 | ✅ 简单 | ❌ 复杂 |
 | 服务器压力 | ❌ 大 | ✅ 小 |
 | 适用场景 | 内容型网站、博客 | 应用型、后台管理系统 |
-
----
 
 ## 4. React 生态与全栈框架
 
@@ -289,15 +277,14 @@ function App() {
   );
 }
 ```
-
-**工作原理：**
+工作原理：
 - 监听 URL 变化（history.pushState）
 - 根据路径匹配对应组件
 - 无刷新切换视图
 
 ### Next.js - React 全栈框架
 
-Next.js = React + 路由 + SSR + API Routes + 更多...
+Next.js = React + 路由 + SSR + API Routes + ...
 
 ```javascript
 // pages/index.js - 自动路由
@@ -330,7 +317,7 @@ export async function getServerSideProps() {
 }
 ```
 
-**Next.js 优势：**
+优势：
 - ✅ SEO 友好（服务器端渲染）
 - ✅ 文件系统路由（自动生成路由）
 - ✅ API Routes（无需单独后端）
@@ -340,7 +327,7 @@ export async function getServerSideProps() {
 
 ---
 
-## 5. Express 完整项目架构
+## 5. Express 项目架构
 
 ### 基础结构
 ```
@@ -413,27 +400,3 @@ exports.login = async (req, res) => {
   }
 };
 ```
-
----
-
-## 6. 关键概念总结
-
-### GET vs POST
-- **GET**: 数据在 URL 中（明文），适合查询、获取资源
-- **POST**: 数据在 request body 中，适合提交、创建资源
-
-### 依赖类型
-- **dependencies**: 生产环境依赖（express、axios）
-- **devDependencies**: 开发环境依赖（webpack、nodemon）
-
-### 学习路径建议
-1. ✅ 掌握 Express 基础（当前阶段）
-2. 学习前端框架（React）
-3. 学习 React Router（前端路由）
-4. 学习 Next.js（全栈开发）
-5. 深入性能优化和 SEO
-
-### 推荐资源
-- Express 官方文档: https://expressjs.com/
-- Next.js 学习: https://www.road-to-next.com/
-- MDN Web Docs: https://developer.mozilla.org/
