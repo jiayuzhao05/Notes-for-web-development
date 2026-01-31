@@ -4,21 +4,21 @@ const app = express();
 const PORT = 3000;
 
 //解析application/x-www-form-urlencoded格式请求体
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }));
 //解析JSON格式请求体
-app.use(express.json())
+app.use(express.json());
 
 app.use(express.static("public")); //提供静态文件服务
 
-app.post("/login", (request, response) => {
-  console.log(request, request.body); //获取表单数据
+app.post("/login.html", (request, response) => {
+  console.log(request.body); //获取表单数据
 
-  const{username,password}=request.body
+  const { username, password } = request.body;
   //登录逻辑
-  if(username==="admin" && password==="123456"){
-    response.send("login success")
-  }else{
-    response.send("login failed")
+  if (username === "admin" && password === "123456") {
+    response.send("login succeed");
+  } else {
+    response.send("login failed");
   }
 });
 
@@ -26,9 +26,13 @@ app.listen(PORT, () => {
   console.log("server running on PORT 3000");
 });
 
+<<<<<<< HEAD
 
 //xxx.html 实现 login 页面 http://localhost:3000/login.html
 
 //此时mac相当于远程服务器
 //三种打开方式：node，拉到浏览器里，live server
 //node: 运行 搭建服务->public respository->监听port3000
+=======
+//xxx.html 实现 login 页面 http://localhost:3000/login.html
+>>>>>>> 5ddeca04d2f9f40eeb088f39439c2150b4c0c8aa
