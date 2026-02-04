@@ -43,10 +43,11 @@ export default function Home() {
           >
             <Image
               className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
+              src="/file.svg"
+              alt="nextjs logo"
               width={16}
               height={16}
+              priority
             />
             Deploy Now
           </a>
