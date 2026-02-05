@@ -5,7 +5,7 @@
 ### XMLHttpRequest (传统方式)
 ```javascript
 // 旧式的异步请求方式
-const xhr = new XMLHttpRequest();
+const xhr = new XMLHttpRequest();  
 xhr.open('POST', '/login');
 xhr.setRequestHeader('Content-Type', 'application/json');
 xhr.onload = function() {
@@ -18,7 +18,7 @@ xhr.send(JSON.stringify({ username: 'admin', password: '123456' }));
 
 ### Fetch API
 ```javascript
-// 基于 Promise 的现代 API
+// 基于 Promise的API
 fetch('/login', {
   method: 'POST',
   headers: {
@@ -48,7 +48,7 @@ async function login(username, password) {
 
 ### Axios (第三方库，最流行)
 ```javascript
-// Axios 封装了 Fetch，提供 API
+// Axios 封装 Fetch，提供 API
 import axios from 'axios';
 
 // 自动转换 JSON
@@ -182,12 +182,12 @@ app.get('/contact', (req, res) => {
 首次加载完整应用 → 用户操作 → JavaScript 拦截 → 动态更新 DOM → 无刷新切换
 ```
 
-- ✅ 用户体验流畅（无刷新）
-- ✅ 前后端分离，服务器只提供 API
-- ✅ 组件化开发，代码复用
-- ❌ 首次加载慢（需要加载整个应用）
-- ❌ SEO 不友好（需要 SSR 或预渲染）
-- ❌ 需要前端路由管理
+- 用户体验流畅（无刷新）
+- 前后端分离，服务器只提供 API
+- 组件化开发，代码复用
+- 首次加载慢（需要加载整个应用）
+- SEO 不友好（需要 SSR 或预渲染）
+- 需要前端路由管理
 
 Express + SPA:
 ```javascript
@@ -213,16 +213,14 @@ app.get('*', (req, res) => {
 });
 ```
 
-对比：
-
 | 特性 | MPA (多页面) | SPA (单页面) |
 |------|-------------|-------------|
 | 页面切换 | 完整刷新 | 无刷新 |
-| SEO | ✅ 友好 | ❌ 需要额外处理 |
-| 首屏速度 | ✅ 快 | ❌ 慢 |
-| 用户体验 | ❌ 有卡顿 | ✅ 流畅 |
-| 开发复杂度 | ✅ 简单 | ❌ 复杂 |
-| 服务器压力 | ❌ 大 | ✅ 小 |
+| SEO | 友好 | 需要额外处理 |
+| 首屏速度 | 快 | 慢 |
+| 用户体验 | 有卡顿 | 流畅 |
+| 开发复杂度 | 简单 | 复杂 |
+| 服务器压力 | 大 | 小 |
 | 适用场景 | 内容型网站、博客 | 应用型、后台管理系统 |
 
 ## 4. React 生态与全栈框架
@@ -255,7 +253,7 @@ function LoginForm() {
 }
 ```
 
-### React Router - 前端路由
+### React Router
 ```javascript
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
@@ -318,18 +316,15 @@ export async function getServerSideProps() {
 ```
 
 优势：
-- ✅ SEO 友好（服务器端渲染）
-- ✅ 文件系统路由（自动生成路由）
-- ✅ API Routes（无需单独后端）
-- ✅ 自动代码分割（按需加载）
-- ✅ 静态生成 + SSR 混合使用
-- ✅ 开箱即用的优化（图片、字体等）
-
----
+- SEO 友好（服务器端渲染）
+- 文件系统路由（自动生成路由）
+- API Routes（无需单独后端）
+- 自动代码分割（按需加载）
+- 静态生成 + SSR 混合使用
+- 开箱即用的优化（图片、字体等）
 
 ## 5. Express 项目架构
 
-### 基础结构
 ```
 project/
 ├── public/              # 静态资源
@@ -357,7 +352,7 @@ project/
 └── server.js           # 入口文件
 ```
 
-### 模块化 Express 应用
+### 模块化 Express 
 ```javascript
 // server.js
 const express = require('express');
@@ -392,7 +387,6 @@ module.exports = router;
 exports.login = async (req, res) => {
   const { username, password } = req.body;
   
-  // 验证逻辑
   if (username === 'admin' && password === '123456') {
     res.json({ success: true, token: 'xxx' });
   } else {

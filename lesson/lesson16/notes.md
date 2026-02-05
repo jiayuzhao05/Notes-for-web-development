@@ -21,5 +21,7 @@ express 外，还会用cova
 https://www.road-to-next.com/
 
 
-
-
+获取表单数据
+手动获取：document.getElementById('username').value
+FormData API:new FormData(form) + formData.get('username')
+序列化对象：Object.fromEntries(new FormData(form))
