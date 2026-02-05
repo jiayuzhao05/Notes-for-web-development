@@ -294,3 +294,11 @@ npm run build   # 构建生产版本（生成优化的 .next）
 npm start       # 启动生产服务器（需要先 build）
 npm run lint    # 代码检查
 ```
+
+package-lock.json
+npm自动生成的锁定依赖（实际安装的）有完整依赖树 列出所有依赖(包括间接) 记录每个包下载地址、integrity
+
+package.json
+//我写的声明依赖 允许小版本更新
+
+tsconfig.json ts编译器配置文件
