@@ -1,26 +1,52 @@
-<script form="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Login</title>
+  </head>
+  <body>
+    <h1>User Login</h1>
+    <form id="loginForm">
+      <div>
+        <label for="username">username:</label>
+        <input type="text" id="username" name="username" required />
+      </div>
+      <div>
+        <label for="password">password:</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <button type="submit">Login</button>
+    </form>
+    <div id="message"></div>
 
-<script>
-  const form = document.getElementById("loginForm");
-  const messageDiv = document.getElementById("message");
+    <script
+      form="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+    ></script>
 
-  form.adEvenlistener("submit", async (event) => {
-    event.preventDefault(); // 阻止默认表单提交（防止页面刷新）
+    <script>
+      const form = document.getElementById("loginForm");
+      const messageDiv = document.getElementById("message");
 
-    const formData = new FormData(form);
-    const data = {
-      username: formData.get("username"),
-      password: formData.get("password"),
-    };
+      form.adEvenlistener("submit", async (event) => {
+        event.preventDefault();
 
-    try {
-      const response = await axios.post("/login.html", data);
-      messageDiv.textContent = response.data;
-      messageDiv.style.color = "green";
-    } catch (error) {
-      messageDiv.textContent = "Login failed";
-      messageDiv.style.color = "red";
-      console.error("Error:", error);
-    }
-  });
-</script>
+        const formData = new FormData(form);
+        const data = {
+          username: formData.get("username"),
+          password: formData.get("password"),
+        };
+
+        try {
+          const response = await axios.post("/login.html", data);
+          messageDiv.textContent = response.data;
+          messageDiv.style.color = "green";
+        } catch (error) {
+          messageDiv.textContent = "Login failed";
+          messageDiv.style.color = "red";
+          console.error("Error:", error);
+        }
+      });
+    </script>
+  </body>
+</html>
