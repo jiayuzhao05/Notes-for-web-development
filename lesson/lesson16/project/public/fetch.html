@@ -7,7 +7,7 @@
   </head>
   <body>
     <h1>User Login</h1>
-    <form id="loginForm">
+    <form action="/login.html" id="loginForm">
       <div>
         <label for="username">username:</label>
         <input type="text" id="username" name="username" required />
@@ -26,18 +26,15 @@
       const messageDiv = document.getElementById("message");
 
       form.addEventListener("submit", async (event) => {
-        event.preventDefault(); // 防止页面刷新
+        event.preventDefault(); // 防止路由器默认提交 浏览器有默认行为：
 
-        // method1: 手动获取输入值
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
+        // method1: 手动获取输入值(过时了 别用)
+        //const username = document.getElementById("username").value;
+        //const password = document.getElementById("password").value;
 
-        // method2: 使用 FormData获取
+        // method2: 使用 FormData获取（多用）
         //const formData = new FormData(form);
-        //const data = {
-        //  username: formData.get("username"),
-        //  password: formData.get("password"),
-        //};
+        const payload = Object.fromEntries(formData.entries()); //遍历化
 
         try {
           // Fetch API 发送请求
@@ -61,3 +58,5 @@
     </script>
   </body>
 </html>
+
+<!--去掉所有name属性-->

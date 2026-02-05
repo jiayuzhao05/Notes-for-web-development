@@ -26,13 +26,9 @@ app.listen(PORT, () => {
   console.log("server running on PORT 3000");
 });
 
-<<<<<<< HEAD
-
 //xxx.html 实现 login 页面 http://localhost:3000/login.html
 
 //此时mac相当于远程服务器
 //三种打开方式：node，拉到浏览器里，live server
 //node: 运行 搭建服务->public respository->监听port3000
-=======
 //xxx.html 实现 login 页面 http://localhost:3000/login.html
->>>>>>> 5ddeca04d2f9f40eeb088f39439c2150b4c0c8aa
