@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Roboto_Mono } from "next/font/google";
+//import localFont from "next/font/local";
 import "./globals.css";
-import { Header } from "./components/Header";
+import Header from "./components/header";
 import Link from "next/link";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const interSans = Inter({
+  variable: "--font-inter-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
   subsets: ["latin"],
 });
 
@@ -40,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${interSans.variable} ${robotoMono.variable} antialiased`}
       >
         <Header />
         <div className="absolute top-0 left-0">
@@ -48,7 +50,7 @@ export default function RootLayout({
             <Link href="/performance">Performance</Link>
             <Link href="/reliability">Reliability</Link>
             <Link href="/scale">Scale</Link>
-            {children}
+            <AntdRegistry>{children}</AntdRegistry>
           </div>
         </div>
       </body>
