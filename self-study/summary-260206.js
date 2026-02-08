@@ -47,3 +47,45 @@ export const config = {
     matcher:'/about/:path*',
 }
 
+/*token：钥匙/认证机制 用用户名和pass 登录 后台生成token 包含信息 角色权限等都可以放进去放在前端 调接口时 
+调接口 除了登录接口其他带token 后台校验 如果没带token 不会让我访问 带了他会解析；
+token携带过期时间 一串代码 生产机主流模式JWT 提示失效则无法通过
+*/
+
+/*
+react hooks：函数组件超能力 组件使用状态和生命周期等功能 比如useState, useEffect, useContext
+*/
+
+import { useState, useEffect } from 'react'
+
+function Counter() {
+  const [count, setCount] = useState(0)  // 状态 Hook
+  
+  useEffect(() => {  // 生命周期 Hook
+    console.log('mounted')
+  }, [])
+  
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  )
+}
+
+//react router: 路由库 创建单页应用SPA页面导航 比如Route, Link, useNavigate, useParams
+
+/*什么时候用use client？类似于mark它是客户端组件 区分服务器和客户端
+用react hooks：useState, useEffect, useContext,useContext
+添加时间处理器：onClick, onChange, onSubmit
+用浏览器API: window,document,localStorage,sessionStorage,fetch(客户端调用)
+使用状态管理库：Redux, MobX, Zustand
+使用context provider
+第三方UI库组件：Ant Design, Material UI, Bootstrap,Chakra UI
+
+不需要use client场景：
+纯展示组件，数据获取，静态内容
+
+用react/vue开发时候 只有一个客户端 没有服务器端 最终成品是HTML 所以最后是浏览器帮我们解析 但是开发nextjs组件框架 有两个端口 客户端是浏览器
+浏览器有API 比如windows 如果我们部署linux服务器上没有浏览器属性 则是服务器端 如果去服务器端找浏览器端 找不到 会报错
+use clien：在客户端刷新 不再服务器端刷新
+*/
