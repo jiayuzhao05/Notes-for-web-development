@@ -89,3 +89,11 @@ function Counter() {
 浏览器有API 比如windows 如果我们部署linux服务器上没有浏览器属性 则是服务器端 如果去服务器端找浏览器端 找不到 会报错
 use clien：在客户端刷新 不再服务器端刷新
 */
+
+//react props 
+//JSX中展开操作不是ES6展开预算符
+
+//JSX作为插槽传递
+//内部props传递？？都是单向 对于接收方是readonly
+
+//HTML中各类标签
