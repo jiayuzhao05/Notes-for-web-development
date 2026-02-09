@@ -96,4 +96,24 @@ use clien：在客户端刷新 不再服务器端刷新
 //JSX作为插槽传递
 //内部props传递？？都是单向 对于接收方是readonly
 
-//HTML中各类标签
+//HTML中各类标签 HTML 做结构呈现 CSS 做样式处理
+//组件层级多 context多级组件传值
+
+//reducer 统一管理状态
+
+//reacthooks
+/*
+useState,
+useEffect 副作用 react 要求所有 func 都是纯函数
+useContext,useContext
+useRef
+forwardRef
+useMemo: usememory 缓存数据
+useCallback 缓存的是函数
+
+如果向这个组件传入的 prop 没有变化 不会受到父组件的影响
+
+如何对子组件整体缓存优化？
+
+//JSX本质是React.createElement方法的语法糖 是JS 语法扩展 babel 把 JSX 转译成React.createElement func 调用
+//react元素是希望在屏幕看到的内容
