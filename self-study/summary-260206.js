@@ -117,3 +117,11 @@ useCallback 缓存的是函数
 
 //JSX本质是React.createElement方法的语法糖 是JS 语法扩展 babel 把 JSX 转译成React.createElement func 调用
 //react元素是希望在屏幕看到的内容
+
+//UI=fn(state)
+/*
+quick start：
+npx create-react-app my-app
+cd my-app
+npm start
+*/
