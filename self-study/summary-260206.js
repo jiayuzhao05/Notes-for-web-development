@@ -327,3 +327,24 @@ npm init 包名 # npx create-包名
 npm init @命名空间 # npx @命名空间/create
 npm init @命名空间/包名 # npx @命名空间/create-包名
 */
+
+/*
+eslint会自动寻找根目录中的配置文件，它支持三种配置文件：
+
+- `.eslintrc` JSON格式
+- `.eslintrc.js` JS格式
+- `.eslintrc.yml` YAML格式
+*/
+
+/*
+webpack
+最新webpack5，最广泛webpack4
+
+# webpack scope hoisting
+webpack内置优化 针对模块优化 生产环境打包时自动开启
+未开启scope hoisting时，webpack将每个模块代码放置在独立函数环境，保证模块作用域互不干扰
+scope hoisting 的作用恰恰相反，是把多个模块的代码合并到一个函数环境中执行。在这一过程中，webpack 会按照顺序正确的合并模块代码，同时对涉及的标识符做适当处理以避免重名
+好处是减少了函数调用，对运行效率有一定提升，同时也降低了打包体积
+scope hoisting 的启用是有前提的，如果遇到某些模块多次被其他模块引用，或者使用了动态导入的模块，或者是非 ESM 的模块，都不会有 scope hoisting
+
+https://webpack.docschina.org/plugins/module-concatenation-plugin/
