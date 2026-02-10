@@ -1,3 +1,4 @@
+import { useState } from 'react';
 //Catch-all [...slug] 必须有子路径 
 // app/products/[...categories]/page.tsx
 
@@ -244,8 +245,67 @@ componentWillUnmount:在该函数中销毁一些组件依赖的资源(e.g.计时
 
 hooks: JS函数 思想转变 从“面向对象”的思想转为“函数式编程” （声明式编程）
 https://www.imaginarycloud.com/blog/functional-programming-vs-oop/
+useLocation: 获取location对象后 获取state属性 其他路由跳转过来 在state里传递额外数据
+useNavigate：调用后返回的函数做跳转
+useparams:获取动态参数
+
+嵌套路由：
 
 原则：
 只能在函数最外层调用 Hook。不要在循环、条件判断或者子函数中调用
 只能在React函数组件中调用Hook。不要在其他JavaScript函数中调用
+
+useState:添加状态
+useEffect:处理函数副作用
+*/
+function App(props) {
+
+  let [count, setCount] = useState(0);
+
+  function clickhandle(){
+    setCount(++count);
+  }
+
+  return (
+    <div>
+      <div>{count}</div>
+      <button onClick={clickhandle}>+1</button>
+    </div>
+  );
+}
+
+export default App;
+
+//纯函数：不存在副作用（函数结果不可控 不可预期）
+/*
+自定义hook：本质是函数 但和普通函数有区别
+能调用比如useState, useEffect等hook 普通函数不能 因此可以内置hooks获得fiber访问方式 实现组件级别存储数据的方案
+以use开头 普通函数没有这个限制
+*/
+
+/*
+react rooter：以前只有后端路由
+使用json-server搭建服务器
+npm初始化服务器目录 安装json-server依赖 创建db.json模拟数据库
+package.json添加db："json:server":"json-server --watch db.json"
+启动服务器 npm run json:server
+访问地址：http://localhost:3000/
+
+组件：
+BrowserRouter:前端路由以history模式开始 包裹根组件
+HashRouter：前端路由以hash开始 包裹根组件
+Routers：类似于v5版本的Switch 提供上下文环境（path匹配路由；element：匹配上路由时渲染的组件））
+Navigate：导航组件 类似于useNavigate返回值函数
+NavLink：；类似Link 被渲染为<a> 和Link有区别 当前link有一个名为active的激活样式 做顶部/左侧导航栏跳转
+
+
+
+
+NavLink：负责“点哪里、跳到哪个路径”（导航）。
+Route：负责“这个路径要显示哪个组件”（匹配并渲染）
+
+<tr> table row 表格行
+<td> table data 表格数据
+<thead> table head 表格头
+<tbody> table body 表格体
 */
