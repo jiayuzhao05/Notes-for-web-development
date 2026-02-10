@@ -309,3 +309,21 @@ Route：负责“这个路径要显示哪个组件”（匹配并渲染）
 <thead> table head 表格头
 <tbody> table body 表格体
 */
+
+/*CMJ 是使用 API 实现的模块化，ESM 是使用新语法实现的模块化
+CMJ 仅在 node 环境中支持，ESM 各种环境均支持
+CMJ 是动态依赖，同步执行。ESM 既支持动态，也支持静态，动态依赖是异步执行
+*/
+
+/*使用`npx 命令`时，它会首先从本地工程的`node_modules/.bin`目录中寻找是否有对应的命令
+npx webpack
+npx prettyjson 1.json
+
+`npm init`初始化工程的`package.json`文件
+除此之外，有时也可以充当`npx`的作用
+npx -p @vue/cli vue create vue-app
+
+npm init 包名 # npx create-包名
+npm init @命名空间 # npx @命名空间/create
+npm init @命名空间/包名 # npx @命名空间/create-包名
+*/
