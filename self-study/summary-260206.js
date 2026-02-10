@@ -125,3 +125,127 @@ npx create-react-app my-app
 cd my-app
 npm start
 */
+
+//next内置路由管理系统：依据文件夹确定路由 路由用来控制页面 不影响URL的情况下组织路由，创建一个组以将相关路由保持在一起
+/*
+root layout
+每个nextjs路由树在最终渲染时只能对应一个layout 但是也可以写多个
+
+CI/CD：持续集成/持续交付 不仅仅包含部署
+<a>只用来跳转
+动态路由参数：app/blog/[slug]/page.js example url:/b1og/a  params:{ slug: 'a' }
+params:Next.js 动态路由的核心机制
+
+react中 {}包裹内部可运行的表达式
+CSS伪类：降低选择器优先级 方便后面覆盖样式 伪类是特殊状态
+
+软导航:在客户端导航期间，Next.js将执行部分渲染，更改槽内的子页面，同时保持另一个槽的活动子页面，即使它们与当前URL不匹配。
+硬导航：浏览器进行的完整页面加载，重新请求 HTML 文档 刷新整个页面 清空所有JS status 重新加载所有资源 触发浏览器前进/后退按钮 浏览器历史记录中新增一条 速度慢 页面闪烁（白屏）丢失页面状态
+触发硬导航方式：点击普通链接<a href="/about.html">about us</a> 触发硬导航 ；修改window.location；刷新页面window.location.reload();
+location.reload();表单提交；地址栏输入URL
+
+开发环境和有没有缓存没有关系 测试和登录需要缓存
+
+docker核心功能：项目启动 `docker-compose up`能否解决在不同设备上都可以运行的问题 不用考虑环境配置了 可以统一开发商环境
+
+单页面SPA：1个html 软导航 不刷新 url变化通过history API AJAX/Fetch获取数据 后续跳转快（无刷新） 用户体验流畅（类原生应用） SEO困难（需SSR） 开发复杂度高 
+多页面MPA：多个html 硬导航（完整刷新） 真实页面切换 通过HTML响应获取数据 首次加载快（只加载当前页） 后续跳转慢（完整刷新） SEO简单（天然友好） 开发复杂度低
+
+<div> = Division（分区）→ 用于分隔大块内容 布局 容器
+<span> = Span（跨越）→ 用于跨越一小段文本 修饰一段文本
+<ul> - Unordered List（无序列表）创建一个项目符号列表（默认显示为圆点 •）
+<li> - List Item（列表项）代表列表中的每一项内容 必须放在 <ul> 或 <ol> 标签内部
+*/
+
+//react组件 使用类的方式声明一个组件
+class 类名 extends React.Component {
+  render() {
+    return (
+    )}}
+
+//早期函数组件无状态 纯UI展示 从react16.8推出hooks后 使用函数组件更多 相比类组件
+<button onclick={activeLasers}>Active lasers</button>
+//*React* 中无法通过 *return false* 来阻止默认行为，只有使用e.preventDefault阻止默认行为
+eventHandler(e){
+  e,nativeEvent //原生事件对象
+}
+
+/*事件处理函数中this不会指向当前组件 因此需要自行对this修正指向
+如何向事件处理函数传参？
+bind()在绑定this指向时候向事件处理函数传参
+绑定事件时 通过写箭头函数传参
+
+如果在事件处理函数里面想拿到 *setState* 执行后的数据，可以提前使用一个变量来存储计算结果，或使用setState的第二个参数，它是一个函数，这个函数会在state更新后被调用
+把所有setState当成异步 不信任setState调用的状态 
+如果要使用改变后状态 使用回调函数（setState第二个参数）
+如果新的状态要根据之前的状态进行运算，使用函数的方式改变状态（*setState* 的第一个函数）
+*React* 优化异步*setState*，合并多次 setState（多次状态改变完成后，统一改变state，触发 *render*）
+*/
+
+//如果是类组件，则需要在 *constructor* 中将 *props* 通过super传递给父类，然后通过this.props的方式来获取传入的值
+class 组件名 extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+       // 一段 JSX
+    	 // 通过 this.props.xxx 获取传入的值
+        <div>
+          <p>姓名：{this.props.name}</p>
+          <p>年龄：{this.props.age}</p>
+          <p>性别：{this.props.gender}</p>   
+        </div>
+     );
+	}
+}
+
+//可以对传入的 *props* 设置默认值，验证props有效性
+// 设置默认的 props 值，当组件没有传值时会使用默认值
+Greeting.defaultProps = {
+  name : 'xiejie',
+  age : 18,
+  gender : 'male'
+};
+
+//状态提升：如果子组件需要向父组件传递数据，同样是通过触发父组件传递给子组件的事件传递
+//https://zh-hans.reactjs.org/docs/lifting-state-up.html
+/*前端开发采用*MVVM*模式，绑定视图和视图模型，视图模型的改变会带来视图改变。开发需要专注在视图模型
+
+MVVM vs MVC vs MVP
+MVVM（Two-Way Data Binding）
+View (视图)  ←→  ViewModel (视图模型)
+    ↑                  ↑
+用户输入          自动更新
+自动更新          数据变化
+
+MVC (Model-View-Controller)：
+Model ←→ Controller ←→ View
+Controller 主动控制 View
+View 的更新需要 Controller 手动操作
+
+MVVM (Model-View-ViewModel)
+Model ←→ ViewModel ←→ View
+           ↑          ↑
+           └─数据绑定─┘
+
+ViewModel 通过数据绑定自动同步 View
+不需要手动操作 DOM
+
+生命周期钩子函数
+constructor():同一个组件对象只会创建一次；不能在第一次挂载到页面之前，调用 *setState*，为了避免问题，构造函数中严禁使用 *setState*
+render:类组件中必须要书写的生命周期方法
+返回虚拟 *DOM*，会被挂载到虚拟 *DOM* 树中，最终渲染到页面真实 *DOM* 
+render可能不只运行一次，只要需要重新渲染，就会重新运行
+严禁使用 *setState*，因为可能会导致无限递归渲染
+
+componentDidMount:只执行一次 可以使用useState 会将网络请求、启动计时器等一开始需要的操作，书写到该函数
+componentWillUnmount:在该函数中销毁一些组件依赖的资源(e.g.计时器)
+
+hooks: JS函数 思想转变 从“面向对象”的思想转为“函数式编程” （声明式编程）
+https://www.imaginarycloud.com/blog/functional-programming-vs-oop/
+
+原则：
+只能在函数最外层调用 Hook。不要在循环、条件判断或者子函数中调用
+只能在React函数组件中调用Hook。不要在其他JavaScript函数中调用
+*/
