@@ -29,3 +29,7 @@ console.log(absPath);
 //Sync函数是同步的，会导致JS运行阻塞，极其影响性能 在程序启动时运行有限的次数即可
 // const content = fs.readFileSync(filename, "utf-8");
 // console.log(content);
+
+
+//使用TS后，可以编写出完善的面向对象代码
+
