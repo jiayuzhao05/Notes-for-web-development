@@ -30,7 +30,11 @@ params = { slug: ['guide', 'getting-started', 'installation'] }
 /* (.)匹配同一级别区段 路由地址！！！
 (..)匹配上一级区段
 (..)(..)匹配上两级区段
-(...)匹配根app目录区段 */
+(...)匹配根app目录区段 
+
+模块化：一旦写了 module.exports = 新对象，就会“替换”掉之前的导出对象，之前用 exports.xxx 或 module.exports.xxx 加上的属性都不会被导出
+*/
+
 
 //middleware
 /*
@@ -342,9 +346,82 @@ webpack
 
 # webpack scope hoisting
 webpack内置优化 针对模块优化 生产环境打包时自动开启
-未开启scope hoisting时，webpack将每个模块代码放置在独立函数环境，保证模块作用域互不干扰
-scope hoisting 的作用恰恰相反，是把多个模块的代码合并到一个函数环境中执行。在这一过程中，webpack 会按照顺序正确的合并模块代码，同时对涉及的标识符做适当处理以避免重名
-好处是减少了函数调用，对运行效率有一定提升，同时也降低了打包体积
-scope hoisting 的启用是有前提的，如果遇到某些模块多次被其他模块引用，或者使用了动态导入的模块，或者是非 ESM 的模块，都不会有 scope hoisting
+未开启scope hoisting时，webpack将每个模块代码放置在独立函数，模块作用域互不干扰
+scope hoisting把多个模块代码合并到一个函数环境中执行。webpack按照顺序正确的合并模块代码，对标识符处理避免重名
+好处：减少函数调用，提升运行效率，降低了打包体积
+启用有前提，如果遇到某些模块多次被其他模块引用/使用动态导入模块/非ESM模块，不会有scope hoisting
 
 https://webpack.docschina.org/plugins/module-concatenation-plugin/
+
+module.exports = {
+  devtool: 'none',
+};
+关掉source map
+devtool 控制 Webpack 是否生成、以及如何生成源码映射
+打包后的 dist/main.js 里没有 source map 的引用或内联数据；浏览器里调试时只能看到打包、压缩后的代码，看不到原始 src/ 下的文件和行号
+
+
+
+await 用法？？？？
+
+
+//webpackconfig.json
+module.exports = {
+  mode: 'development',  开发模式，便于调试、构建快
+  devtool: 'source-map',   生成独立 source map，方便对照源码调试
+  entry: './src/index.js',   指定打包入口
+  experiments: {
+    topLevelAwait: true,   启用顶层 await，支持在入口里直接写 await
+  },
+};
+
+`webpack4`中，需要使用`cache-loader`缓存打包结果以优化打包性能
+
+而在`webpack5`中，默认开启打包缓存，无须再安装`cache-loader`
+
+`webpack5`将模块打包结果缓存到内存，通过`cache`配置进行更改
+cache配置：https://webpack.docschina.org/configuration/other-options/#cache
+
+Webpack 打包 = 从 entry 解析依赖 → Loader 转译 → 建依赖图 → 分 Chunk → 生成运行时和模块代码 → 写出到 dist
+
+
+资源模块
+在`webpack4`中，针对资源型文件通常使用`file-loader`、`url-loader`、`raw-loader`处理
+由于大部分前端项目用到资源型文件，因此`webpack5`原生支持了资源型模块
+
+npm模块安装机制
+npm检查本地node_modules/是否安装过该模块 已经安装则不再安装
+npm检查缓存中模块是否相同 如果有 从缓存读取安装
+如果本地和缓存均不存在 npm从registry指定地址下载安装包 写入本地node_modules/ 同时缓存
+
+'''
+npm cache clean -f  # 清除缓存
+npm config get cache  # 获取缓存位置
+npm config set cache "D:\npm-cache"  # 设置缓存位置
+'''
+
+dist/是构建工具（webpack）自动生成的 不要手改 执行build可能被覆盖 通常放进.gitignore 不用提交git
+只改 src/，改完再 build 就会得到新的 dist/
+
+前端工程化 模块化 组件化
+模块化：基础 解决问题：全局污染和依赖混乱
+工程化：解决前端开发环境和生产环境要求不一致的矛盾 开发环境代码细分 代码格式统一；生产环境中 代码被压缩 混淆 优化体积 工程化解决矛盾 开发环境的代码打包后生成适合的生产环境代码 让开发者更多集中在开发环境
+组件化开发：前端框架 一个网页/站点/产品线划分为多个小组件（复用unit）
+
+webpack vs gulp
+webpack：基于模块化 大宝漆 以入口为起点 构建项目依赖图 打包生成结果
+gulp：基于工作流 过程管理器 每步做什么看开发人员配置 每步连接形成完整构建流水线
+两者不矛盾 可以在一个工程中使用webpack和gulp 将webpack作为gulp流水线一环
+
+webpack.loader 和.plugins的区别？
+都是扩展点
+loader：加载器 转换代码 （JS代码降级 CSS预编译 模块化）
+plugin:插件 webpack打包每个环节提供钩子函数 他们参与打包生命周期 修改/增加webpack功能（生成页面和css，压缩打包结果）
+
+HMR热更新：运行期间 遇到代码更改后，无须重启整个项目，只更新变动的那一部分代码
+dev server：开发服务器。在开发环境中搭建的临时服务器，用于承载对打包结果的访问
+
+webpack hash实现原理？
+hash：整个项目构建相关 只要有文件更改 hash值改变 全部文件公用相同的hash值
+chunkhash：每个打包过 
+*/
