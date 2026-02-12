@@ -682,4 +682,105 @@ this指向
 箭头函数中，*this* 的指向是由外层（函数或全局）作用域来决定
 
 Function.prototype.apply(thisValue, [arg1, arg2, ...])
+
+closure：只要在函数中使用了外部的数据，就创建了闭包；解决全局变量污染
+通过手段手动创建闭包，让外部环境访问到函数内部的局部变量，让局部变量持续保存下来，不随着它的上下文环境一起销毁
+
+IE事件流
+事件冒泡：事件开始时由最具体的元素（文档中嵌套层次最深的那个节点）接收，然后逐级向上传播到较为不具体的节点（文档）
+*IE9、Firefox、Chrome、Safari* 将事件一直冒泡到 *window* 对象
+
+事件捕获：不太具体的节点应该更早接收到事件，而最具体的节点应该最后接收到事件 事件到达预定目标前捕获他
+
+DOM标准：捕获+冒泡 都触发DOM所有对象 从Document开始 也在document结束
+
+如何阻止默认事件？
+// 方法一：全支持
+event.preventDefault();
+// 方法二：该特性已经从 Web 标准中删除，虽然一些浏览器目前仍然支持它，但也许会在未来的某个时间停止支持，请尽量不要使用该特性。
+event.returnValue = false;
+// 方法三：不建议滥用，jQuery 中可以同时阻止冒泡和默认事件
+return false;
+
+操作属性描述符
+- *Object.getOwnPropertyDescriptor( )*：可以读出指定对象私有属性的属性描述符。
+- *Object.defineProperty( )*：通过定义属性描述符来定义或修改一个属性，然后返回修改后的描述符。
+- *Object.defineProperties( )*：可以同时定义多个属性描述符。
+- *Object.getOwnPropertyNames( )*：获取对象的所有私有属性。
+- *Object.keys( )*：获取对象的所有本地可枚举的属性。
+- *propertyIsEnumerable( )*：对象实例方法，直接调用，判断指定的属性是否可枚举。
+
+控制对象状态
+- *Object.preventExtensions*：阻止为对象添加新的属性。
+- *Object.seal*：阻止为对象添加新的属性，同时也无法删除旧属性。等价于属性描述符的 *configurable* 属性设为 *false*。注意，该方法不影响修改某个属性的值。
+- *Object.freeze*：阻止为一个对象添加新属性、删除旧属性、修改属性值。
+辅助检查函数
+- *Object.isExtensible*：检查一个对象是否允许添加新的属性。
+- *Object.isSealed*：检查一个对象是否使用了 *Object.seal* 方法。
+- *Object.isFrozen*：检查一个对象是否使用了 *Object.freeze* 方法
+
+weakset vs set？
+- *WeakSet* 只能储存对象引用，不能存放值，而 *Set* 对象都可以
+- *WeakSet* 对象中储存的对象值都是被弱引用的，即垃圾回收机制不考虑 *WeakSet* 对该对象的引用，如果没有其他的变量或者属性引用这个对象值，则这个对象将会被垃圾回收掉。（不考虑该对象还存在与 *WeakSet* 中），所以 *WeakSet* 对象里有多少个成员元素，取决于垃圾回收机制有没有运行，运行前后成员个数可能不一致，遍历结束之后，有的成员可能取不到，被垃圾回收了。因此 *ES6* 规定，*WeakSet* 对象是无法被遍历的，也没有办法拿到它包含的所有元素
+
+- *Map*
+  - 键名唯一不可重复
+  - 类似于集合，键值对的集合，任何值都可以作为一个键或者一个值
+  - 可以遍历，可以转换各种数据格式，方法 *get、set、has、delete*
+- *WeakMap*
+  - 只接受对象为键名，不接受其他类型的值作为键名，键值可以是任意
+  - 键名是拖引用，键名所指向的对象，会被垃圾回收机制回收
+  - 不能遍历，方法 *get、set、has、delete*
+
+- *Set*
+  - 成员唯一，无序且不会重复
+  - 类似于数组集合，键值和键名是一致的（只有键值。没有键名）
+  - 可以遍历，方法有 *add、delete、has*
+- *WeakSet*
+  - 只能存储对应引用，不能存放值
+  - 成员都是弱引用，会被垃圾回收机制回收
+  - 不能遍历，方法有 *add、delete、has*
+
+
+浅拷贝
+
+1. 直接赋值
+2. *Object.assign* 方法：可以把任意多个的源对象自身的可枚举属性拷贝给目标对象，然后返回目标对象。当拷贝的 *object* 只有一层的时候，是深拷贝，但是当拷贝的对象属性值又是一个引用时，换句话说有多层时，就是一个浅拷贝。
+3. *ES6* 扩展运算符，当 *object* 只有一层的时候，也是深拷贝。有多层时是浅拷贝。
+4. *Array.prototype.concat* 方法
+5. *Array.prototype.slice* 方法
+6. *jQuery* 中的 *$.extend*：在 *jQuery* 中，*$.extend(deep,target,object1,objectN)* 方法可以进行深浅拷贝。*deep* 如过设为 *true* 为深拷贝，默认是 *false* 浅拷贝。
+
+深拷贝
+
+1. *$.extend(deep,target,object1,objectN)*，将 *deep* 设置为 *true*
+2. *JSON.parse(JSON.stringify)*：用 *JSON.stringify* 将对象转成 *JSON* 字符串，再用 *JSON.parse* 方法把字符串解析成对象，一去一来，新的对象产生了，而且对象会开辟新的栈，实现深拷贝。这种方法虽然可以实现数组或对象深拷贝，但不能处理函数。
+3. 手写递归
+
+currying：*function(arg1,arg2,…,argn)* 变成 *function(arg1)(arg2)…(argn)*
+
+eventloop：同步->异步（放入队列）-> 微-> 宏 (循环)（在执行宏任务队列中的每个宏任务之前先把微任务清空一遍）
+
+*Node.JS* 的事件循环分为 *6* 个阶段：
+
+- *timers* 阶段：这个阶段执行 *timer*（ *setTimeout、setInterval* ）的回调
+- *I/O callbacks* 阶段：处理一些上一轮循环中的少数未执行的 *I/O* 回调
+- *idle、prepare* 阶段：仅 *Node.js* 内部使用
+- *poll* 阶段：获取新的 *I/O* 事件, 适当的条件下 *Node.js* 将阻塞在这里
+- *check* 阶段：执行 *setImmediate( )* 的回调
+- *close callbacks* 阶段：执行 *socket* 的 *close* 事件回调
+
+事件循环的执行顺序为：
+
+外部输入数据 –-> 轮询阶段（ *poll* ）-–> 检查阶段（ *check* ）-–> 关闭事件回调阶段（ *close callback* ）–-> 定时器检测阶段（ *timer* ）–-> *I/O* 事件回调阶段（ *I/O callbacks* ）-–>闲置阶段（ *idle、prepare* ）–->轮询阶段（按照该顺序反复运行）...
+
+浏览器和 *Node.js* 环境下，微任务任务队列的执行时机不同
+
+- 在 *Node.js* 中，每个任务队列的每个任务执行完毕之后，就会清空这个微任务队列。
+- 浏览器环境下，就两个队列，一个宏任务队列，一个微任务队列。微任务的任务队列是每个宏任务执行完之后执行。
+
+eval() is evil!!! (全局函数)
+- *eval* 是一个危险的函数， 它使用与调用者相同的权限执行代码。如果你用 *eval* 运行的字符串代码被恶意方（不怀好意的人）修改，您最终可能会在您的网页/扩展程序的权限下，在用户计算机上运行恶意代码。（不安全）
+- *eval* 通常比其他替代方法更慢，因为它必须调用 *JS* 解释器，而许多其他结构则可被现代 *JS* 引擎进行优化。使用 *eval* 往往比普通 *JavaScript* 代码慢几个数量级。（性能不好）
+- 产生混乱的代码逻辑
 */
