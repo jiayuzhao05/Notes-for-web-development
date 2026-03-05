@@ -35,8 +35,8 @@ devdependencies：”@types/node":父包/子包 tree-shaking 按需引用 tob �
 chrome和nodejs用的js/webassembly 引擎，把js源码变成可执行的机器码并运行
 '''
 JS 源码 → 解析(Parser) → AST → 字节码(Ignition) → 执行
-                                    ↓
-                           热点代码 → TurboFan(JIT) → 优化机器码
+↓
+热点代码 → TurboFan(JIT) → 优化机器码
 '''
 对象在堆上分配，Orinoco 定期回收不再使用的对象
 
