@@ -111,3 +111,21 @@ Immer是如何运作的？
 Immer提供的是一种称为代理的draft特殊对象，它会“记录”你对它所做的操作。这就是为什么你可以随意修改它的原因！在底层，Immer 会识别出哪些部分发生了变化，并生成一个包含你修改内容的全新对象。
 
 react 中状态不可变
+
+object.assign()
+
+useState(0)：放数字。通常用于计数器、索引
+useState('')：放字符串。通常用于输入框的值、文本
+useState(false)：放布尔值。通常用于开关、弹窗显示/隐藏
+useState([])：放空数组。通常用于列表数据
+useState({})：放空对象。通常用于存储包含多个属性的数据（比如用户信息 { name: 'Tom', age: 18 }）。
+useState(initialState)：放一个提前定义好的变量。当初始数据比较长或者从外部传入时，直接写变量名更整洁
+
+useState()后 idx(0)current status; idx(1)func updating status
+
+react 处理数组状态 immutablity
+数组的开头或末尾加一个新数据  [...arr, newItem]
+从数组中去掉某一项（通常根据 id 或 index） filter()
+改变数组中某一项的值，其他项保持不变   map()
+数组的中间某个指定位置（索引）插入新数据  slice() 配合 ...
+对数组进行重新排序或首尾反转  先 [...arr] 拷贝，再 sort/reverse
