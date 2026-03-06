@@ -209,7 +209,7 @@ app.post('/api/login', (req, res) => {
 
 // 3. 所有路由都返回同一个 HTML（前端路由处理）
 app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/dist/index.html'); //__dirname = 当前这个脚本文件所在的文件夹的绝对路径;在 Node 里常用来和 path.join() 一起拼路径、读文件
+  res.sendFile(__dirname + '/dist/index.html'); //__dirname = 当前这个脚本文件所在的文件夹的绝对路径;在 Node 里用来和 path.join()拼路径、读文件
 });
 ```
 
