@@ -90,10 +90,24 @@ react 喜欢输写纯函数？ 这样一个组件可以处理多个用户请求
 e.stopPropagation() 阻止事件冒泡
 
 
-useState
+useState 用内存来表示组件的视觉状态 动态元素的数量应该越少越好
 '''
 const [index, setIndex] = useState(0);
 '''
+
+useReducer 分三步从 React 迁移useState到 Reducers 纯函数
+与状态更新函数类似，reducer 在渲染期间运行！
+
+useCallback
+
+useMemo不会加快首次渲染速度，它只是帮助你避免在更新过程中进行不必要的工作
+
+useRef
+
+非受控组件 vs 受控组件
+非受控：具有局部状态的组件 更容易在其父组件中使用，因为它们需要的配置较少 灵活性较差
+受控：灵活性大 需要父组件使用 props 对其进行完整配置
+每个组件通常都混合使用了本地状态和属性
 
 渲染是纯粹计算过程
 渲染（调用）组件后，React 将修改 DOM
@@ -129,3 +143,66 @@ react 处理数组状态 immutablity
 改变数组中某一项的值，其他项保持不变   map()
 数组的中间某个指定位置（索引）插入新数据  slice() 配合 ...
 对数组进行重新排序或首尾反转  先 [...arr] 拷贝，再 sort/reverse
+
+命令式编程
+
+高阶组件
+
+ref
+
+context
+
+react-redux
+
+portals
+
+错误边界
+
+scheduler 调度延时
+
+最小堆
+
+位运算
+
+completeWork 工作流程
+
+
+性能优化
+eagerState
+
+
+bailout   vs   ContextAPI
+
+
+onChange
+'''
+onChange={e => setText(e.target.value)}
+'''
+
+state 提升
+
+
+setVisibleTodos()
+
+getFilteredTodos()
+
+console.timeEnd()
+
+
+setPrevItems()
+
+setSelection()
+
+function List({ items }) {
+  const [isReverse, setIsReverse] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  // ✅ Best: Calculate everything during rendering
+  const selection = items.find(item => item.id === selectedId) ?? null;
+  // ...
+}
+
+navigateTo()
+
+onFetched()
+
+removeEventListener()
