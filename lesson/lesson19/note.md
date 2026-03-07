@@ -104,6 +104,14 @@ useMemo不会加快首次渲染速度，它只是帮助你避免在更新过程�
 
 useRef
 
+useEffect()
+
+setShow()
+
+createConnection()
+
+setFunction()
+
 非受控组件 vs 受控组件
 非受控：具有局部状态的组件 更容易在其父组件中使用，因为它们需要的配置较少 灵活性较差
 受控：灵活性大 需要父组件使用 props 对其进行完整配置
