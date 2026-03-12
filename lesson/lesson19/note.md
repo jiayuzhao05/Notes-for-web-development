@@ -21,7 +21,7 @@ count() setCount() react独家函数
 react生成虚拟DOM 在内存中如果遇到状态变化则被替换掉
 
 react编译器作用?
-自动帮你做性能优化（自动 memo 化），减少不必要的重新渲染，不用到处手写 useMemo / useCallback / React.memo
+自动帮你做性能优化（自动 memo 化），减少不必要的重新渲染，不用手写 useMemo / useCallback / React.memo
 
 React Native 通过 Metro 使用 Babel
 
@@ -42,7 +42,7 @@ hooks （特殊函数）组件需求的无条件申明
 useState，以及任何其他以“use”开头的函数 仅在 React渲染期间可用
 use只能在组件的顶层或自己的 Hooks 中调用
 
-门控设置 gating允许使用功能标志在运行时控制编译 对运行 A/B 测试或根据用户群体逐步推出编译器有用
+门控设置 gating允许使用功能标志在运行时控制编译 对运行 A/B 测试或根据用户群体推出编译器有用
 '''
 // babel.config.js
 module.exports = {
@@ -60,21 +60,21 @@ importSpecifierName: 'isCompilerEnabled',
 React 组件必须以大写字母开头
 function Profile(){}
 
-组件可以渲染其他组件，但绝不能嵌套组件的定义 会很慢 且容易出错
-当子组件需要从父组件获取一些数据时，应该通过 props 传递，而不是嵌套定义
+组件渲染其他组件，但绝不能嵌套组件的定义 会很慢 容易出错
+当子组件从父组件获取一些数据时，通过 props 传递，不是嵌套定义
 
 props
 传递任何 JS 值，包括对象、数组和函数
 Props 允许独立地考虑父组件和子组件
 组件的属性会随着时间推移而变化
 
-children 特殊 prop 组件标签开闭区间内的所有内容
+children 特殊 prop 组件标签开闭区间内所有内容
 
 JSX规则
-从组件返回多个元素，请用单个父标签将它们包裹起来
+从组件返回多个元素，用单个父标签将它们包裹起来
 用<div></div> or <></>
 
-{{}} 是在 JSX 中正确地表示内联样式对象
+{{}} 在 JSX 中正确表示内联样式对象
 
 <ul style={{
       backgroundColor: 'black',
@@ -100,7 +100,7 @@ const [index, setIndex] = useState(0);
 useReducer 分三步从 React 迁移useState到 Reducers 纯函数
 与状态更新函数类似，reducer 在渲染期间运行！
 
-useCallback()缓存函数本身 依赖不变时，多次渲染拿到的是同一个函数引用，从而减少子组件因“收到新的函数 prop”而重渲染
+useCallback()缓存函数本身 依赖不变时，多次渲染拿到同一个函数引用，减少子组件因“收到新的函数 prop”而重渲染
 '''
 const 函数 = useCallback(
   () => { /* 函数体 */ },
@@ -114,7 +114,7 @@ useRef()-hook 存「和渲染无关、跨渲染保持同一引用」的值
 用途：DOM 引用、上一次的值、定时器/订阅 ID、任意可变对象
 修改 ref.current 不会触发重新渲染
 
-useEffect() 「副作用」：在渲染完成后执行，返回清理函数
+useEffect() 「副作用」：渲染完成后执行，返回清理函数
 用途：订阅、请求、setInterval/setTimeout、手动操作 DOM、打点（logVisit）
 setState 的 setter（例如const [show, setShow] = useState(...)）
 
@@ -125,6 +125,12 @@ createConnection() 建立连接（如 WebSocket、订阅、服务）
 在 useEffect 里调用 createConnection()，在 cleanup 里调用connection.destroy() /connection.close()，避免泄漏
 
 setFunction()
+setCount、setShow、setIndex() 取决于给状态给的方法
+'''
+const[show,setShow]=useState(false);
+const[count,setCount]=useState(0);
+const [index, setIndex] = useState(0);
+'''
 
 logVisit()
 onVisit()
@@ -137,7 +143,7 @@ clearInterval(id)，避免组件卸载后定时器还跑
 非受控组件 vs 受控组件
 非受控：具有局部状态的组件 更容易在其父组件中使用，因为它们需要的配置较少 灵活性较差
 受控：灵活性大 需要父组件使用 props 对其进行完整配置
-每个组件通常都混合使用本地状态和属性
+每个组件都混合使用本地状态和属性
 
 渲染是纯粹计算过程
 渲染（调用）组件后，React 将修改 DOM
@@ -145,7 +151,7 @@ clearInterval(id)，避免组件卸载后定时器还跑
 对于重新渲染， React 将应用最小必要的操作（在渲染时计算！），使 DOM 与最新的渲染输出相匹配
 React 仅在两次渲染之间存在差异时才会更改 DOM 节点
 
-绘制：渲染完成后，React 更新了 DOM，浏览器会重新绘制屏幕
+绘制：渲染完成后，React 更新DOM，浏览器会重新绘制屏幕
 
 设置状态只会影响下一次渲染
 
@@ -178,11 +184,48 @@ react 处理数组状态 immutablity
 数组的中间某个指定位置（索引）插入新数据 slice() 配合 ...
 对数组进行重新排序或首尾反转 先 [...arr] 拷贝，再 sort/reverse
 
-命令式编程
+命令式编程 直接操作DOM
+'''
+const button = document.getElementById('btn');
+const counter = document.getElementById('counter');
+let count = 0;
+button.addEventListener('click',()=>{
+  count += 1;
+  counter.textContent = count;
+})
+'''
 
-高阶组件
+react是声明式写法 描述UI长什么样 用state驱动 关注要的结果
+'''
+// 声明式：描述 UI 与 state 的关系
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <span>{count}</span>
+      <button onClick={() => setCount(count + 1)}>+1</button>
+    </>
+  );
+}
+'''
 
-ref
+高阶组件 HOC，Higher-Order Component
+接收组件 返回增强后组件 类似高阶函数 但作用对象是组件
+'''
+const higherOrderFunction = (fn)=>(...args)=> fn(...args);
+const withSomething = (Component)=>{
+  return (props)=>{
+    return <Component{...props}/>
+  }
+}
+'''
+
+HOC vs Hooks
+
+
+ref 保存「和渲染无关、跨渲染保持同一引用」的值
+用于聚焦输入框、测量元素尺寸、调用第三方库
+可变值：ref.current 不会触发重新渲染
 
 context
 
