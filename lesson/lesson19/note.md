@@ -4,9 +4,9 @@ ts.config如何设置属性？ 不需要每个文件开头都写import react;
 //compilerOptions.jsx
 '''
 {
-  "compilerOptions": {
-    "jsx": "react-jsx"
-  }
+"compilerOptions": {
+"jsx": "react-jsx"
+}
 }
 '''
 
@@ -35,7 +35,6 @@ memo 高阶组件HOC Higher Order Component
 
 Babel 覆盖
 
-
 组件
 React 组件使用props相互通信
 
@@ -47,14 +46,14 @@ use只能在组件的顶层或自己的 Hooks 中调用
 '''
 // babel.config.js
 module.exports = {
-  plugins: [
-    ['babel-plugin-react-compiler', {
-      gating: {
-        source: 'ReactCompilerFeatureFlags',
-        importSpecifierName: 'isCompilerEnabled',
-      },
-    }],
-  ],
+plugins: [
+['babel-plugin-react-compiler', {
+gating: {
+source: 'ReactCompilerFeatureFlags',
+importSpecifierName: 'isCompilerEnabled',
+},
+}],
+],
 };
 '''
 
@@ -64,7 +63,6 @@ function Profile(){}
 组件可以渲染其他组件，但绝不能嵌套组件的定义 会很慢 且容易出错
 当子组件需要从父组件获取一些数据时，应该通过 props 传递，而不是嵌套定义
 
-
 props
 传递任何 JS 值，包括对象、数组和函数
 Props 允许独立地考虑父组件和子组件
@@ -72,12 +70,12 @@ Props 允许独立地考虑父组件和子组件
 
 children 特殊 prop 组件标签开闭区间内的所有内容
 
-
 JSX规则
 从组件返回多个元素，请用单个父标签将它们包裹起来
 用<div></div> or <></>
 
 {{}} 是在 JSX 中正确地表示内联样式对象
+
 <ul style={{
       backgroundColor: 'black',
       color: 'pink'
@@ -88,15 +86,11 @@ JSX规则
 react喜欢输写纯函数？ 一个组件可以处理多个用户请求
 组分纯净 不会干涉其他事情 不应该更改渲染之前存在的任何对象或变量 输入相同输出相同
 
-
-事件处理函数的跨层级传递（Prop Drilling） 
-
+事件处理函数的跨层级传递（Prop Drilling）
 
 组件的职责分离
 
-
 e.stopPropagation() 阻止事件冒泡
-
 
 useState 用内存来表示组件的视觉状态 动态元素的数量应该越少越好
 '''
@@ -158,11 +152,11 @@ useState(initialState)：放一个提前定义好的变量。当初始数据比�
 useState()后 idx(0)current status; idx(1)func updating status
 
 react 处理数组状态 immutablity
-数组的开头或末尾加一个新数据  [...arr, newItem]
+数组的开头或末尾加一个新数据 [...arr, newItem]
 从数组中去掉某一项（通常根据 id 或 index） filter()
-改变数组中某一项的值，其他项保持不变   map()
-数组的中间某个指定位置（索引）插入新数据  slice() 配合 ...
-对数组进行重新排序或首尾反转  先 [...arr] 拷贝，再 sort/reverse
+改变数组中某一项的值，其他项保持不变 map()
+数组的中间某个指定位置（索引）插入新数据 slice() 配合 ...
+对数组进行重新排序或首尾反转 先 [...arr] 拷贝，再 sort/reverse
 
 命令式编程
 
@@ -186,13 +180,10 @@ scheduler 调度延时
 
 completeWork 工作流程
 
-
 性能优化
 eagerState
 
-
-bailout   vs   ContextAPI
-
+bailout vs ContextAPI
 
 onChange
 '''
@@ -201,24 +192,22 @@ onChange={e => setText(e.target.value)}
 
 state 提升
 
-
 setVisibleTodos()
 
 getFilteredTodos()
 
 console.timeEnd()
 
-
 setPrevItems()
 
 setSelection()
 
 function List({ items }) {
-  const [isReverse, setIsReverse] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
-  // ✅ Best: Calculate everything during rendering
-  const selection = items.find(item => item.id === selectedId) ?? null;
-  // ...
+const [isReverse, setIsReverse] = useState(false);
+const [selectedId, setSelectedId] = useState(null);
+// ✅ Best: Calculate everything during rendering
+const selection = items.find(item => item.id === selectedId) ?? null;
+// ...
 }
 
 navigateTo()
@@ -228,3 +217,19 @@ onFetched()
 removeEventListener()
 
 function组件 vs class 组件
+
+如何从 class 组件转成 function 组件
+
+react-dom：web browser 渲染器
+react-native：手机原生平台
+
+react dom 文档对象模型 doc.html(div,title,body,img)
+react 只负责核心 不负责平台
+
+CDN 分发网络
+
+addListener()是 web api
+
+平时都是 npm install pkg in node_modules
+
+react 脚手架
