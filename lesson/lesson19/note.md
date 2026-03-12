@@ -1,6 +1,14 @@
 浏览器打开 API提供语言专用
 
-ts.config如何设置属性 不需要每个文件开头都写import react;
+ts.config如何设置属性？ 不需要每个文件开头都写import react;
+//compilerOptions.jsx
+'''
+{
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}
+'''
 
 先获取元素 再改变元素
 
@@ -13,6 +21,7 @@ count() setCount() react独家函数
 react生成虚拟DOM 在内存中如果遇到状态变化则被替换掉
 
 react编译器作用?
+自动帮你做性能优化（自动 memo 化），减少不必要的重新渲染，不用到处手写 useMemo / useCallback / React.memo
 
 React Native 通过 Metro 使用 Babel
 
@@ -76,8 +85,7 @@ JSX规则
 
 函数式编程有副作用
 
-react 喜欢输写纯函数？ 这样一个组件可以处理多个用户请求
-
+react喜欢输写纯函数？ 一个组件可以处理多个用户请求
 组分纯净 不会干涉其他事情 不应该更改渲染之前存在的任何对象或变量 输入相同输出相同
 
 
@@ -218,3 +226,5 @@ navigateTo()
 onFetched()
 
 removeEventListener()
+
+function组件 vs class 组件
