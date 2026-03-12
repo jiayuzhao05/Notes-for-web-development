@@ -226,8 +226,23 @@ HOC vs Hooks
 ref 保存「和渲染无关、跨渲染保持同一引用」的值
 用于聚焦输入框、测量元素尺寸、调用第三方库
 可变值：ref.current 不会触发重新渲染
+'''
+const inputRef = useRef(null);
+inputRef.current?.focus();
+return <input ref={inputRef}/>
+'''
 
-context
+context 在组件树中共享数据 避免层层传递props(prop drilling)
+createContext（）创建上下文-> <Context.Provider value={...}> 包裹需要共享数据的子树-> 子组件用useContext()/<Context.Consumer>读取
+'''
+const ThemeContext = createContext('light');
+// 父组件提供
+<ThemeContext.Provider value="dark">
+  <Child />
+</ThemeContext.Provider>
+// 子组件消费
+const theme = useContext(ThemeContext);
+'''
 
 react-redux
 
