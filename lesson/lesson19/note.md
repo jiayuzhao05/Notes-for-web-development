@@ -244,13 +244,49 @@ const ThemeContext = createContext('light');
 const theme = useContext(ThemeContext);
 '''
 
-react-redux
+react-redux 在react组件里用redux的state和dispatch
+'''
+const count = useColor(state=>state.count)
+const dispatch = useDispatch()
+dispatch({type:'INCREMENT'})
+'''
 
-portals
+portals 把组件渲染到DOM树中另一个结点 不是当前组件的父节点下
+场景：模态框、弹窗、提示框、Tooltip
+实现：ReactDOM.createPortal(child, container) child是react元素 container是目标DOM节点
+央视和层级更易控制（避免被父元素overflow：hidden裁剪）
+'''
+// 把模态框渲染到 body 下，而不是当前组件内部
+ReactDOM.createPortal(
+  <Modal />,
+  document.body
+);
+'''
 
 错误边界
+捕获子组件树中JS错误 避免应用崩溃
+用class组件实现getDerivedStateFromError 或 componentDidCatch
+渲染，生命周期，子组件构造函数中错误
+不捕获：事件处理、异步代码、服务端渲染、错误边界自身的错误
+'''
+class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  componentDidCatch(error, info) {
+    console.log(error, info);
+  }
+  render() {
+    if (this.state.hasError) return <h1>出错了</h1>;
+    return this.props.children;
+  }
+}
+'''
 
 scheduler 调度延时
+react18调度器 控制任务何时执行 实现可中断渲染和优先级调度
+
 
 最小堆
 
