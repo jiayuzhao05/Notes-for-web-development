@@ -83,7 +83,7 @@ JSX规则
 
 函数式编程有副作用
 
-react喜欢输写纯函数？ 一个组件可以处理多个用户请求
+react喜欢输写纯函数？一个组件处理多个用户请求
 组分纯净 不会干涉其他事情 不应该更改渲染之前存在的任何对象或变量 输入相同输出相同
 
 事件处理函数的跨层级传递（Prop Drilling）
@@ -92,7 +92,7 @@ react喜欢输写纯函数？ 一个组件可以处理多个用户请求
 
 e.stopPropagation() 阻止事件冒泡
 
-useState 用内存来表示组件的视觉状态 动态元素的数量应该越少越好
+useState 用内存表示组件的视觉状态 动态元素的数量越少越好
 '''
 const [index, setIndex] = useState(0);
 '''
@@ -100,28 +100,44 @@ const [index, setIndex] = useState(0);
 useReducer 分三步从 React 迁移useState到 Reducers 纯函数
 与状态更新函数类似，reducer 在渲染期间运行！
 
-useCallback
+useCallback()缓存函数本身 依赖不变时，多次渲染拿到的是同一个函数引用，从而减少子组件因“收到新的函数 prop”而重渲染
+'''
+const 函数 = useCallback(
+  () => { /* 函数体 */ },
+  [依赖1, 依赖2]
+)
+'''
 
-useMemo不会加快首次渲染速度，它只是帮助你避免在更新过程中进行不必要的工作
+useMemo不会加快首次渲染速度，帮助你避免在更新过程中不必要的工作
 
-useRef
+useRef()-hook 存「和渲染无关、跨渲染保持同一引用」的值
+用途：DOM 引用、上一次的值、定时器/订阅 ID、任意可变对象
+修改 ref.current 不会触发重新渲染
 
-useEffect()
+useEffect() 「副作用」：在渲染完成后执行，返回清理函数
+用途：订阅、请求、setInterval/setTimeout、手动操作 DOM、打点（logVisit）
+setState 的 setter（例如const [show, setShow] = useState(...)）
 
-setShow()
+setShow()/setFunction() 由 state 更新触发的函数
+像setState的sette（const [show, setShow] = useState(...)）
 
-createConnection()
+createConnection() 建立连接（如 WebSocket、订阅、服务）
+在 useEffect 里调用 createConnection()，在 cleanup 里调用connection.destroy() /connection.close()，避免泄漏
 
 setFunction()
 
 logVisit()
 onVisit()
-clearInterval()
+「访问/埋点」:在 effect 或事件里调用，记录一次访问
+
+clearInterval()：浏览器/Node 定时器清理 API
+React出现在useEffect的cleanup:useEffect里setInterval(...)返回id，cleanup里
+clearInterval(id)，避免组件卸载后定时器还跑
 
 非受控组件 vs 受控组件
 非受控：具有局部状态的组件 更容易在其父组件中使用，因为它们需要的配置较少 灵活性较差
 受控：灵活性大 需要父组件使用 props 对其进行完整配置
-每个组件通常都混合使用了本地状态和属性
+每个组件通常都混合使用本地状态和属性
 
 渲染是纯粹计算过程
 渲染（调用）组件后，React 将修改 DOM
@@ -140,7 +156,11 @@ Immer提供的是一种称为代理的draft特殊对象，它会“记录”你�
 
 react 中状态不可变
 
-object.assign()
+object.assign() “浅拷贝 + 合并”的 API
+修改目标对象
+'''
+Object.assign(目标对象, 来源1, 来源2, ...)
+'''
 
 useState(0)：放数字。通常用于计数器、索引
 useState('')：放字符串。通常用于输入框的值、文本
@@ -223,12 +243,12 @@ function组件 vs class 组件
 react-dom：web browser 渲染器
 react-native：手机原生平台
 
-react dom 文档对象模型 doc.html(div,title,body,img)
+react dom 文档对象模型 doc.html(div,title,body,img) 元素->文档对象节点
 react 只负责核心 不负责平台
 
 CDN 分发网络
 
-addListener()是 web api
+addEventListener()是 web api
 
 平时都是 npm install pkg in node_modules
 
