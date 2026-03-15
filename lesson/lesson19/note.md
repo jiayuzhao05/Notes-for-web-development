@@ -287,63 +287,185 @@ class ErrorBoundary extends React.Component {
 scheduler 调度延时
 react18调度器 控制任务何时执行 实现可中断渲染和优先级调度
 
-
 最小堆
+在react18中的shceduler中 任务优先级队列用最小堆实现
+每个任务有过期时间 堆顶是过期时间最小 优先级最高任务
+插入 取出 调整优先级都是O(logn) 适合频繁增删任务 保证高优先级先被调度执行
 
-位运算
+位运算 bitwise
+react大量用位运算做标记和状态管理
+fiber的flags：placement update deletion等用二进制表示
+用 | 合并多个标记 用&检查某个标记
+相比对象和数组 更省内存 判断更快
 
 completeWork 工作流程
+reconciler中自底向上阶段 在beginwork递归返回时执行
+host组件：create/update真实DOM节点
+收集effect：徐娅增删改的节点记到effectList
+处理子节点 处理children的DOM挂载 属性更新
+向上冒泡 把effect链接到父fiber的effectList
 
-性能优化
-eagerState
+流程：beginWork 向下遍历 → completeWork 向上返回并处理 DOM 和 effect
+
+性能优化 & eagerState
+react对useState/setState的优化：
+同步更新且没有其他待处理更新时 react会立即计算新state
+如果新state和当前state相同（用Object.is比较） 跳过本次更新 不调度 不重新渲染
+在一次事件处理里多次setState 减少无效更新
+// 点击时 setCount(count) 设置相同值 有 eagerState 时，React 会直接跳过这次更新
+
 
 bailout vs ContextAPI
+bailout 提前退出：react在reconcile时 如果发现组件的props和state没有变 会跳过该组件的子树的reconcile 减少计算
+contextAPI：context变化让所有消费该context的组件重新渲染 即使他们只依赖其中一小部分数据 消弱bailout的效果 因为“依赖context”的组件在context变化时无法被跳过
+context使用不当减少bailout机会 导致不必要渲染
 
-onChange
+onChange 受控组件 输入框值同步到state
 '''
 onChange={e => setText(e.target.value)}
 '''
+e.target.value 输入内容
+setText() 更新react state
+输入变化->触发onchange->更新state->组件重渲染->输入框显示新值
 
-state 提升
+
+state 提升   Lifting State Up
+多个组件共享一份数据 UI一致 共享的state放到最近的公共父组件中 通过props向下传递 回调向上更新
 
 setVisibleTodos()
+更新 todo visible list的state 根据筛选条件/排序结果
 
-getFilteredTodos()
+getFilteredTodos() 在渲染阶段调用的纯函数
 
 console.timeEnd()
+性能测量API 和console.time('label')成对使用 time到timeend耗时
+'''
+console.time('render')
+//... 要测量的代码
+console.timeEnd('render');  // 输出: render: 12.5ms
+''
 
 setPrevItems()
+保存上次的列表数据 对比前后变化或者做动画
 
 setSelection()
+保存当前选中项（selectedId） 展示/高亮
 
+渲染时计算派生数据
+'''
 function List({ items }) {
 const [isReverse, setIsReverse] = useState(false);
 const [selectedId, setSelectedId] = useState(null);
-// ✅ Best: Calculate everything during rendering
+// Best: Calculate everything during rendering
 const selection = items.find(item => item.id === selectedId) ?? null;
 // ...
 }
+'''
+selection 在每次渲染时根据 items 和 selectedId 计算，而不是用 useState 或 useEffect 存储
+逻辑简单 避免state 和 effect 不同步；数据始终与 props/state 一致；符合 React 的“在渲染中计算派生数据”的推荐做法
+
 
 navigateTo()
+路由跳转 react router等库
 
 onFetched()
+数据请求完成后回调 更新state/后续处理
 
 removeEventListener()
+移除之前通过 addEventListener 添加的事件监听 在useEffect清理函数中调用  避免组件卸载后仍执行回调
+'''
+useEffect(()=>{
+  const handler = () =>{...}
+  window.addEventListener('resize',handler)
+  return ()=> window.removeEventListener('resize',handler)
+},[])
+'''
 
 function组件 vs class 组件
+方面	  Function 组件   	Class 组件
+写法	  函数，用 Hooks	    类，用生命周期
+state	   useState	       this.state
+副作用	   useEffect	     componentDidMount 等
+复用逻辑	自定义 Hooks	   HOC、render props
+趋势	    当前推荐	       逐步被替代
 
-如何从 class 组件转成 function 组件
+
+如何从 class 组件转成 function 组件?
+state:this.state-> useState
+生命周期：componentDidMount → useEffect(() => {...}, [])
+更新后逻辑：componentDidUpdate-> useEffect(() => {...}, [依赖])
+卸载逻辑：componentWillUnmount → useEffect 的 return 函数
+this引用：不需要 直接使用局部变量和函数参数
 
 react-dom：web browser 渲染器
 react-native：手机原生平台
 
 react dom 文档对象模型 doc.html(div,title,body,img) 元素->文档对象节点
-react 只负责核心 不负责平台
+react 只负责核心 state rfeconciler等 不负责平台   平台差异由各自的渲染器处理
 
-CDN 分发网络
+CDN content delivery network 分发网络
+把静态资源（JS CSS png）缓存到全球多个节点 用户从最近节点加载 加快访问速度
 
-addEventListener()是 web api
+addEventListener()是 浏览器提供的web api 不是react提供的 
+react的onclick onchange是对这些原生事件的封装
 
 平时都是 npm install pkg in node_modules
 
-react 脚手架
+react 脚手架  预置 热更新 开发服务器等配置
+快速搭建react项目工具
+create react app(cra): npx create-react-app my-app
+Vite: npm create vite@latest my-app -- --template react
+nextjs:带ssr 路由等react框架 
+
+
+纯函数
+相同输出->相同输出
+无副作用 不修改外部变量 不发起请求 不操作DOM等
+'''
+// ❌ 非纯：依赖外部变量
+let x = 1;
+function addToX(y) {
+  return x + y;  // 输出随 x 变化
+}
+
+// ❌ 非纯：有副作用
+function setTitle(title) {
+  document.title = title;  // 修改了 DOM
+}
+'''
+
+react组件为什么要是纯函数？
+同样的props->渲染出同样UI
+不在渲染中产生副作用（请求 写DOM 订阅）
+
+'''
+// ❌ 非纯：渲染时修改外部状态
+let count = 0;
+function BadComponent() {
+  count++;  // 副作用！
+  return <div>{count}</div>;
+}
+// ❌ 非纯：渲染时发起请求
+function BadComponent() {
+  fetch('/api/data');  // 副作用！应放在 useEffect
+  return <div>...</div>;
+}
+'''
+
+副作用放在哪里？
+事件处理函数 onClick  onChange
+useEffect：订阅 请求 定时器 DOM操作
+'''
+function Product({ id }) {
+  const [data, setData] = useState(null);
+  // 副作用放在 useEffect
+  useEffect(() => {
+    fetch(`/api/product/${id}`)
+      .then(res => res.json())
+      .then(setData);
+  }, [id]);
+  
+  // 渲染部分保持纯
+  return data ? <div>{data.name}</div> : <div>Loading...</div>;
+}
+'''
