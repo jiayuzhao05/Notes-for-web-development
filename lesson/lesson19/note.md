@@ -103,8 +103,8 @@ useReducer 分三步从 React 迁移useState到 Reducers 纯函数
 useCallback()缓存函数本身 依赖不变时，多次渲染拿到同一个函数引用，减少子组件因“收到新的函数 prop”而重渲染
 '''
 const 函数 = useCallback(
-  () => { /* 函数体 */ },
-  [依赖1, 依赖2]
+() => { /_ 函数体 _/ },
+[依赖1, 依赖2]
 )
 '''
 
@@ -190,8 +190,8 @@ const button = document.getElementById('btn');
 const counter = document.getElementById('counter');
 let count = 0;
 button.addEventListener('click',()=>{
-  count += 1;
-  counter.textContent = count;
+count += 1;
+counter.textContent = count;
 })
 '''
 
@@ -199,13 +199,13 @@ react是声明式写法 描述UI长什么样 用state驱动 关注要的结果
 '''
 // 声明式：描述 UI 与 state 的关系
 function Counter() {
-  const [count, setCount] = useState(0);
-  return (
-    <>
-      <span>{count}</span>
-      <button onClick={() => setCount(count + 1)}>+1</button>
-    </>
-  );
+const [count, setCount] = useState(0);
+return (
+<>
+<span>{count}</span>
+<button onClick={() => setCount(count + 1)}>+1</button>
+</>
+);
 }
 '''
 
@@ -214,14 +214,14 @@ function Counter() {
 '''
 const higherOrderFunction = (fn)=>(...args)=> fn(...args);
 const withSomething = (Component)=>{
-  return (props)=>{
-    return <Component{...props}/>
-  }
+return (props)=>{
+return <Component{...props}/>
+}
 }
 '''
 
 HOC vs Hooks
-
+hooks 本质是内部实现的函数。但是有实现边界 比如只能在顶部 不能在条件句
 
 ref 保存「和渲染无关、跨渲染保持同一引用」的值
 用于聚焦输入框、测量元素尺寸、调用第三方库
@@ -238,7 +238,7 @@ createContext（）创建上下文-> <Context.Provider value={...}> 包裹需要
 const ThemeContext = createContext('light');
 // 父组件提供
 <ThemeContext.Provider value="dark">
-  <Child />
+<Child />
 </ThemeContext.Provider>
 // 子组件消费
 const theme = useContext(ThemeContext);
@@ -258,8 +258,8 @@ portals 把组件渲染到DOM树中另一个结点 不是当前组件的父节�
 '''
 // 把模态框渲染到 body 下，而不是当前组件内部
 ReactDOM.createPortal(
-  <Modal />,
-  document.body
+<Modal />,
+document.body
 );
 '''
 
@@ -270,17 +270,17 @@ ReactDOM.createPortal(
 不捕获：事件处理、异步代码、服务端渲染、错误边界自身的错误
 '''
 class ErrorBoundary extends React.Component {
-  state = { hasError: false };
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-  componentDidCatch(error, info) {
-    console.log(error, info);
-  }
-  render() {
-    if (this.state.hasError) return <h1>出错了</h1>;
-    return this.props.children;
-  }
+state = { hasError: false };
+static getDerivedStateFromError(error) {
+return { hasError: true };
+}
+componentDidCatch(error, info) {
+console.log(error, info);
+}
+render() {
+if (this.state.hasError) return <h1>出错了</h1>;
+return this.props.children;
+}
 }
 '''
 
@@ -314,7 +314,6 @@ react对useState/setState的优化：
 在一次事件处理里多次setState 减少无效更新
 // 点击时 setCount(count) 设置相同值 有 eagerState 时，React 会直接跳过这次更新
 
-
 bailout vs ContextAPI
 bailout 提前退出：react在reconcile时 如果发现组件的props和state没有变 会跳过该组件的子树的reconcile 减少计算
 contextAPI：context变化让所有消费该context的组件重新渲染 即使他们只依赖其中一小部分数据 消弱bailout的效果 因为“依赖context”的组件在context变化时无法被跳过
@@ -328,8 +327,7 @@ e.target.value 输入内容
 setText() 更新react state
 输入变化->触发onchange->更新state->组件重渲染->输入框显示新值
 
-
-state 提升   Lifting State Up
+state 提升 Lifting State Up
 多个组件共享一份数据 UI一致 共享的state放到最近的公共父组件中 通过props向下传递 回调向上更新
 
 setVisibleTodos()
@@ -342,7 +340,7 @@ console.timeEnd()
 '''
 console.time('render')
 //... 要测量的代码
-console.timeEnd('render');  // 输出: render: 12.5ms
+console.timeEnd('render'); // 输出: render: 12.5ms
 ''
 
 setPrevItems()
@@ -364,7 +362,6 @@ const selection = items.find(item => item.id === selectedId) ?? null;
 selection 在每次渲染时根据 items 和 selectedId 计算，而不是用 useState 或 useEffect 存储
 逻辑简单 避免state 和 effect 不同步；数据始终与 props/state 一致；符合 React 的“在渲染中计算派生数据”的推荐做法
 
-
 navigateTo()
 路由跳转 react router等库
 
@@ -372,23 +369,22 @@ onFetched()
 数据请求完成后回调 更新state/后续处理
 
 removeEventListener()
-移除之前通过 addEventListener 添加的事件监听 在useEffect清理函数中调用  避免组件卸载后仍执行回调
+移除之前通过 addEventListener 添加的事件监听 在useEffect清理函数中调用 避免组件卸载后仍执行回调
 '''
 useEffect(()=>{
-  const handler = () =>{...}
-  window.addEventListener('resize',handler)
-  return ()=> window.removeEventListener('resize',handler)
+const handler = () =>{...}
+window.addEventListener('resize',handler)
+return ()=> window.removeEventListener('resize',handler)
 },[])
 '''
 
 function组件 vs class 组件
-方面	  Function 组件   	Class 组件
-写法	  函数，用 Hooks	    类，用生命周期
-state	   useState	       this.state
-副作用	   useEffect	     componentDidMount 等
-复用逻辑	自定义 Hooks	   HOC、render props
-趋势	    当前推荐	       逐步被替代
-
+方面 Function 组件 Class 组件
+写法 函数，用 Hooks 类，用生命周期
+state useState this.state
+副作用 useEffect componentDidMount 等
+复用逻辑 自定义 Hooks HOC、render props
+趋势 当前推荐 逐步被替代
 
 如何从 class 组件转成 function 组件?
 state:this.state-> useState
@@ -401,22 +397,21 @@ react-dom：web browser 渲染器
 react-native：手机原生平台
 
 react dom 文档对象模型 doc.html(div,title,body,img) 元素->文档对象节点
-react 只负责核心 state rfeconciler等 不负责平台   平台差异由各自的渲染器处理
+react 只负责核心 state rfeconciler等 不负责平台 平台差异由各自的渲染器处理
 
 CDN content delivery network 分发网络
 把静态资源（JS CSS png）缓存到全球多个节点 用户从最近节点加载 加快访问速度
 
-addEventListener()是 浏览器提供的web api 不是react提供的 
+addEventListener()是 浏览器提供的web api 不是react提供的
 react的onclick onchange是对这些原生事件的封装
 
 平时都是 npm install pkg in node_modules
 
-react 脚手架  预置 热更新 开发服务器等配置
+react 脚手架 预置 热更新 开发服务器等配置
 快速搭建react项目工具
 create react app(cra): npx create-react-app my-app
 Vite: npm create vite@latest my-app -- --template react
-nextjs:带ssr 路由等react框架 
-
+nextjs:带ssr 路由等react框架
 
 纯函数
 相同输出->相同输出
@@ -425,12 +420,12 @@ nextjs:带ssr 路由等react框架
 // ❌ 非纯：依赖外部变量
 let x = 1;
 function addToX(y) {
-  return x + y;  // 输出随 x 变化
+return x + y; // 输出随 x 变化
 }
 
 // ❌ 非纯：有副作用
 function setTitle(title) {
-  document.title = title;  // 修改了 DOM
+document.title = title; // 修改了 DOM
 }
 '''
 
@@ -442,30 +437,38 @@ react组件为什么要是纯函数？
 // ❌ 非纯：渲染时修改外部状态
 let count = 0;
 function BadComponent() {
-  count++;  // 副作用！
-  return <div>{count}</div>;
+count++; // 副作用！
+return <div>{count}</div>;
 }
 // ❌ 非纯：渲染时发起请求
 function BadComponent() {
-  fetch('/api/data');  // 副作用！应放在 useEffect
-  return <div>...</div>;
+fetch('/api/data'); // 副作用！应放在 useEffect
+return <div>...</div>;
 }
 '''
 
 副作用放在哪里？
-事件处理函数 onClick  onChange
+事件处理函数 onClick onChange
 useEffect：订阅 请求 定时器 DOM操作
 '''
 function Product({ id }) {
-  const [data, setData] = useState(null);
-  // 副作用放在 useEffect
-  useEffect(() => {
-    fetch(`/api/product/${id}`)
-      .then(res => res.json())
-      .then(setData);
-  }, [id]);
-  
-  // 渲染部分保持纯
-  return data ? <div>{data.name}</div> : <div>Loading...</div>;
+const [data, setData] = useState(null);
+// 副作用放在 useEffect
+useEffect(() => {
+fetch(`/api/product/${id}`)
+.then(res => res.json())
+.then(setData);
+}, [id]);
+
+// 渲染部分保持纯
+return data ? <div>{data.name}</div> : <div>Loading...</div>;
 }
 '''
+
+Uncaught SyntaxError: Cannot use import statement outside a module
+type="module" esm
+
+react本质是什么?
+createElement如何创建元素? 创建的元素两种不同写法?
+
+原生JS改掉reactDemo counter
