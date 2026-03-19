@@ -472,3 +472,20 @@ react本质是什么?
 createElement如何创建元素? 创建的元素两种不同写法?
 
 原生JS改掉reactDemo counter
+
+
+无条件命令式更新
+DOM 命令式方法
+样式改变JS初始值 改变页面视图和方法
+
+V8引擎->运行方式—>
+浏览器解析HTML react没有标签<p><span> 映射成<p> 创建react-DOM  生成虚拟DOM
+
+type是什么-> v8引擎 -> 运行方式-> 只支持JS
+
+react DOM属性包括事件
+属性属于对象
+
+createRoot()
+
+babel和esmodule只需要选一个
