@@ -468,8 +468,50 @@ return data ? <div>{data.name}</div> : <div>Loading...</div>;
 Uncaught SyntaxError: Cannot use import statement outside a module
 type="module" esm
 
-react本质是什么?
-createElement如何创建元素? 创建的元素两种不同写法?
+# react本质是什么?  
+用状态驱动 UI 的声明式视图库
+不用手动改DOM UI拆开组件化(函数)
+state/props变化->触发重新渲染->得到新的UI描述
+最小更新:用调和（reconciliation）比较新旧结果，只对真实 DOM 做必要修改
+
+# createElement如何创建元素? 创建的元素两种不同写法?
+描述UI元素的底层API JSX被编译成它
+'''
+React.createElement(type, props, ...children)
+
+const el = React.createElement(
+  'h1',
+  { className: 'title' },
+  'Hello React'
+)
+
+const element= <div id="box">Hi</div>
+
+function APP() {
+    return React.createElement('hi',null,'Hello')
+}
+
+function App() {
+    return <h1>Hello</hi>
+}
+
+React.createElement('p', null, 'text')
+
+React.createElement(
+    'ul',
+    null,
+    React.createElement('li',null,'A')
+    React.createElement('li', null, 'B')
+)
+'''
+
+JSX 是语法糖：写起来像 HTML，最终会被编译成 JS 函数调用
+语法糖:编译/转换后 运行的还是底层语法
+语法糖  →  编译器/转换器  →  底层等价语法  →  浏览器/引擎执行
+JSX → Babel/SWC 编译 → createElement 或 jsx() → 浏览器执行
+有些语法糖浏览器已经原生支持了（如箭头函数、解构、模板字符串），现代浏览器直接就能跑，不需要再转;有些语法糖浏览器不认识（如 JSX、TypeScript），必须先编译才能跑
+
+新的runtime:把 JSX 编译到 react/jsx-runtime，不再依赖 React.createElement，因此多数情况下不需要每个文件 import React
 
 原生JS改掉reactDemo counter
 
@@ -489,3 +531,9 @@ react DOM属性包括事件
 createRoot()
 
 babel和esmodule只需要选一个
+
+
+CDN网址获取npm包和其他静态资源
+https://unpkg.com/
+https://esm.sh/
+https://www.jsdelivr.com/ 
