@@ -537,3 +537,74 @@ CDN网址获取npm包和其他静态资源
 https://unpkg.com/
 https://esm.sh/
 https://www.jsdelivr.com/ 
+
+生成器函数
+function* idGen() {let id=0;while(true) yield ++id;}
+
+const it = {
+    cur:0,
+    next(){return this.cur<3?{value:this.cur++,done:false}:{done:true};},
+    [Symbol.iterator](){return this}
+}
+
+for(const v of it) {console.log(v)}
+
+function* range(a,b,step=1){
+    for(let i=a;i<b;i+=step) yield i;
+}
+
+console.log([...range(0,5)])
+
+
+class Animal{
+    constructor(name){this.name=name}
+    speak(){console.log(`${this.name}makes a nois.`);}
+    static create(name){return new Animal(name);}
+}
+
+class Dog extends Animal{
+    #hp=100;
+    constructor(name){super(name)}
+    speak(){console.log(`${this.name}barks.`);}
+    get hp(){return this.#hp;}
+    set hp(){this.#hp = Math.max(0,v);}
+}
+
+
+安全获取深层属性
+const get = (obj,path,dft)=>{
+    return path.split('.').reduce((o,k)=>(o?.[k]),obj)??dft;
+}
+
+html5 新元素
+
+语义化
+
+dom 操作
+
+执行上下文
+
+作用域链
+
+es5 数组 api
+
+es6+ promise generator
+
+es2016 async await
+
+http 协议
+缓存
+跨域 CORS
+cookie session
+jwt
+ajax
+
+https：oauth2  websocket
+
+库 lodash bootstrap easyui layui mockjs  echarts
+
+工程化 框架  less/sass postcss 
+
+服务端  web 服务器 express koa
+egg/nestjs
+ssr  react ssr/
