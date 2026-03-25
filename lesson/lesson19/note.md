@@ -577,34 +577,125 @@ const get = (obj,path,dft)=>{
 }
 
 html5 新元素
+语义化标签 <header>、<footer>、<nav>、<main>、<section>、<article>、<aside>
 
-语义化
+功能化标签<video>、<audio>,<canvas>,<input type="date/email/range/..."> <details> / <summary>
 
-dom 操作
+语义化 用有意义的标签描述内容结构
+<header>
+  <nav>...</nav>
+</header>
 
-执行上下文
+dom 操作 用 JS 操作页面元素 增删改查
+'''
+// 查
+document.getElementById('box')
+document.querySelector('.item')
+// 改
+el.textContent = 'new text'
+el.style.color = 'red'
+el.setAttribute('class', 'active')
+// 增
+const div = document.createElement('div')
+parent.appendChild(div)
+// 删
+parent.removeChild(child)
+'''
+react本质是自动帮做 DOM 操作 不用手动
+
+执行上下文 js 代码执行的运行环境 每次调用函数创建一个新的执行上下文
+全局执行上下文
+函数执行上下文
+eval 执行上下文
+
+每个执行上下文都有 变量环境（var 声明的变量、函数声明） 词法环境（let/const 声明的变量） this 绑定
+执行上下文按照调用顺序放入调用栈 执行完弹出
 
 作用域链
+变量查找机制：从当前作用域开始 沿着外层作用域一层层往上找直到全局
+函数定义时已经确定作用域链（词法作用域 / 静态作用域）不是调用时（closure） 
 
-es5 数组 api
+es5 数组 api 给数组加的常用方法 不修改原数组（除了 sort/splice 等）
 
 es6+ promise generator
+generator 用 function*和 yield暂停和恢复函数
+'''
+function% gen(){
+    yield1
+    yield2
+}
 
-es2016 async await
+const g = gen()
+g.next() //{value:1,done:false}
+'''
 
-http 协议
+
+es2016 async await 
+异步看起来像同步的语法糖
+'''
+async function getData(){
+    const res = await fecth('/api')
+    const data = await res.json()
+    console.log(data)
+}
+'''
+
+http 协议 浏览器和服务器通信规则 请求-响应模型：浏览器发请求（GET/POST/PUT/DELETE...），服务器返响应（状态码+数据）
+
 缓存
+强缓存：Cache-Control、Expires->没过期直接用本地缓存
+协商缓存：ETag/Last-Modified -> 先问服务器“资源变没“，没变返回 304 用本地的
+
 跨域 CORS
+同源策略：协议+域名+端口一致 否则请求被拦
+cross-origin resource sharing：服务端设响应头Access-Control-Allow-Origin 来允许跨域
+
 cookie session
-jwt
+cookie：存在浏览器端小数据 每次请求都自动带（比如登录凭证）
+session：存在服务端的用户对话数据 通过 cookie 的 session ID 关联
+
+jwt JSON web token
+无状态的认证方案 服务端把用户信息加密成 token 发给前端 前端每次请求带上 token 服务端验证 token 不需要在服务端存 session
+
+
 ajax
+异步请求 不刷新页面就能和服务器交换数据 通过XMLHttpRequest fetch axios 实现
 
 https：oauth2  websocket
+HTTP + TLS/SSL 加密，数据传输加密，防窃听、防篡改
+OAuth2：第三方授权协议
+websocket：全双工通信 建立连接后服务器主动推送信息给浏览器 用来聊天 实时通知 协同编辑 股票行情
 
-库 lodash bootstrap easyui layui mockjs  echarts
+库 
+lodash JS 工具函数库（防抖 深拷贝 数组/对象操作）
+bootstrap  CSS UI 框架 快速搭建响应式页面
+easyui  jQuery 时代 UI 组件库（后台管理）
+layui 国产轻量 UI 框架（后台管理）
+mockjs  模拟假数据 前后端联调前用来 mock 接口
+echarts 百度出的图表库（可视化）
 
-工程化 框架  less/sass postcss 
+工程化 框架  
+less/sass css 预处理器：支持变量 嵌套 混入 函数 写完编译成普通 css
+'''
+$color:#333;
+.box{
+    color:$color;
+    .title{font-size:16px;}
+}
+'''
+postcss  css后处理器 对已有 css 做转换
+常见插件
+Autoprefixer 自动加浏览器前缀（-webkit-、-moz- 等）
+cssnano 压缩 css
 
-服务端  web 服务器 express koa
-egg/nestjs
+服务端  web 服务器 
+express  nodejs 框架
+koa  express 原班人马做的 基于 async/await更轻量
+
+egg 阿里出的框架 基于 koa 约定优于配置
+nestjs
+
 ssr  react ssr/
+server-side rendering
+服务端渲染 服务端生成 html 发给浏览器 而不是浏览器端用 js 渲染
+react ssr 用 nextjs 实现
