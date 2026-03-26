@@ -531,11 +531,21 @@ createRoot() react18 的新 api 创建react 根节点 渲染 react 组件树
 
 babel和esmodule只需要选一个
 
+原生 API 写法 和 jsx()有区别
+const el=react.createElement('hi',{className:'title'},'Hello React') 
+<div></div>块级 左右上下生效
+<span></span>内联 inline 左右生效
+html 编译器自带修复功能
 
-CDN网址获取npm包和其他静态资源
-https://unpkg.com/
-https://esm.sh/
-https://www.jsdelivr.com/ 
+
+CDN网址获取npm包和其他静态资源 使用 cdn 技术
+https://unpkg.com/  umd 全局变量 windows.react
+https://esm.sh/  import/export
+https://www.jsdelivr.com/   兼容性大
+
+
+.min.js（生产环境用）=>.js 代码压缩精简 体积变小  类似于.js.map 删除通过打包器完成
+
 
 生成器函数
 function* idGen() {let id=0;while(true) yield ++id;}
