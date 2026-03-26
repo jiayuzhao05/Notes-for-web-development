@@ -525,8 +525,7 @@ V8引擎->运行方式—>
 
 type是什么-> v8引擎 -> 运行方式-> 只支持JS
 
-react DOM属性包括事件
-属性属于对象
+react DOM属性包括事件 属性属于对象
 
 createRoot() react18 的新 api 创建react 根节点 渲染 react 组件树
 
