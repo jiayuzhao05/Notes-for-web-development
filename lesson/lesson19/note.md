@@ -521,14 +521,14 @@ DOM 命令式方法
 样式改变JS初始值 改变页面视图和方法
 
 V8引擎->运行方式—>
-浏览器解析HTML react没有标签<p><span> 映射成<p> 创建react-DOM  生成虚拟DOM
+浏览器解析HTML react没有标签<p><span> 映射成<p> 创建react-DOM  生成虚拟DOM（JS 对象）→ React DOM 再用浏览器 API 把它变成真实 <p>/<span> → 渲染引擎画到屏幕上
 
 type是什么-> v8引擎 -> 运行方式-> 只支持JS
 
 react DOM属性包括事件
 属性属于对象
 
-createRoot()
+createRoot() react18 的新 api 创建react 根节点 渲染 react 组件树
 
 babel和esmodule只需要选一个
 
