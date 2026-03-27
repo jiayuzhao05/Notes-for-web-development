@@ -206,5 +206,142 @@ req.on('end',()=>{
     req.body = body //请求体对象挂载为 req.body 属性
     next()   
 })
+})
 
+//创建API 路由模块
+//get,post 接口
+api.Router.get('/get',(req,res)=>{
+    const query = req.query
+    res.send({
+        status:0,
+        msg:'get request success!',
+        data:query
+    })
+})
+
+apiRouter.post('/post',(req,res)=>{
+    const body = req.body
+    res.send({
+        status:0,
+        msg:'Post reques success!',
+        data:body
+    })
+})
+
+//CORS 跨域资源共享
+//接口的跨域问题 不支持跨域请求
+CORS（主流的解决方案，推荐）
+JSONP（有缺陷的解决方案：只支持 GET 请求）
+
+//cors 是 express 的第三方 可以方便解决跨域问题 在服务器端配置 客户端浏览器无需额外配置 请求开启 CORS 接口 在浏览器中有兼容性 只有支持 XMLHttpRequest level2 浏览器 访问开启 cors 的服务端接口（IE10+，chrome4+，firefox 3.5+）
+安装-导入 const cors = require('cors')-配置 调用 app.use(cors)
+
+cors 响应头部- access-control-allow-origin
+仅支持客户端向服务器发送 9 个请求头：accept,acceot-language,DPR,Downlink,Save-Data,Viewport-Width,Width,Content-Type
+
+res.setHeader('Access-Control-Allow-Methods','POST,GET,DELETE,HEAD')
+res.setHeader('Access-Control-Allow-Methods','*')
+
+简单请求：客户端和服务器只发生一次请求
+预检请求：发生两次请求，OPTION 预检请求成功后才会发起真正的请求
+
+JSONP 通过<script>的 src 属性 请求服务器上数据 服务器返回一个函数调用 
+JSONP 不属于真正 Ajax 请求 因为它没有使用 XMLHttpRequest 对象
+JSONP 仅支持 GET 请求 不支持其他请求
+
+app.get('/api/jsonp',(res,req)=>{})
+app.use(cors())
+app.get('/api/get',(req,res)=>{})
+
+//实现 JSONP 接口
+app.get('/api/jsonp',(res,req)=>{
+    const funcName = req.query.callback
+    const data = {name:'zs',age:22}
+    const scriptStr = `${funcName}(${JSON.stringify(data)})`
+    res.send(scriptStr)
+})
+
+//mysql
+//查询数据
+db.query('SELECT * FROM users',(err,results)=>{
+    if(err) return console.log(err.message)
+    console.log(results)
+})
+
+//插入数据
+const user = {id:7,'Spider-man',password:'pcc321'}
+const sqlStr = 'Insert Into users(username,password) Values (?,?)'
+
+db.query(sqlStr, [user.username,user.password,user.id],(err.results)=>{
+    if(err) return console.log(err.message)
+    if(results.affectedRows ==== 1){console.log('insert data successfully')}
+})
+
+delete会真正把数据从表中删除 为了保险 推荐标记删除 模拟删除动作 设置状态字段 标记当前数据是否被删除 相当于执行 update 将数据对应 status 标记为删除
+//标记删除
+db.query('UPDATE USERS SET status=1 WHERE id=?',6,(err,results)=>{
+    if(err) return console.log(err.message)
+    if(results.affectedRows=== 1) (console.log('deleted the data!'))
+})
+
+web 并发模式：
+（1）服务端渲染
+服务器发送给客户端的 html 页面是在服务器通过字符串拼接动态生成 客户端不需要用 ajax 额外请求页面数据
+前端耗时短 利于 seo
+占用服务器端资源 开发效率低
+
+（2）前后端分离
+依赖 ajax 后端只负责 api 接口 前端使用 ajax 调用接口
+减轻服务器端渲染压力 因为页面最终在每个用户浏览器生成
+不利 seo 爬虫无法爬取页面有效信息 但利用 react 等框架的 ssr 可以解决seo 问题
+
+
+身份认证
+服务端渲染：session 认证机制
+前后端分离：JWT 认证机制
+
+cookie 存储在用户浏览器不超过 4kb 的字符串 （name,value,可选属性）
+特性：自动发送 域名独立 过期时限 4kb 限制
+很容易被伪造 不要用 cookie 存储重要隐私数据
+session：双重认证 在 cookie 基础上添加了用户信息和密码认证
+
+JWT 认证机制 跨域认证专用
+session 有局限 需要配合 cookie（默认不支持跨域访问） 涉及到前端跨域请求后端接口 需要很多额外配置
+ JWT 验证账号和 pass 后将用户信息对象加密后生成->token 字符串发给客户端->客户端token 存到 localstorage/sessionstorage 客户端再次发起请求时 通过请求头的 authorization 字段将 token 发送给服务器->服务器把 token 字符串还原成信息对象
+
+ header+payload(用户信息)+signature
+ JWT 放在http  身份验证
+ npm install jsonwebtoken(生成 JWT 字符串) express-jwt(JWT字符串解析还原成 JSON 对象)
+
+/schema/user.js 
+//用户信息验证
+const username = joi.string().alphanum().min(1).max(10).required()
+const password = joi.string().pattern(/^[\s]{6,12}$/).required()
+//注册和登录表单的验证规则对象
+exports.reg_login_schema = {
+    body:{
+        username,
+        password,
+    },
+}
+
+
+/router/user.js 
+const express = require('express')
+const router = express.Router()
+
+const userHandler = require('../router_handler/user')
+const expressJoi = require('@escook/express-joi')
+const {reg_login_schema}=require('../shcema/user')
+//register new users
+router.post('/reguser',expressJoi(reg_login_schema),userHandler.regUser)
+//login
+router.post('/login',userHandler.login)
+module.exports = router
+
+//捕获错误 验证失败结果响应给客户端
+const joi = require('@hapi/joi')
+app.use(function(err,req,res,next){
+    if(err instanceof joi.ValidationError) return res.cc(err)
+    res.cc(err)
 })
