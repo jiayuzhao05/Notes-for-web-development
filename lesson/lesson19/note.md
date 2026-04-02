@@ -38,7 +38,7 @@ Babel 覆盖
 组件
 React 组件使用props相互通信
 
-hooks （特殊函数）组件需求的无条件申明
+hooks（特殊函数）组件需求的无条件申明
 useState，以及任何其他以“use”开头的函数 仅在 React渲染期间可用
 use只能在组件的顶层或自己的 Hooks 中调用
 
@@ -74,7 +74,7 @@ JSX规则
 从组件返回多个元素，用单个父标签将它们包裹起来
 用<div></div> or <></>
 
-{{}} 在 JSX 中正确表示内联样式对象
+{{}} 在 JSX 中表示内联样式对象
 
 <ul style={{
       backgroundColor: 'black',
@@ -168,12 +168,12 @@ object.assign() “浅拷贝 + 合并”的 API
 Object.assign(目标对象, 来源1, 来源2, ...)
 '''
 
-useState(0)：放数字。通常用于计数器、索引
-useState('')：放字符串。通常用于输入框的值、文本
-useState(false)：放布尔值。通常用于开关、弹窗显示/隐藏
-useState([])：放空数组。通常用于列表数据
-useState({})：放空对象。通常用于存储包含多个属性的数据（比如用户信息 { name: 'Tom', age: 18 }）。
-useState(initialState)：放一个提前定义好的变量。当初始数据比较长或者从外部传入时，直接写变量名更整洁
+useState(0)：放数字 用于计数器、索引
+useState('')：放字符串 用于输入框的值、文本
+useState(false)：放布尔值 用于开关、弹窗显示/隐藏
+useState([])：放空数组 用于列表数据
+useState({})：放空对象 用于存储包含多个属性的数据（比如用户信息 { name: 'Tom', age: 18 }）。
+useState(initialState)：放一个提前定义好的变量。当初始数据比较长或者从外部传入时，写变量名更整洁
 
 useState()后 idx(0)current status; idx(1)func updating status
 
@@ -339,7 +339,7 @@ console.timeEnd()
 性能测量API 和console.time('label')成对使用 time到timeend耗时
 '''
 console.time('render')
-//... 要测量的代码
+//... 测量的代码
 console.timeEnd('render'); // 输出: render: 12.5ms
 ''
 
@@ -508,8 +508,8 @@ React.createElement(
 JSX 是语法糖：写起来像 HTML，最终会被编译成 JS 函数调用
 语法糖:编译/转换后 运行的还是底层语法
 语法糖  →  编译器/转换器  →  底层等价语法  →  浏览器/引擎执行
-JSX → Babel/SWC 编译 → createElement 或 jsx() → 浏览器执行
-有些语法糖浏览器已经原生支持了（如箭头函数、解构、模板字符串），现代浏览器直接就能跑，不需要再转;有些语法糖浏览器不认识（如 JSX、TypeScript），必须先编译才能跑
+JSX → Babel/SWC 编译 → createElement/jsx() → 浏览器执行
+有些语法糖浏览器已经原生支持（如箭头函数、解构、模板字符串），现代浏览器直接能跑，不需要再转;有些语法糖浏览器不认识（如 JSX、TypeScript），先编译才能跑
 
 新的runtime:把 JSX 编译到 react/jsx-runtime，不再依赖 React.createElement，因此多数情况下不需要每个文件 import React
 
@@ -521,13 +521,13 @@ DOM 命令式方法
 样式改变JS初始值 改变页面视图和方法
 
 V8引擎->运行方式—>
-浏览器解析HTML react没有标签<p><span> 映射成<p> 创建react-DOM  生成虚拟DOM（JS 对象）→ React DOM 再用浏览器 API 把它变成真实 <p>/<span> → 渲染引擎画到屏幕上
+浏览器解析HTML react没有标签<p> 映射成<p> 创建react-DOM 生成虚拟DOM（JS对象）→ React DOM用浏览器 API 把它变成真实 <p> → 渲染引擎画到屏幕
 
 type是什么-> v8引擎 -> 运行方式-> 只支持JS
 
 react DOM属性包括事件 属性属于对象
 
-createRoot() react18 的新 api 创建react 根节点 渲染 react 组件树
+createRoot():react18 的新 api 创建react 根节点 渲染 react 组件树
 
 babel和esmodule只需要选一个
 
@@ -613,9 +613,7 @@ parent.removeChild(child)
 react本质是自动帮做 DOM 操作 不用手动
 
 执行上下文 js 代码执行的运行环境 每次调用函数创建一个新的执行上下文
-全局执行上下文
-函数执行上下文
-eval 执行上下文
+全局，函数，eval 
 
 每个执行上下文都有 变量环境（var 声明的变量、函数声明） 词法环境（let/const 声明的变量） this 绑定
 执行上下文按照调用顺序放入调用栈 执行完弹出
@@ -690,7 +688,6 @@ $color:#333;
 .box{
     color:$color;
     .title{font-size:16px;}
-}
 '''
 postcss  css后处理器 对已有 css 做转换
 常见插件
@@ -708,3 +705,10 @@ ssr  react ssr/
 server-side rendering
 服务端渲染 服务端生成 html 发给浏览器 而不是浏览器端用 js 渲染
 react ssr 用 nextjs 实现
+
+V8 引擎运行原理
+Google 开发的 JS/WebAssembly 引擎 用 C++编写 用于 chrome 和 nodejs
+
+JS 源码 → Parser（解析器）→ AST → Ignition（解释器）→ 字节码 → Turbofan（优化编译器）→ 机器码
+
+生成器函数是可以暂停和恢复的函数，通过 yield 按需产出值，天然支持惰性求值和迭代协议，也是 async/await 的底层原理
