@@ -1,4 +1,4 @@
-//high order component
+//high order component 本质是偏函数
 import { useEffect, useState } from "react";
 
 function UserProfile1() {

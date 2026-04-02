@@ -46,14 +46,14 @@ class EthernetSwitch {
     
     // 单播转发
     forward(frame, port) {
-      console.log(`>>> 端口 ${port} 转发帧到 ${frame.destMAC}`)
+      console.log(`端口 ${port} 转发帧到 ${frame.destMAC}`)
     }
     
     // 广播
     broadcast(frame, excludePort) {
       this.ports.forEach(port => {
         if (port !== excludePort) {
-          console.log(`>>> 端口 ${port} 广播帧`)
+          console.log(`端口 ${port} 广播帧`)
         }
       })
     }

@@ -1,5 +1,3 @@
-# Lesson 17
-
 ## 1. 前后端通信方式：Fetch vs XHR
 
 ### XMLHttpRequest (传统方式)
@@ -151,7 +149,7 @@ Google 的自动化工具，评估 Web 应用质量，包括：
 用户操作 → 发送请求 → 服务器渲染完整 HTML → 返回新页面 → 浏览器刷新
 ```
 
-- ✅ SEO 友好（服务器直接返回完整 HTML）
+- ✅ SEO 友好（服务器返回完整 HTML）
 - ✅ 首屏加载快
 - ✅ 浏览器前进/后退按钮天然支持
 - ❌ 页面切换会刷新，体验不连贯
@@ -185,8 +183,8 @@ app.get('/contact', (req, res) => {
 - 用户体验流畅（无刷新）
 - 前后端分离，服务器只提供 API
 - 组件化开发，代码复用
-- 首次加载慢（需要加载整个应用）
-- SEO 不友好（需要 SSR 或预渲染）
+- 首次加载慢（加载整个应用）
+- SEO 不友好（需要 SSR /预渲染）
 - 需要前端路由管理
 
 Express + SPA:
@@ -209,7 +207,7 @@ app.post('/api/login', (req, res) => {
 
 // 3. 所有路由都返回同一个 HTML（前端路由处理）
 app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/dist/index.html'); //__dirname = 当前这个脚本文件所在的文件夹的绝对路径;在 Node 里用来和 path.join()拼路径、读文件
+  res.sendFile(__dirname + '/dist/index.html'); //__dirname = 当前这个脚本文件所在文件夹的绝对路径;Node 里用来和 path.join()拼路径、读文件
 });
 ```
 

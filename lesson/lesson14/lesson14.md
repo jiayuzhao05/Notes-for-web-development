@@ -13,7 +13,7 @@ HTTP=>443
 
 fetch 是第五层的请求 前端资源打包 请求后端资源
 
-\*课后作业：
+课后作业：
 (1)在 mac 里面使用 SMB（Server Message Block） 连接 iphone 和 mac
 SMB 文件共享协议 局域网内共享文件和打印机
 method1：mac 作为服务器 iPhone 连接 mac
@@ -99,7 +99,6 @@ getUser() { ... } // public interface
    用户和应用程序交互界面
    GUI（图形用户界面），CLI（命令行界面），API（应用程序接口）
 
----
 
 4 transport layer
 TCP 归端口管 网络请求的收发 本质是代码
@@ -150,7 +149,7 @@ HTTP/3 基于 UDP + QUIC 协议;QUIC 在 UDP 基础上实现了可靠性;结合�
 
 http 协议有很多版本 http3 用 UDP（UDP + QUIC 保证运输速度）；http1.1 http2 用 TCP
 
-\*课后作业：使用 node 完成 http1 写法 http2 写法
+课后作业：使用 node 完成 http1 写法 http2 写法
 
 http 协议不是由前端写的 取决于后端代码支持
 node
@@ -166,7 +165,7 @@ data link layer
 mac_B
 通过 ARP 缓存找到 MAC 地址
 
-\*作业：了解以太网工作原理
+作业：了解以太网工作原理
 数据链路层（Layer 2）的技术规范，定义局域网内设备如何连接、传输数据和识别设备。
 
 工作在数据链路层（OSI 第 2 层）
@@ -390,7 +389,7 @@ const tcpSegment = ipPacket.data
 | Mbps | Megabits per second | 1,000 Kbps | 兆比特每秒   |
 | Gbps | Gigabits per second | 1,000 Mbps | 千兆比特每秒 |
 
-\*作业：TCP 三次握手 报文
+作业：TCP 三次握手 报文
 客户端（Client） 服务器（Server）
 | |
 | [1] SYN, seq=100 |
