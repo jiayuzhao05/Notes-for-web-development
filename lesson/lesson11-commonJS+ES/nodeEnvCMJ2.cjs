@@ -10,7 +10,7 @@
 
 // let config; //变量声明 未初始化 值为undefined 作用:先声明变量，再根据环境条件赋值
 //生产环境使用 nodeEnvCMJ1.cjs，开发环境使用 config-dev.cjs
-//let 允许重新赋值，适合条件赋值;const 必须初始化且不能重新赋值
+// let 允许重新赋值，适合条件赋值;const 必须初始化且不能重新赋值
 // if (process.env.NODE_ENV === 'production') {
 //     config = require('./nodeEnvCMJ1.cjs');
 // } else {
@@ -38,3 +38,4 @@ const {count} = require('./nodeEnvCMJ1.cjs')
 console.log(count)
 
 //如何解决cmj里的导出值不是快照,进行灵活引用?
+//导出 getter 函数;把值包在对象里（利用引用类型）;操作 module.exports 上的属性;改用 ESM

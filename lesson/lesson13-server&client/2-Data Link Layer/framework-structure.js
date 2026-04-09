@@ -1,5 +1,5 @@
 // 以太网帧结构（数据链路层）
-// [MAC 头部][IP 头部][TCP 头部][数据][FCS]
+// [MAC头部][IP头部][TCP头部][数据][FCS]
 class EthernetFrame {
     constructor(sourceMAC, destMAC, payload) {
       this.preamble = '10101010...'  // 前导码
