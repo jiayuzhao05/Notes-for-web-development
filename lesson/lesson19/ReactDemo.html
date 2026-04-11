@@ -7,6 +7,7 @@
   </head>
   <body>
     <div id="root"></div>
+    <button disabled name="h">123</button>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -20,12 +21,15 @@
         };
         return (
           <div>
+            <p> hello </p>
             <p onClick={handleClick}>{count}</p>;
           </div>
         );
       }
       const root = ReactDOM.createRoot(document.getElementById("root"));
       root.render(<Counter />);
+
+      window.onload();
     </script>
   </body>
 </html>
