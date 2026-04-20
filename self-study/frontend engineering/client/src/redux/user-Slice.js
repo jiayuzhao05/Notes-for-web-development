@@ -7,15 +7,21 @@ const userSlice = createSlice({
         userInfo:{},
     },
     reducers:{
+        //initialize user info
         initUserInfo:(state,{payload})=>{
             state.userInfo = payload;
-    },
-    changeLoginStatus: (state,{payload})=>{
-        state.isLogin = payload;
+        }
+        // change login status
+        changeLoginStatus: (state,{payload})=>{
+            state.isLogin = payload;
+        }
+        //delete user info
+        clearUserInfo:(state)=>{
+            state.userInfo = {};
     }
 }
 })
 
-const {initUserInfo,changeLoginStatus} = userSlice.actions;
+const {initUserInfo,changeLoginStatus,clearUserInfo} = userSlice.actions;
 export default userSlice.reducer;
 
