@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <template>
+        <button
+         :class="['btn', `btn-${type}`, `btn-${size}`, { 'btn-disabled': disabled }]"
+         :disabled="disabled"
+         @click="handleClick"
+        >
+         <slot>Button Text</slot>
+        </button>
+       </template>
+</body>
+<script>
+    export default {
+     name: 'ElButton',
+     props: {
+      type: {
+       type: String,
+       default: 'default' // 可选值: 'default', 'primary', 'success', 'warning', 'danger'
+       },
+      size: {
+       type: String,
+       default: 'medium' // 可选值: 'small', 'medium', 'large'
+       },
+      disabled: {
+       type: Boolean,
+       default: false
+       }
+      },
+     methods: {
+      handleClick() {
+       this.$emit('click');
+       }
+      }
+    }
+    </script>
+</html>
