@@ -35,7 +35,6 @@ what "XXX" knowledge nodes are associated with it? parent node?Sub-Nodes?
 What variant of the classical problem am I running into and with what solution.
 For this section：Typical mistakes or misconceptions to watch out for.
 
-
 => flashCard:(核心问题)
 please，Make some spaced repetition flashcards for this section. Format as Q&A.
 

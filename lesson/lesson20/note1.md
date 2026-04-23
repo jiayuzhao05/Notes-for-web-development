@@ -18,6 +18,8 @@ window.visibilitychange()
 mutation Observer() 有回调函数
 
 作业:
-Web Components
+Web Components= Custom Elements(定义标签) + Shadow DOM(隔离封装) + HTML Templates(模板复用)
+浏览器给你的"原生版 Vue/React 组件"能力
+框架组件 ≠ 浏览器原生组件
 
 yield用于状态机 => 生成器
