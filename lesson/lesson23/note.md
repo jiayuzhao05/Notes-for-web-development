@@ -28,3 +28,6 @@ JSX 语法糖本质是什么？
 
 Footer() 因为大写 F 是 react 组件 否则是普通函数
 
+reactDOm 作用：把虚拟 DOM 生成真实 DOM
+
+Babel 作用是什么？
