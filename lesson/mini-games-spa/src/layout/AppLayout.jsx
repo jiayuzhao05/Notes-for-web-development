@@ -6,7 +6,7 @@ const zhangsan = "zhangsan";
 export function AppLayout({ children }) {
   return (
     <>
-      <main className="app-main">{children}</main>
+      <main className="app-main">123</main>
       <Sidebar />
       <Footer name={zhangsan} />
     </>
