@@ -34,3 +34,13 @@ hooks是状态改变器 状态驱动UI
 浏览器渲染页面需要DOM树(来自HTML)和CSSOM树(CSS)
 只有两棵树都准备好，才能合成 Render Tree 显示出来。CSS 是渲染阻塞资源,越早开始下载越好
 放在顶部 = 浏览器尽早开始下载 CSS，DOM 解析和 CSS 下载可以并行
+
+
+父->子 传递 props 默认值 children
+
+react严格模式会渲染 2 次
+router 用于开发环境 线上而非本地
+<BrowserRouter>有了这个才有了后面的<Router>
+<ScoreFInder>是用来做上下文的
+
+<dashboardPage>
