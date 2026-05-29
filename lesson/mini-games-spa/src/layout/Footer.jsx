@@ -1,9 +1,29 @@
 import { useState } from "react";
+import Hello from "./Hello";
+
 export function Footer(props) {
   //return <footer className="app-footer" />;
   console.log(props);
   const [count, setCount] = useState(10);
   const [count1, setCount1] = useState(10);
+  const hasHello = true;
+  const array = [1, 2, 3];
+
+  const users = [
+    {
+      name: "张三",
+      age: "12",
+    },
+    {
+      name: "李四",
+      age: "15",
+    },
+    {
+      name: "王五",
+      age: "32",
+    },
+  ];
+
   const handleClick = () => {
     //setCount(count + 1);
     //setCount({(prevCount) => prevCount + 1},
@@ -17,6 +37,11 @@ export function Footer(props) {
     <footer className="app-footer">
       <button onClick={handleClick}>{count}</button>
       {props.name} //{name}
+      {hasHello && Hello()}
+      {array.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+      {}
     </footer>
   );
 }
@@ -27,3 +52,16 @@ export function Footer(props) {
 //纯函数负责渲染UI
 
 //用useEffect()弄定时器 3000ms后重置 count归零
+
+//_jsx("footer", { className: "app-footer" }, "底部内容 ");
+
+// {
+//   props:{
+//     className:"app-footer",
+//     children:"底部内容"
+//   },
+//   type:"footer",
+//   key:"ref"
+// }
+
+<footer className="app-footer">底部内容 </footer>;
