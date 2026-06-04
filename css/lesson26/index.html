@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: black;
+        color: antiquewhite;
+      }
+
+      .navContainer {
+        background-color: antiquewhite;
+      }
+
+      .navContainer > ul {
+        display: flex;
+        justify-content: space-evenly;
+      }
+
+      .navContainer > ul > li > a {
+        text-decoration: none;
+        position: relative;
+      }
+
+      .navContainer > ul > li > a::after {
+        content: "";
+        position: absolute;
+        background-color: blue;
+        height: 2px;
+        width: 100%;
+        bottom: 2px;
+        left: 0;
+        transform: scaleX(0);
+        transition: ease-in-out;
+      }
+
+      .navContainer > ul > li > a:hover::after {
+        transform: scaleX(1);
+      }
+    </style>
+  </head>
+  <body>
+    <section class="container">
+      <h2>Variation1: Horizontal with underline effect</h2>
+      <nav class="navContainer">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Products</a></li>
+          <li><button type="button">Login</button></li>
+        </ul>
+      </nav>
+    </section>
+  </body>
+</html>

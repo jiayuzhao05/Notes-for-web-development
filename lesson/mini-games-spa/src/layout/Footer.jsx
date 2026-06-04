@@ -64,4 +64,4 @@ export function Footer(props) {
 //   key:"ref"
 // }
 
-<footer className="app-footer">底部内容 </footer>;
+<footer className="app-footer">底部内容</footer>;

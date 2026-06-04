@@ -1,15 +1,14 @@
 JSX 只能返回顶层结构
 组件return里 最外层只能有一个根节点 不能并列写多个同级标签
 return <div>Hello</div>;
-编译后：return _jsx("div",{children:"Hello"})
+编译后：return \_jsx("div",{children:"Hello"})
 一次return对应一次函数调用 只能得到一个react element对象
 
 react需要一颗组件树 做diff 更新dom 多个并列根节点没有唯一父节点 树结构不清楚 协调算法不好处理
 
-
 从组件返回多个元素 单个父标签将他们包裹起来 用<div></div>或<></>
-<div> 相当于fragment <> (只提供逻辑上父容器 当不想多包一层DOM)
 
+<div> 相当于fragment <> (只提供逻辑上父容器 当不想多包一层DOM)
 
 html中<label>for属性和input类似
 <label>中for和某个表单控件id配对 最常见和<input>配对
@@ -18,16 +17,15 @@ for: 写在<label> 值等于目标控件id 建立「这段文字 ↔ 这个输�
 <label for="username">用户名</label>
 <input id="username" type="text" />
 
-
 react没有for属性 用htmlFor？
 JSX不能写for 因为for是JS保留字（for loop）
 <label htmlFor="username">用户名</label>
 <input id="username" type="text" />
 渲染到真实DOM时 变成HTML的for="username"
 
-html解析器松散 不闭环  自动纠错机制   比如<p>改进<header> 但是渲染时还是渲染进<body>
+html解析器松散 不闭环 自动纠错机制 比如<p>改进<header> 但是渲染时还是渲染进<body>
 
-有些包在生产 环境环境之分    同一个包在不同环境下会用不同构建版本
+有些包在生产 环境环境之分 同一个包在不同环境下会用不同构建版本
 很多库会发布两套构建产物：
 开发development：体积大 性能慢 额外功能有警告、详细报错、DevTools支持 用本地pnpm dev
 生产production：体积小（压缩后） 性能快 去掉额外功能 只保留核心逻辑 pnpm build后部署
@@ -37,25 +35,25 @@ devDependencies：只在开发/构建时需要，不会发给用户例：vite,es
 
 Eslint用来纠错 主要纠错.ts/.tsx 属于开发阶段工具 不会进生产包
 vite/webpack打包时：
+
 1. process.env.NODE_ENV 替代成'production'/'development'
 2. 让react等库加载对应版本
 3. 去掉if(process.env.NODE_ENV !== 'production')里开发专用代码
 
-
 组件本质是函数
-react里组件个js函数   JSX标签最终变成对这个函数调用
+react里组件个js函数 JSX标签最终变成对这个函数调用
 
 function Greeting(props) {
-  return <h1>Hello, {props.name}</h1>;
+return <h1>Hello, {props.name}</h1>;
 }
 
 使用时：<Greeting name="Alice" />
-编译后：_jsx(Greeting, { name: "Alice" });
+编译后：\_jsx(Greeting, { name: "Alice" });
 //调用 Greeting 函数，传入 { name: "Alice" }
 
-JSX语法糖-> _JSX/React.createElement -> React Element(virtual DOM) -> React DOM (true DOM)
-组件函数(props)  →  返回 React Element 对象  →  React 把它渲染成页面
-react希望组件尽量是纯函数 同样的props->渲染同样UI 不在渲染中产生副作用（请求 改dom 改外部变量） 
+JSX语法糖-> \_JSX/React.createElement -> React Element(virtual DOM) -> React DOM (true DOM)
+组件函数(props) → 返回 React Element 对象 → React 把它渲染成页面
+react希望组件尽量是纯函数 同样的props->渲染同样UI 不在渲染中产生副作用（请求 改dom 改外部变量）
 副作用应放在事件处理函数(onClick),useEffect
 
 <App />在调用App()
@@ -82,23 +80,23 @@ context也是传递方式的一种： provider广播
 <Features> 业务目录
 <public> 静态资源
 
-
 组件(props,state)
 props(data) 子组件不能直接修改
 
 .json 文档型 类型类似.md 通用格式 java,go,python 不能识别JS对象 但能识别json格式的对象
 
-
-如果db/里直接用.json格式来搜索 搜索速度会很慢 
+如果db/里直接用.json格式来搜索 搜索速度会很慢
 1）没有索引：不像mysql按字段建索引快速定位
 2） 整文件读：查一条记录要读整个json并parse
 json不能直接表示JS的函数、undefined、data对象等
 3）线性扫描：只能从头道尾遍历
-4）无查询语言：没有sql那种where,join
-5) 并发差：多用户同时读写同一文件容易冲突
-
+4）无查询语言：没有sql那种where,join 5) 并发差：多用户同时读写同一文件容易冲突
 
 //js 对象
 const obj = {score:5, fn:()=>{}};
 //json 要先json.parse()才能当对象用
 {"score":5}
+
+css如果放在body底布 浏览器先解析渲染没有样式的html css加载完再重新绘制页面 出现样式闪烁 FOUC(flash of unstyled content)
+
+给js加defer 让js并行下载 等html解析完成再执行 不阻塞html解析
