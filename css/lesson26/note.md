@@ -62,7 +62,8 @@ useEffect/useState 作为react hooks（纯函数组件）
 为什么用纯函数？
 因为用类组件麻烦
 
-<link> vs <a>
+<link>给浏览器加载资源 用户看不见内容  一般在<head>里
+<a>给用户点击跳转 用户看的见link文字或可点击区域 一般在<body>
 
 先写html后写css（撬动GPU渲染） 最后写js
 
@@ -81,4 +82,4 @@ animation：时间线（关键帧） 加载后自动跑 可以无限循环
 └─────────────────────────────────────┘
 ↑ 交叉轴 cross axis
 
-布局：flex 一维； grid 二维 格子里放内容(e.g.dashboard,多行多列排版)
+布局：flex 一维 内容分配（导航栏 左侧菜单）； grid 二维 格子里放内容(e.g.dashboard,多行多列排版)
