@@ -83,9 +83,18 @@ https://www.assistant-ui.com/
 https://chat-sdk.dev/
 https://github.com/vercel/ai-chatbot
 https://github.com/assistant-ui/assistant-ui
+https://www.assistant-ui.com/
 sdk.vercel.ai
+https://github.com/openai/tiktoken
+https://github.com/atjsh/https://github.com/atjsh/llmlingua-2-js/tree/main/examples/react-vite-webgpu
+https://chat-sdk.dev/docs/api
+https://github.com/vercel/chatbot
+https://ai-sdk.dev/
+
 
 支付系统：需要考虑交易并发数
+https://docs.stripe.com/api/errors/handling?lang=node
+
 幂等+状态机
 并发高容易出问题1.重复支付/开通
 solution：幂等 订单号唯一 防止重复提交
