@@ -8,3 +8,5 @@ class Child2 extends React.PureComponent {
 }
 
 export default Child2;
+
+//{children}->app->router->url变化
