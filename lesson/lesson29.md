@@ -26,8 +26,15 @@ rAF 专属 API 屏幕帧率 60Hz 一秒里闪 60 次 有间隙  是 JS 执行时
 
 为了解决 CPU 密集任务 引入 web worker（只运行 JS 代码 没有 DOM，BOM）并形成 sandbox 环境
 
+'''
+new Worker
+onmessage
+return webworker file
+postMessage
+'''
 
-
+CPU 密集型：线程多 CPU 多 但 CPU 需要切换成本
+IO 密集型： nodejs 用 
 
 
 作业：
