@@ -16,15 +16,18 @@ function startTimer() {
     uiTest.textContent = `计时：${count}`;
   }, 100);
 }
+
 function stopTimer() {
   if (timerId !== null) {
     clearInterval(timerId);
     timerId = null;
   }
-  uiTest.textContent = `计时：${count}（已停止）`;
+  uiTest.textContent = `${count}已停止`;
 }
+
+// 主线程和worker连起来
 function bindWorkerEvents() {
-  worker.onmessage = (event) => {
+  worker.onmessage = (event) => {  //接收worker传来消息
     const { type, data } = event.data;
     if (type === "result") {
       result.textContent = `结果：${data}`;
@@ -40,7 +43,8 @@ function bindWorkerEvents() {
   };
 }
 bindWorkerEvents();
-// 开始：启动计时 + 发送 Worker 任务
+
+// 启动计时 + 发送 Worker 任务
 startBn.addEventListener("click", () => {
   result.textContent = "计算中...";
   startTimer();
@@ -49,8 +53,9 @@ startBn.addEventListener("click", () => {
     payload: 100_000_000,
   });
 });
+
 stopBn.addEventListener("click", () => {
-  stopTimer();
+  stopTimer();  // clearInterval
   worker.terminate();
   result.textContent = "calculation canceled";
   worker = new Worker("worker.js");

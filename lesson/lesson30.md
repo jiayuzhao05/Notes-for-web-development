@@ -7,6 +7,7 @@ ssr 服务器运行 react 声称 html 使用服务器资源 不使用本地资�
 
 先有 html 后有 js
 
+请求数据时用:
 fetch.then()
 useState()
 setData()
@@ -22,4 +23,5 @@ onClick={() => setCount(count + 1)}
 
 apple 有屏幕矢量化 Retina技术 比其他显示屏清晰 感受不到颗粒感 维持像素密度
 css 设备像素比 Window.devicePixelRatio
-height:100px; 可以对应200个物理像素点
+https://developer.mozilla.org/zh-CN/docs/Web/API/Window/devicePixelRatio
+height:100px; 可以对应200个物理像素点 如果物理像素很低 css像素高 会感觉很糊
