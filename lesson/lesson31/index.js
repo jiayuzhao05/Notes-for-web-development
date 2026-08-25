@@ -42,11 +42,13 @@ const a = { name: "A" };
 const b = { name: "B" };
 const fn = show.bind(a);
 fn.call(b);
+// a 不是b
 
 //this 箭头函数的this new对象 this指向实例
 //this 不是定义时确定，而是调用时确定。 看谁「调用」这个函数，this指向谁（或绑定对象）
 //箭头函数没有自己的this，this继承外层词法作用域 不能用call/apply/bind 改变this
 const obj = {
     name: "obj",
-    fn:()=>console.log(this.name); // this 是外层（如 window），不是 obj
+    fn:()=>console.log(this.name) // this 是外层（如 window），不是 obj
 }
+

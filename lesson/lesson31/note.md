@@ -24,3 +24,4 @@ React 类组件、传统 OOP 里，实例方法通过 this.state、this.setState
 bind永久绑定
 react类组件里this.handleClick = this.handleClick.bind(this)
 
+this代表当前函数替谁干活
