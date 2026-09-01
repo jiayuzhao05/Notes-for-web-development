@@ -10,11 +10,13 @@ import App from "./app/App";
 // 引入全局样式。本项目的 sidebar 宽度、footer 高度、页面布局样式都从这里进入应用。
 import "./styles/index.css";
 
+//函数渲染2次的原因 开发环境 生产环境没有 检查有没有副作用 render不纯（react可能调用其他render函数检查是否有不纯洁的副作用）
 // - `createRoot(...)` 创建 React 渲染根。`render(...)` 把 React 组件放进去。
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
+    ,
   </React.StrictMode>,
 );

@@ -28,8 +28,14 @@ export function DashboardPage() {
     resetGamesLeft();
   }, [gamesLeft, isLoadingInitialScore, resetGamesLeft]);
 
+  useEffect(() => {
+    console.log("inner function runs again", count);
+  }, [count]);
+
   const displayedGamesLeft =
     isLoadingInitialScore || gamesLeft === null ? "..." : gamesLeft;
+
+  console.log("function runs again");
 
   return (
     <section className="dashboard-page">

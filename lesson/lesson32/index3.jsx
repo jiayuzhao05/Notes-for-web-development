@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from "react";
-let total = 0;
-
-function Footer() {
+function App() {
   const [count, setCount] = useState(0);
 
   const handleClick = () => {
@@ -10,16 +7,11 @@ function Footer() {
 
   let result = count * 2;
 
-  total++;
-  fetch();
   return (
     <div>
       <button onClick={handleClick}>+1</button>
       <p>{count}</p>
       <p>{result}</p>
-      <p>{total}</p>
     </div>
   );
 }
-
-export default Footer;

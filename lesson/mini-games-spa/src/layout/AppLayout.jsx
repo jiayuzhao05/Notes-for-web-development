@@ -1,4 +1,4 @@
-import { Footer } from "./Footer";
+import Footer from "./Footer";
 import { Sidebar } from "./Sidebar";
 import { OperationsPage } from "../features/operations/OperationsPage";
 
