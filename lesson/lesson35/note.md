@@ -3,9 +3,11 @@
 函数本质是封装逻辑 
 
 
-副作用：其他事导致二次渲染 请求外部数据API 定时器 读写IO 修改DOM 纯函数UI 让函数外部不纯粹 react树之外同步事项
+副作用：函数执行时，影响了 React 组件树之外的东西 react树之外同步事项 
+请求外部数据API 定时器setInterval / setTimeout 读写localStorage /file IO 修改DOM（非 React 管理） 修改函数外部的变量 订阅 WebSocket 
+纯函数UI 让函数外部不纯粹 
 
-useMemo()
+useMemo(): 缓存计算结果，依赖不变就复用上次的值，避免重复昂贵计算
 
 底层CSS：碎片化
 tailwind：类似ant design 更灵活 类似砖块的一层 可以调整 可以用这块砖调整
@@ -20,7 +22,7 @@ render props很老了不要了解 是hooks出现之前复用逻辑
 
 useReducer():状态复杂的useState() 包含子值 下一个状态影响前一个状态
 
-useContext():用户信息跨层级
+useContext():跨层级共享数据，避免 props 一层层传（prop drilling）
 
 CSS冲突:全局 式样
 pageA.module.css =〉.box =〉 vite => .box12627381218
