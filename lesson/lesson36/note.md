@@ -3,6 +3,11 @@
 useState 保存组件状态 给react看的数据
 
 useEffect副作用 （和外界通信）和UI对应
+其中有cleanup:清理脱离react的独立web资源(用return)
+三种依赖方式:1.render 2.空数组 3. count
+setTimeout
+创建资源
+return 销毁资源
 
 useMemo 保存计算结果
 useCallback 组件优化 缓存函数引用
@@ -17,6 +22,5 @@ useLayoutEffect DOM更新后一个拦截器机制
 
 hooks不能随便调用 必须组件顶层调用
 react依靠hooks调用顺序 快照有顺序的 hooks链 对应的数据是他的本体
-
 
 countRef.current 主要用current 为了留出其他空间万一缓存其他数据

@@ -13,6 +13,17 @@ function App() {
   };
 
   console.log("render");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log("hello world");
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [num]);
+
   return (
     <div>
       <button onClick={handleClick}>{countRef.current}</button>
@@ -23,3 +34,16 @@ function App() {
 }
 
 //课后实现代码
+
+function App() {
+  useEffect(() => {
+    const handleResize = () => {
+      console.log("1");
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
+}
