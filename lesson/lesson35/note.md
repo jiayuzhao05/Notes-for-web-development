@@ -77,16 +77,16 @@ reconcile 时若发现 props/state **没变**（且满足条件），可**跳过
 PureComponent / React.memo 就是在帮 React 做这件事。
 
 ### Context 与性能（不是「优化手段」）
-- Context 用于**跨层传数据**，不是专门用来优化性能的
+- Context 用于跨层传数据，不是专门用来优化性能的
 - **Provider 的 value 变化** → 所有 `useContext` 该 Context 的组件都会 re-render
-- 即使用户只用到 value 里一小部分，也可能整组件重渲染 → **削弱 bailout**
+- 即使用户只用到 value 里一小部分，也可能整组件重渲染 → 削弱 bailout
 - 做法：拆 Context、memo 子组件、状态下沉，避免「一个大 Context 包一切」
 
 ### forceUpdate（不是优化）
 - 类组件：`this.forceUpdate()`
-- **强制**本组件 re-render，**绕过** `shouldComponentUpdate` / PureComponent
-- 用于特殊场景，**不是**性能优化工具
+- 强制本组件 re-render，绕过 `shouldComponentUpdate` / PureComponent
+- 用于特殊场景，不是性能优化工具
 ### 父 → 子重渲染（准确表述）
 - 默认：父 re-render → 子也会 re-render（会再执行子组件）
-- 若子包了 `React.memo` / `PureComponent` 且 props **浅比较相等** → 可**跳过**子组件 render
+- 若子包了 `React.memo` / `PureComponent` 且 props 浅比较相等 → 可跳过子组件 render
 - 所以不是「不管 props 一定重渲染」，而是「默认会，优化后可跳过」

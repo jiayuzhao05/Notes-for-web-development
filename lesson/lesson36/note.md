@@ -4,7 +4,14 @@ useState 保存组件状态 给react看的数据
 
 useEffect副作用 （和外界通信）和UI对应
 其中有cleanup:清理脱离react的独立web资源(用return)
-三种依赖方式:1.render 2.空数组 3. count
+useEffect的dependece三种依赖方式:
+1.render 每次渲染的时候执行一次
+2.[] 传空数组:组件挂载时只执行一次 生产环境mount到副作用;生产环境
+3. count: 最开始执行一次,每次[]里的变量更新时候都会执行一次
+
+websocket是通信协议+ 在运行环境里提供的API:用来聊天,推送,实时行情
+
+
 setTimeout
 创建资源
 return 销毁资源
@@ -23,4 +30,15 @@ useLayoutEffect DOM更新后一个拦截器机制
 hooks不能随便调用 必须组件顶层调用
 react依靠hooks调用顺序 快照有顺序的 hooks链 对应的数据是他的本体
 
+
 countRef.current 主要用current 为了留出其他空间万一缓存其他数据
+
+
+
+
+----
+agent底层调用 plan memory 库UI multi-agent通信 分布式&
+
+hooks链
+
+websocket也是运行环境
