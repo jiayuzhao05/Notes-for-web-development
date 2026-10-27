@@ -29,3 +29,9 @@ promise.then().fulfilled -> react得到 内部子组件调度
 service worker相当于独立于主线程的脚本 不参与UI 相当于代理 处理缓存等事项
 
 material UI = 原子CSS组成
+
+return是useEffect专属的清理函数 （react 18）
+
+创造新函数 != 创造新函数实例
+
+原子CSS是tailwind创造的 函数对象 内存地址不同 但是内存不会爆炸 因为有GC（指针断掉后 垃圾回收）
