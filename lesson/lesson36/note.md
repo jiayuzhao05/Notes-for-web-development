@@ -11,6 +11,8 @@ useEffect的dependece三种依赖方式:
 
 websocket是通信协议+ 在运行环境里提供的API:用来聊天,推送,实时行情
 
+副作用：非该体系内数据
+
 
 setTimeout
 创建资源
@@ -42,3 +44,7 @@ agent底层调用 plan memory 库UI multi-agent通信 分布式&
 hooks链
 
 websocket也是运行环境
+
+useCallback 缓存函数本体 object
+useMemo 缓存计算结果 可以再次使用
+不要看到引用就用 useCallback，useMemo：引用每次变 是函数组件默认行为 
