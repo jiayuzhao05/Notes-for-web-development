@@ -39,6 +39,7 @@ function A() {
 }
 
 //useRef vs useLayoutEffect useReducer 自定义hooks
+// useRef 在多次渲染中保存同一个可变引用 useLayoutEffect会在DOM更新后同步执行副作用
 //网络请求用到useRef
 //AbortController如果不用 会造成静态竞争 用户快递切换userId 有一次请求速度慢 第二次请求速度快 可能会先得到第二个数据 再得到第一个数据 第一个数据会把第二个数据覆盖
 //useRef vs useState：useRef不会触发重新渲染，useState会触发重新渲染
