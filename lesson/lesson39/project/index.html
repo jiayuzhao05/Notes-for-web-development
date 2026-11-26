@@ -7,7 +7,7 @@
   </head>
   <body>
     <h1>login</h1>
-    <form action="" method="get">
+    <form action="/login.html" method="get">
       <label>email <input id="email" type="email" name="email" /></label>
       <label>
         password <input id="password" type="password" name="password"
@@ -15,7 +15,7 @@
       <button type="submit">Login</button>
       <button type="reset">reset</button>
     </form>
-    <script>
+    <!-- <script>
       const form = document.querySelector("form");
       const emailInput = document.getElementById("email");
       const pasawordInput = document.getElementById("password");
@@ -64,6 +64,6 @@
 
         const saved = localstorage.getItem('lastEmail');
         if (saved) emailInput.value = saved;
-    </script>
+    </script> -->
   </body>
 </html>
