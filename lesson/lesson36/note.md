@@ -48,3 +48,24 @@ websocket也是运行环境
 useCallback 缓存函数本体 object
 useMemo 缓存计算结果 可以再次使用
 不要看到引用就用 useCallback，useMemo：引用每次变 是函数组件默认行为 
+
+content-type：用工具解析
+JSON 工具 0/1
+文本类型
+<input type="date">
+live server和浏览器打开网页是不一样的 server 端
+
+TODO：line66 content-type: textplay 不要继续用 json
+用 nodejs 创建服务器而不是 live server
+live server 不支持 post method
+get vs post （http 传输数据形态）
+原生方式：浏览器传输 数据 到另一个页面（JS，html）
+URL 上数据拿下来
+
+JS 内存中对不能使用 HTTP 传递
+前->后 传输格式有很多 JSON 只是其中一种 0/1就行 文本流
+
+127.0.0.1 回环地址
+
+前端后端代码都在 server
+浏览器：请求前端资源渲染 然后请求后端资源
