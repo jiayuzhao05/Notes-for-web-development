@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <h1>login</h1>
+    <form id="login-form" method="post">
+      <label>
+        email
+        <input id="email" type="email" name="email" autocomplete="email" />
+      </label>
+      <label>
+        password
+        <input
+          id="password"
+          type="password"
+          name="password"
+          autocomplete="current-password"
+        />
+      </label>
+      <button type="submit">Login</button>
+      <button type="reset">reset</button>
+    </form>
+    <p id="status"></p>
+    <p>Demo account: test@example.com / 123456</p>
+
+    <script>
+      const API_URL = "http://localhost:3000/api/login";
+      const form = document.getElementById("login-form");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const statusEl = document.getElementById("status");
+
+      const savedEmail = localStorage.getItem("lastEmail");
+      if (savedEmail) {
+        emailInput.value = savedEmail;
+      }
+
+      function setStatus(message) {
+        statusEl.textContent = message;
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+          setStatus("Please fill in email and password");
+          return;
+        }
+
+        const loginData = { email, password };
+        const jsonBody = JSON.stringify(loginData);
+
+        localStorage.setItem("lastEmail", email);
+
+        try {
+          const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: jsonBody,
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            setStatus(result.message || "Login failed");
+            return;
+          }
+
+          if (result.token) {
+            sessionStorage.setItem("token", result.token);
+          }
+
+          setStatus("Login successful");
+        } catch (error) {
+          setStatus("Network error: is the server running on port 3000?");
+        }
+      });
+    </script>
+  </body>
+</html>
